@@ -96,8 +96,6 @@ function main(setup) {
 } */
 
 //TO DO
-//add boxes around numbers 
-//make slider width adjust to ratio between line and numbers shown 
 //make the range of numbers adjustable (change boxwidth)
 
 function main2(setup) {
@@ -110,38 +108,38 @@ function main2(setup) {
   gsap.set(redCircle, {scaleX : setup.rangeNum / 2, x : minX})
   
 
-  let startBox = document.getElementById("startBox") as HTMLElement
-  let startNum = document.getElementById("startNumText") as HTMLElement
+  let startBox = document.getElementById("startBox");
+  let startNum = document.getElementById("startNumText");
   let numbers = document.getElementById("numbers") as HTMLElement
 
   let box = document.getElementById("box") as HTMLElement
   let layer = document.getElementById("layer1") as HTMLElement
 
-  let boxWidth = 10 //change
-  let diff = 5.85 //change 
+  //TO DO
+  let boxWidth = 10 //change with app 
+  let diff = 5.85 //change with app
 
   console.log((Number(setup.lineMax-setup.lineMin)+1)*boxWidth)
   
-  //TO DO: FIX SPACING
-  //let boxW = Math.round(startBox.getBoundingClientRect().width);
-  //let boxX = Math.round(startBox.getBoundingClientRect().x);
-  //let numX = Math.round(startNum.getBoundingClientRect().x);
+  let boxW = Math.round((startBox as any as SVGGraphicsElement).getBBox().width);
+  let boxX = Math.round((startBox as any as SVGGraphicsElement).getBBox().x);
+  let numX = Math.round((startNum as any as SVGGraphicsElement).getBBox().x);
 
   startNum.textContent = (setup.lineMin).toString()
   let currentNum = Number(setup.lineMin)+1
   for (var i = setup.lineMin+1; i <= Number(setup.lineMax); i++) {
-    let nodeBox = startBox.cloneNode(true) as HTMLElement
+    let nodeBox = startBox.cloneNode(true)
     numbers.appendChild(nodeBox)
     gsap.set(nodeBox, {x : (i)*boxWidth })
 
-    let node = startNum.cloneNode(true) as HTMLElement
+    let node = startNum.cloneNode(true) as SVGGraphicsElement
     node.textContent = currentNum.toString()
     numbers.appendChild(node)
     gsap.set(node, {x : (i)*boxWidth })
 
-    //let numW = node.getBoundingClientRect().width
+    let numW = node.getBBox().width
 
-    //gsap.set(node, {x : (numW/2 + numX - (boxW/2 + boxX)) + (i+2)*boxWidth })
+    gsap.set(node, {x : -(numW/2 + numX - (boxW/2 + boxX))-0.5 + i*boxWidth })
     
     currentNum++;
   }
