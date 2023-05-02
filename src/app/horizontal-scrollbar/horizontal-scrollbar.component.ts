@@ -117,9 +117,10 @@ function main2(setup) {
 
   //TO DO
   let boxWidth = 10 //change with app 
-  let diff = 5.85 //change with app
-
-  console.log((Number(setup.lineMax-setup.lineMin)+1)*boxWidth)
+  let diff = 12.2 //change with app 
+  
+  //5.85 for 0 - 50 with boxWidth 10 and rangeNum 5
+  //12.2 for 0 - 100 with boxWidth 10 and rangeNum 5
   
   let boxW = Math.round((startBox as any as SVGGraphicsElement).getBBox().width);
   let boxX = Math.round((startBox as any as SVGGraphicsElement).getBBox().x);
@@ -158,7 +159,9 @@ function main2(setup) {
     }
   });
 
-  let numbersMinX = -((Number(setup.lineMax-setup.lineMin))*(boxWidth-(diff/7.5))) // change
+  //TO DO FIX THE MAX
+  let n = 31 //7.5 for 0 - 15 with boxWidth 10 an rangeNum 5
+  let numbersMinX = -((Number(setup.lineMax-setup.lineMin))*(boxWidth-(diff/n))) // change
 
   Draggable.create(numbers, {type: "x", bounds : {minX : numbersMinX, maxX : 0}, 
     onDrag : function() {
