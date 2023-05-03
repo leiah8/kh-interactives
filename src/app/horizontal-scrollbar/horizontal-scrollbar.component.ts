@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { horizontalScrollAPI, scrollbarSetup} from "./horizontal-scrollbar";
-import { gsap, Draggable } from "gsap/all";
+import { gsap, Draggable, ScrollTrigger } from "gsap/all";
 
 @Component({
   selector: 'app-horizontal-scrollbar',
@@ -198,6 +198,7 @@ function main3(setup){
     (el as HTMLElement).style.setProperty('--boxSize', (67 * (5 / setup.rangeNum)).toString() +"px");
   });
 
+  /*
   //set up the draggables
   let start_text = document.getElementById("start_text") as HTMLElement
   let end_text = document.getElementById("end_text") as HTMLElement
@@ -228,5 +229,6 @@ function main3(setup){
     }
   });
 
+  */
 
 }
