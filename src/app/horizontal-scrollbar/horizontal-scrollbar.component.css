@@ -5,7 +5,6 @@
     grid-template-columns: 20px 1fr 20px;
     align-content: start;
     overflow-x : hidden; 
-    padding : 10px;
 
     border-color : #43c0d6;
     border-width : 10px;
@@ -30,8 +29,8 @@ ul {
     overflow-x : scroll; 
 
     scroll-snap-type: x proximity;
-    padding-bottom: 10px;
-    margin-bottom: -30px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
 }
 
 
