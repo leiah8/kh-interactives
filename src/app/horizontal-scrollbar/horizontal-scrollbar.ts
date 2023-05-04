@@ -94,31 +94,39 @@ export class HorizontalScrollClass {
         let maxX = minX + (clickArea as any as SVGGraphicsElement).getBoundingClientRect().width
         let lineMin = (line as any as SVGGraphicsElement).getBoundingClientRect().x
         let lineMax = lineMin + (line as any as SVGGraphicsElement).getBoundingClientRect().width
-      
-        clickArea.addEventListener("click", (e) => {
-          let ratio = (lineMax - lineMin) / (line as any as SVGGraphicsElement).getBBox().width
+        
+        clickArea.onpointerdown = clickHandle
+        function clickHandle(e) {
+        let ratio = (lineMax - lineMin) / (line as any as SVGGraphicsElement).getBBox().width
           let xVal = (e.clientX - minX - (redCircle as any as SVGGraphicsElement).getBoundingClientRect().width / 2)/ratio
       
           if (e.clientX >= minX && e.clientX <= maxX) {
             gsap.set(redCircle, {x : xVal})
             numbers.scrollLeft = diff*(xVal)
           }
-        } ) 
+       }
         
         //CLICKS ON BUTTONS 
         items.forEach(node => {
-                (node.el).addEventListener("click", (e) => {
-                    if (node.on) {
-                        gsap.set(node.el, {color : "#000000"})
-                        node.on = false
-                    }
-                    else {
-                        gsap.set(node.el, {color : "#43c0d6"})
-                        node.on = true
-                    }
-                })
+            (node.el).onpointerdown = function (e) {
+                if (node.on) {
+                    gsap.set(node.el, {color : "#000000"})
+                    node.on = false
+                }
+                else {
+                    gsap.set(node.el, {color : "#43c0d6"})
+                    node.on = true
+                }
+        
+              }
+                    
+            
         });
+
+        
       
       }
+
+      
 }
 
