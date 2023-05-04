@@ -5,6 +5,7 @@
     grid-template-columns: 20px 1fr 20px;
     align-content: start;
     overflow-x : hidden; 
+    padding : 10px;
 
     border-color : #43c0d6;
     border-width : 10px;
@@ -33,29 +34,28 @@ ul {
     margin-bottom: -30px;
 }
 
-/*
+
 ::-webkit-scrollbar {
     width : 0;
     background : transparent;
 }
-*/
 
+
+/*
 ::-webkit-scrollbar {
     width : 10px
 }
-/* Track */
 ::-webkit-scrollbar-track {
     background : #fff;
     border : 7px solid #43c0d6;
     border-radius: 10px;
   }
   
-  /* Handle */
   ::-webkit-scrollbar-thumb {
     background: #fff;
     border-radius: 10px;
   }
-  
+*/
 .hs:before,
 .hs:after {
     content: '';

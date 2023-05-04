@@ -198,8 +198,8 @@ function main3(setup){
     (el as HTMLElement).style.setProperty('--boxSize', (67 * (5 / setup.rangeNum)).toString() +"px");
   });
 
-  /*
-  //set up the draggables
+  
+  //set up the draggables and scroll
   let start_text = document.getElementById("start_text") as HTMLElement
   let end_text = document.getElementById("end_text") as HTMLElement
   let redCircle = document.getElementById("redCircle") as HTMLElement
@@ -207,28 +207,48 @@ function main3(setup){
   
   gsap.set(redCircle, {scaleX : setup.rangeNum / 2, x : 0})
 
-  //TO DO
-  let over = (redCircle as any as SVGGraphicsElement).getBBox().width * (setup.rangeNum / 2)  / 3.5 //change with app
-  let minX = 0 
-  let maxX = (line as any as SVGGraphicsElement).getBBox().width - (redCircle as any as SVGGraphicsElement).getBBox().width * (setup.rangeNum / 2) + over
-
   //TO DO FIX
-  let diff = (73.5 * (setup.lineMax - setup.lineMin) * (5 / setup.rangeNum) / (line as any as SVGGraphicsElement).getBBox().width)
-
-  const items = document.querySelectorAll('.hs'); 
+  let diff = (numbers.scrollWidth) / ((line as any as SVGGraphicsElement).getBBox().width +4)
+  
   start_text.textContent = setup.lineMin
   end_text.textContent = setup.lineMax
 
   gsap.registerPlugin(Draggable);
-  Draggable.create(redCircle, {type: "x", bounds:{minX : minX, maxX : maxX}, 
-    onDrag : function() {
-      gsap.to(numbers, {x : diff*(-this.x)})
-      //items.forEach(el => {
-      //  gsap.to(el, {x : diff*(-this.x)})
-      //})
-    }
-  });
 
-  */
+  //drag is glitchy
+  numbers.scrollLeft = 0
+  Draggable.create(redCircle, {
+    type: "x",
+    bounds: line,
+    onDrag: function() {
+      numbers.scrollLeft = diff*this.x
+      //numbers.scrollTo(diff*this.x, 0)
+    }
+  })[0];
+
+  numbers.addEventListener("scroll", (e) => {
+    gsap.to(redCircle, {x : numbers.scrollLeft/diff})
+  
+  })
+
+  let clickArea = document.getElementById("clickArea")
+  let minX = (clickArea as any as SVGGraphicsElement).getBoundingClientRect().x
+  let maxX = minX + (clickArea as any as SVGGraphicsElement).getBoundingClientRect().width
+
+  let lineMin = (line as any as SVGGraphicsElement).getBoundingClientRect().x
+  let lineMax = lineMin + (line as any as SVGGraphicsElement).getBoundingClientRect().width
+  clickArea.addEventListener("click", (e) => {
+    console.log(e.clientX)
+    let ratio = (lineMax - lineMin) / (line as any as SVGGraphicsElement).getBBox().width
+    let xVal = (e.clientX - minX - (redCircle as any as SVGGraphicsElement).getBoundingClientRect().width / 2)/ratio
+    if (e.clientX >= minX && e.clientX <= maxX) {
+      gsap.to(redCircle, {x : xVal})
+      numbers.scrollLeft = diff*(xVal)
+    }
+  } )
+
+
+
+  
 
 }
