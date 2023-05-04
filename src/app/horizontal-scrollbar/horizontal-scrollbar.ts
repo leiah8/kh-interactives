@@ -69,7 +69,8 @@ export class HorizontalScrollClass {
         
         start_text.textContent = setup.lineMin
         end_text.textContent = setup.lineMax
-      
+        
+        /*
         gsap.registerPlugin(Draggable);
       
         //drag is glitchy
@@ -83,7 +84,7 @@ export class HorizontalScrollClass {
             //numbers.scrollTo(diff*this.x, 0)
           }
         });
-      
+        */
         numbers.addEventListener("scroll", (e) => {
           gsap.to(redCircle, {x : numbers.scrollLeft/diff})
         
