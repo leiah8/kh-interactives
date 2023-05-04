@@ -1,16 +1,21 @@
 import { Component, AfterViewInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { horizontalScrollAPI, scrollbarSetup} from "./horizontal-scrollbar";
-import { gsap, Draggable, ScrollTrigger } from "gsap/all";
+import { scrollbarSetup, HorizontalScrollClass} from "./horizontal-scrollbar";
+//import { gsap, Draggable } from "gsap/all";
 
 @Component({
   selector: 'app-horizontal-scrollbar',
-  //templateUrl: './horizontal-scrollbar.component.html',
-  //templateUrl: './hs2.html',
   templateUrl: './hs3.html',
   styleUrls: ['./horizontal-scrollbar.component.css']
 })
 export class HorizontalScrollbarComponent implements AfterViewInit {
-  @ViewChild('renderEl') public renderEl?: ElementRef<SVGSVGElement>;
+  @ViewChild("numbers") public numbers?: ElementRef<SVGSVGElement>;
+  @ViewChild("item") public item?: ElementRef<SVGSVGElement>;
+  @ViewChild("startText") public startText?: ElementRef<SVGSVGElement>;
+  @ViewChild("endText") public endText?: ElementRef<SVGSVGElement>;
+  @ViewChild("handle") public handle?: ElementRef<SVGSVGElement>;
+  @ViewChild("line") public line?: ElementRef<SVGSVGElement>;
+  @ViewChild("clickArea") public clickArea?: ElementRef<SVGSVGElement>;
+
 
   //positions of the target sun, planets, and moons 
   @Input()
@@ -29,14 +34,22 @@ export class HorizontalScrollbarComponent implements AfterViewInit {
     const setup = {
       lineMin : this.lineMin,
       lineMax : this.lineMax,
-      rangeNum : this.rangeNum
+      rangeNum : this.rangeNum,
+      
+      numbers : this.numbers.nativeElement,
+      item : this.item.nativeElement,
+      startText : this.startText.nativeElement,
+      endText : this.endText.nativeElement,
+      handle : this.handle.nativeElement, 
+      clickArea : this.clickArea.nativeElement, 
+      line : this.line.nativeElement
     } as scrollbarSetup
 
     const els = null;
-    //const interactive = horizontalScrollAPI(els, setup); 
+    console.log("Hi")
+    const interactive = new HorizontalScrollClass(setup)
 
     
-    main3(setup)
   }
 
 }
@@ -175,80 +188,3 @@ function main2(setup) {
   });
 }
 */
-
-function main3(setup){
-  //set up the numbers
-  var first = document.querySelector('li')
-  first.textContent = Number(setup.lineMin).toString();
-
-  let numbers = document.querySelector('ul')
-
-  for(var i = Number(setup.lineMin)+1; i < Number(setup.lineMax)+1; i++) {
-    var node = document.createElement('li');
-    node.appendChild(document.createTextNode(i.toString()));
-    node.setAttribute("style", "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8px; font-size : 20px;font-family : 'Poppins';")
-    numbers.appendChild(node);
-
-  }
-  const list = document.querySelectorAll('.hs'); 
-
-  list.forEach(el => {
-    const n = el.children.length;
-    (el as HTMLElement).style.setProperty('--total', n.toString());
-    (el as HTMLElement).style.setProperty('--boxSize', (67 * (5 / setup.rangeNum)).toString() +"px");
-  });
-
-  
-  //set up the draggables and scroll
-  let start_text = document.getElementById("start_text") as HTMLElement
-  let end_text = document.getElementById("end_text") as HTMLElement
-  let redCircle = document.getElementById("redCircle") as HTMLElement
-  let line = document.getElementById("line") as HTMLElement
-  
-  gsap.set(redCircle, {scaleX : setup.rangeNum / 2, x : 0})
-
-  //TO DO FIX
-  let diff = (numbers.scrollWidth) / ((line as any as SVGGraphicsElement).getBBox().width +4)
-  
-  start_text.textContent = setup.lineMin
-  end_text.textContent = setup.lineMax
-
-  gsap.registerPlugin(Draggable);
-
-  //drag is glitchy
-  numbers.scrollLeft = 0
-  Draggable.create(redCircle, {
-    type: "x",
-    bounds: line,
-    onDrag: function() {
-      numbers.scrollLeft = diff*this.x
-      //numbers.scrollTo(diff*this.x, 0)
-    }
-  })[0];
-
-  numbers.addEventListener("scroll", (e) => {
-    gsap.to(redCircle, {x : numbers.scrollLeft/diff})
-  
-  })
-
-  let clickArea = document.getElementById("clickArea")
-  let minX = (clickArea as any as SVGGraphicsElement).getBoundingClientRect().x
-  let maxX = minX + (clickArea as any as SVGGraphicsElement).getBoundingClientRect().width
-
-  let lineMin = (line as any as SVGGraphicsElement).getBoundingClientRect().x
-  let lineMax = lineMin + (line as any as SVGGraphicsElement).getBoundingClientRect().width
-  clickArea.addEventListener("click", (e) => {
-    console.log(e.clientX)
-    let ratio = (lineMax - lineMin) / (line as any as SVGGraphicsElement).getBBox().width
-    let xVal = (e.clientX - minX - (redCircle as any as SVGGraphicsElement).getBoundingClientRect().width / 2)/ratio
-    if (e.clientX >= minX && e.clientX <= maxX) {
-      gsap.to(redCircle, {x : xVal})
-      numbers.scrollLeft = diff*(xVal)
-    }
-  } )
-
-
-
-  
-
-}
