@@ -46,7 +46,6 @@ export class HorizontalScrollbarComponent implements AfterViewInit {
     } as scrollbarSetup
 
     const els = null;
-    console.log("Hi")
     const interactive = new HorizontalScrollClass(setup)
 
     

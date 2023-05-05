@@ -38,7 +38,7 @@ export class HorizontalScrollClass {
         for(var i = Number(setup.lineMin)+1; i < Number(setup.lineMax)+1; i++) {
           var n = document.createElement('li');
           n.appendChild(document.createTextNode(i.toString()));
-          n.setAttribute("style", "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8px; font-size : 20px;font-family : 'Poppins';")
+          n.setAttribute("style", "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8px; font-size : 12px;font-family : 'Poppins';")
           numbers.appendChild(n);
 
           items.push({el : n, on : false})
@@ -50,7 +50,7 @@ export class HorizontalScrollClass {
         list.forEach(el => {
           const n = el.children.length;
           (el as HTMLElement).style.setProperty('--total', n.toString());
-          (el as HTMLElement).style.setProperty('--boxSize', (67 * (5 / setup.rangeNum)).toString() +"px");
+          (el as HTMLElement).style.setProperty('--boxSize', (50 * (5 / setup.rangeNum)).toString() +"px");
         });
         
       
@@ -62,10 +62,13 @@ export class HorizontalScrollClass {
         let redCircle = setup.handle
         let line = setup.line
         
-        gsap.set(redCircle, {scaleX : setup.rangeNum / 2, x : 0})
+        /*
+        let size = (Number(setup.lineMax) - Number(setup.lineMin)) / Number(setup.rangeNum) / 10
+        gsap.set(redCircle, {scaleX : size, x : 0})
+        */
       
         //TO DO FIX
-        let diff = (numbers.scrollWidth) / ((line as any as SVGGraphicsElement).getBBox().width + 3)
+        let diff = (numbers.scrollWidth) / ((line as any as SVGGraphicsElement).getBBox().width -1)
         
         start_text.textContent = setup.lineMin
         end_text.textContent = setup.lineMax

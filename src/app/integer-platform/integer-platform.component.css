@@ -1,4 +1,4 @@
-/* for the 3rd version */
+/*
 .app {
     display: grid;
     grid-gap: 10px 0;
@@ -23,9 +23,8 @@ ul {
     display: grid;
     grid-gap: 10px;
     grid-template-columns: 10px repeat(var(--total), var(--boxSize)) 10px;
-    grid-template-rows: minmax(50px, 1fr);
+    grid-template-rows: minmax(67px, 1fr);
     
-    /*overflow-x : visible; */
     overflow-x : scroll; 
 
     scroll-snap-type: x proximity;
@@ -39,22 +38,6 @@ ul {
     background : transparent;
 }
 
-
-/*
-::-webkit-scrollbar {
-    width : 10px
-}
-::-webkit-scrollbar-track {
-    background : #fff;
-    border : 7px solid #43c0d6;
-    border-radius: 10px;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: #fff;
-    border-radius: 10px;
-  }
-*/
 .hs:before,
 .hs:after {
     content: '';
@@ -73,7 +56,8 @@ ul {
     background: #fff;
     border-radius: 8px;
 
-    font-size : 12px;
+    font-size : 20px;
     font-family : "Poppins";
-    
 }
+
+*/

@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { TstDotConnectComponent } from './tst-dot-connect/tst-dot-connect.component';
 import { ContainerComponent } from './container/container.component';
 import { HorizontalScrollbarComponent } from './horizontal-scrollbar/horizontal-scrollbar.component';
+import { IntegerPlatformComponent } from './integer-platform/integer-platform.component';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { HorizontalScrollbarComponent } from './horizontal-scrollbar/horizontal-
     TstDotConnectComponent,
     ContainerComponent,
     HorizontalScrollbarComponent,
+    IntegerPlatformComponent,
   ],
   imports: [
     BrowserModule,
