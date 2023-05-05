@@ -16,6 +16,8 @@ export class HorizontalScrollbarComponent implements AfterViewInit {
   @ViewChild("line") public line?: ElementRef<SVGSVGElement>;
   @ViewChild("clickArea") public clickArea?: ElementRef<SVGSVGElement>;
 
+  @ViewChild("scrollbar") public svg?: ElementRef<HTMLElement>;
+
 
   //positions of the target sun, planets, and moons 
   @Input()
@@ -35,6 +37,8 @@ export class HorizontalScrollbarComponent implements AfterViewInit {
       lineMin : this.lineMin,
       lineMax : this.lineMax,
       rangeNum : this.rangeNum,
+
+      svg : this.svg.nativeElement,
       
       numbers : this.numbers.nativeElement,
       item : this.item.nativeElement,

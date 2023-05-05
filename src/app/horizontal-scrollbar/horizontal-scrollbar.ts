@@ -9,6 +9,8 @@ export interface scrollbarSetup {
     lineMin : number,
     lineMax : number,
     rangeNum : number,
+
+    svg : HTMLElement,
       
     numbers : SVGSVGElement,
     item : SVGSVGElement,
@@ -28,6 +30,11 @@ export class HorizontalScrollClass {
     }
 
     main(setup){
+      
+        //setup.svg.setAttribute("viewBox", "0 0 100 100");
+        document.getElementById("scrollbarSVG").setAttribute("viewBox", "0 0 90 50")
+        //viewBox="0 0 102.12916 52.916668"
+
         //set up the numbers
         var first = setup.item
         first.textContent = Number(setup.lineMin).toString();
@@ -38,7 +45,7 @@ export class HorizontalScrollClass {
         for(var i = Number(setup.lineMin)+1; i < Number(setup.lineMax)+1; i++) {
           var n = document.createElement('li');
           n.appendChild(document.createTextNode(i.toString()));
-          n.setAttribute("style", "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8px; font-size : 12px;font-family : 'Poppins';")
+          n.setAttribute("style", "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8px; font-size : 14px;font-family : 'Poppins';")
           numbers.appendChild(n);
 
           items.push({el : n, on : false})
@@ -50,7 +57,7 @@ export class HorizontalScrollClass {
         list.forEach(el => {
           const n = el.children.length;
           (el as HTMLElement).style.setProperty('--total', n.toString());
-          (el as HTMLElement).style.setProperty('--boxSize', (50 * (5 / setup.rangeNum)).toString() +"px");
+          (el as HTMLElement).style.setProperty('--boxSize', (86 * (5 / setup.rangeNum)).toString() +"px");
         });
         
       
