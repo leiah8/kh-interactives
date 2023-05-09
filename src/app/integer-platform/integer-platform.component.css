@@ -1,20 +1,24 @@
-/*
+body {
+    display : grid;
+    grid-gap: 0px 10px;
+    grid-template-columns: 150px 150px 150px;
+}
+
 .app {
     display: grid;
-    grid-gap: 10px 0;
-    grid-template-columns: 20px 1fr 20px;
-    align-content: start;
-    overflow-x : hidden; 
+    grid-gap: 10px 0px;
+    grid-template-rows: 20px 1fr 20px;
+    overflow-y : hidden; 
 
-    border-color : #43c0d6;
+    border-color : #c0f4ffff;
     border-width : 10px;
     border-style : solid;
     border-radius: 80px;
-    background: #43c0d6;
+    background: #c0f4ffff;
 }
   
 ul {
-    grid-column: 1 / -1;
+    grid-row: 1 / -1;
     list-style: none;
     padding: 0;
 }
@@ -22,12 +26,16 @@ ul {
 .hs {
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: 10px repeat(var(--total), var(--boxSize)) 10px;
-    grid-template-rows: minmax(67px, 1fr);
+    /*grid-template-columns: 10px repeat(var(--total), var(--boxSize)) 10px;
+    grid-template-rows: minmax(67px, 1fr);*/
+    grid-template-rows: 10px repeat(var(--total), var(--boxSize)) 10px;
+    grid-template-columns: minmax(67px, 1fr);
     
-    overflow-x : scroll; 
+    /*overflow-x : scroll; */
+    overflow-y : scroll; 
 
-    scroll-snap-type: x proximity;
+    /*scroll-snap-type: x proximity;*/
+    scroll-snap-type: y proximity;
     padding-bottom: 0px;
     margin-bottom: 0px;
 }
@@ -44,7 +52,9 @@ ul {
 }  
   
 .app {
-    width : 400px;
+    /*width : 400px;*/
+    width : 120px;
+    height : 400px;
     
 }
   
@@ -58,6 +68,8 @@ ul {
 
     font-size : 20px;
     font-family : "Poppins";
+    color : #000
 }
 
-*/
+
+
