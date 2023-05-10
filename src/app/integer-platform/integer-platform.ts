@@ -67,8 +67,8 @@ export function integerPlatfromAPI(setup, game) {
     pos : number
     items : node[]
 
-    defaultStyle : string
-    selectedStyle : string 
+    defaultNodeStyle : string
+    selectedNodeStyle : string 
     positive : boolean
 
     tl : any
@@ -92,8 +92,8 @@ export function integerPlatfromAPI(setup, game) {
       this.pos = this.sum*13.3
       this.items = []
 
-      this.defaultStyle = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8px; font-size : 20px;font-family : 'Poppins'; color:#000"
-      this.selectedStyle = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #23a3ff; border-radius: 8px; font-size : 20px;font-family : 'Poppins'; color:#fff"
+      this.defaultNodeStyle = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8px; font-size : 20px;font-family : 'Poppins'; color:#000"
+      this.selectedNodeStyle = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #23a3ff; border-radius: 8px; font-size : 20px;font-family : 'Poppins'; color:#fff"
       this.positive = true
 
       this.tl = gsap.timeline();
@@ -130,14 +130,17 @@ export function integerPlatfromAPI(setup, game) {
       gsap.set(setup.inputNums, {visibility : "hidden"})
 
       //remove empty terms 
-      if (self.selectedTerm.val == 0) {
+      if (self.selectedTerm != null && self.selectedTerm.val == 0) {
         setup.terms.removeChild(self.selectedTerm.el)
         self.allTerms.pop(self.termIndex)
         self.selectedTerm = null
         self.termIndex = -1
       }
 
-      //reset to positive and no term selected 
+      //reset to no term selected 
+      if (self.selectedNode != null)
+        self.selectedNode.el.setAttribute("style", self.defaultNodeStyle)
+      self.selectedNode = null
       self.canOpenInput = true;
     }
 
@@ -152,7 +155,7 @@ export function integerPlatfromAPI(setup, game) {
       }
 
       self.selectedTerm.el.appendChild(self.selectedTerm.txt);
-      self.selectedTerm.el.setAttribute("style", self.defaultStyle)
+      self.selectedTerm.el.setAttribute("style", self.defaultNodeStyle)
       setup.terms.appendChild(self.selectedTerm.el);
 
       self.termIndex = self.allTerms.length
@@ -177,10 +180,10 @@ export function integerPlatfromAPI(setup, game) {
         else self.setMinusBtn()
 
         //change selected node
-        self.selectedNode.el.setAttribute("style", self.defaultStyle )
+        self.selectedNode.el.setAttribute("style", self.defaultNodeStyle )
         self.selectedNode.on = false
         self.selectedNode = self.selectedTerm.node 
-        self.selectedNode.el.setAttribute("style", self.selectedStyle )
+        self.selectedNode.el.setAttribute("style", self.selectedNodeStyle )
         self.selectedNode.on = true
 
       }
@@ -311,7 +314,7 @@ export function integerPlatfromAPI(setup, game) {
           if (i > 0) s.src = setup.bagURL
           n.appendChild(s)
   
-          n.setAttribute("style", self.defaultStyle)
+          n.setAttribute("style", self.defaultNodeStyle)
           setup.numbers.appendChild(n);
    
           (this.items).push({el : n, on : false, val : i, obj : []})
@@ -330,12 +333,12 @@ export function integerPlatfromAPI(setup, game) {
       this.items.forEach(node => {
         (node.el).onpointerdown = function (e) {
           if (self.selectedNode != null && self.selectedNode != node) {
-            self.selectedNode.el.setAttribute("style", self.defaultStyle )
+            self.selectedNode.el.setAttribute("style", self.defaultNodeStyle )
             self.selectedNode.on = false
           }
   
           if(!node.on) {
-            node.el.setAttribute("style", self.selectedStyle )
+            node.el.setAttribute("style", self.selectedNodeStyle )
             node.on = true
   
             self.selectedNode = node
@@ -363,7 +366,7 @@ export function integerPlatfromAPI(setup, game) {
             self.selectedTerm.el.appendChild(s)
           }
           else {
-            node.el.setAttribute("style", self.defaultStyle )
+            node.el.setAttribute("style", self.defaultNodeStyle )
             node.on = false
   
             self.selectedNode = null
