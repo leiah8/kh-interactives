@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, ViewChild, Input, ElementRef } from '@angular/core';
-import { inputSetup, HorizontalScrollClass} from "./integer-platform";
+import { inputSetup, integerPlatfromAPI} from "./integer-platform";
 
 
 @Component({
@@ -22,8 +22,10 @@ export class IntegerPlatformComponent implements AfterViewInit {
   @ViewChild("inputNums") public inputNums?: ElementRef<HTMLElement>;
   @ViewChild("inputBtns") public inputBtns?: ElementRef<HTMLElement>;
   @ViewChild("playBtn") public playBtn?: ElementRef<SVGSVGElement>;
-  @ViewChild("goInput") public goInput?: ElementRef<SVGSVGElement>;
   @ViewChild("cover") public cover?: ElementRef<SVGSVGElement>;
+  @ViewChild("equation") public equation?: ElementRef<HTMLElement>;
+  @ViewChild("terms") public terms?: ElementRef<HTMLElement>;
+  @ViewChild("addTerm") public addTerm?: ElementRef<HTMLElement>;
 
   constructor() {}
 
@@ -51,14 +53,23 @@ export class IntegerPlatformComponent implements AfterViewInit {
       inputBtns : this.inputBtns.nativeElement,
 
       playBtn : this.playBtn.nativeElement,
-      goInput : this.goInput.nativeElement,
       cover : this.cover.nativeElement,
 
       numbers : this.numbers.nativeElement,
-      //item : this.item.nativeElement,
+      equation : this.equation.nativeElement,
+      terms : this.terms.nativeElement,
+      addTerm : this.addTerm.nativeElement,
     } as inputSetup
 
-    const interactive = new HorizontalScrollClass(setup)
+    const game = {
+      startBalloons : 0,
+      startSandbags : 0,
+      leftHeight : 0,
+      rightHeight : 0
+    }
+
+    //const interactive = new HorizontalScrollClass(setup, game)
+    const interactive = integerPlatfromAPI(setup, game)
   }
 
 }

@@ -1,7 +1,7 @@
 body {
     display : grid;
     grid-gap: 0px 10px;
-    grid-template-columns: 150px 150px 150px;
+    grid-template-columns: 150px 150px 150px 150px 150px;
 }
 
 .app {
@@ -15,26 +15,25 @@ body {
     border-style : solid;
     border-radius: 80px;
     background: #c0f4ffff;
+
+    width : 120px;
+    height : 400px;
 }
   
-ul {
+  
+.num {
     grid-row: 1 / -1;
     list-style: none;
     padding: 0;
-}
-  
-.hs {
+
     display: grid;
     grid-gap: 10px;
-    /*grid-template-columns: 10px repeat(var(--total), var(--boxSize)) 10px;
-    grid-template-rows: minmax(67px, 1fr);*/
+    
     grid-template-rows: 10px repeat(var(--total), var(--boxSize)) 10px;
     grid-template-columns: minmax(67px, 1fr);
     
-    /*overflow-x : scroll; */
     overflow-y : scroll; 
 
-    /*scroll-snap-type: x proximity;*/
     scroll-snap-type: y proximity;
     padding-bottom: 0px;
     margin-bottom: 0px;
@@ -50,25 +49,42 @@ ul {
 .hs:after {
     content: '';
 }  
-  
-.app {
-    /*width : 400px;*/
-    width : 120px;
-    height : 400px;
-    
+
+
+.equation {
+    display: grid;
+    grid-gap: 10px 0px;
+    grid-template-columns: 20px 1fr 20px;
+
+    overflow-x : hidden;
+
+    border-color : #c0f4ffff;
+    border-width : 5px;
+    border-style : solid;
+    border-radius: 80px;
+    background: #c0f4ffff;
+
+    width : 300px;
+    height : 90px;
 }
   
-.item {
-    scroll-snap-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #fff;
-    border-radius: 8px;
+  
+.term {
+    grid-column: 1 / -1;
+    list-style: none;
+    padding: 0;
 
-    font-size : 20px;
-    font-family : "Poppins";
-    color : #000
+    display: grid;
+    grid-gap: 0px 10px;
+    
+    grid-template-columns: 10px repeat(var(--total), var(--boxSize)) 10px;
+    grid-template-rows: minmax(50px, 1fr);
+    
+    overflow-x : scroll; 
+
+    scroll-snap-type: x proximity;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
 }
 
 
