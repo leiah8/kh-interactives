@@ -44,7 +44,6 @@ interface node {
   el : HTMLElement;
   on : boolean;
   val : number 
-  obj : HTMLElement[];
 }
 
 interface term  {
@@ -69,9 +68,14 @@ export function integerPlatfromAPI(setup, game) {
 
     defaultNodeStyle : string
     selectedNodeStyle : string 
+    defaultTermStyle : string
+    selectedTermStyle : string 
     positive : boolean
 
     tl : any
+
+    itemStartX : number
+    itemStartY : number
 
     selectedNode : node
     selectedTerm : term 
@@ -88,18 +92,22 @@ export function integerPlatfromAPI(setup, game) {
       self = this
       this.setup = setup
       this.game = game
-      this.sum = game.startBalloons*(-1) + game.startSandbags
+      this.sum = 0
       this.pos = this.sum*13.3
       this.items = []
 
-      this.defaultNodeStyle = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8px; font-size : 20px;font-family : 'Poppins'; color:#000"
-      this.selectedNodeStyle = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #23a3ff; border-radius: 8px; font-size : 20px;font-family : 'Poppins'; color:#fff"
+      this.defaultNodeStyle = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8px; font-size : 20px; font-family : 'Poppins'; color:#000"
+      this.selectedNodeStyle = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #23a3ff; border-radius: 8px; font-size : 20px; font-family : 'Poppins'; color:#fff"
+      this.defaultTermStyle = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 30px; font-size : 20px; font-family : 'Poppins'; color:#000"
+      this.selectedTermStyle = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #23a3ff; border-radius: 30px; font-size : 20px; font-family : 'Poppins'; color:#fff"
+      
+      
       this.positive = true
 
       this.tl = gsap.timeline();
 
-      //this.itemStartX = -400
-      //this.itemStartY = 50
+      this.itemStartX = -400
+      this.itemStartY = 50
 
       this.selectedNode = null
       this.selectedTerm = null 
@@ -129,17 +137,30 @@ export function integerPlatfromAPI(setup, game) {
       gsap.set(setup.inputBtns, {visibility : "hidden"})
       gsap.set(setup.inputNums, {visibility : "hidden"})
 
-      //remove empty terms 
-      if (self.selectedTerm != null && self.selectedTerm.val == 0) {
-        setup.terms.removeChild(self.selectedTerm.el)
-        self.allTerms.pop(self.termIndex)
-        self.selectedTerm = null
-        self.termIndex = -1
+      
+      //remove empty terms and space (for some reason needs to run twice)
+      for(var j = 0; j < 2; j++) {
+        for(var i = 0; i < self.allTerms.length; i++) {
+          if (self.allTerms[i].val == 0) {
+              setup.terms.removeChild(self.allTerms[i].el)
+              self.allTerms.splice(i, 1)
+          }
+        }
       }
 
+      if (self.selectedTerm != null) {
+        self.selectedTerm.el.setAttribute("style", self.defaultTermStyle)
+      }
+      
+
+      self.selectedTerm = null
+      self.termIndex = -1
+
       //reset to no term selected 
-      if (self.selectedNode != null)
+      if (self.selectedNode != null) {
         self.selectedNode.el.setAttribute("style", self.defaultNodeStyle)
+        self.selectedNode.on = false;
+      }
       self.selectedNode = null
       self.canOpenInput = true;
     }
@@ -155,7 +176,7 @@ export function integerPlatfromAPI(setup, game) {
       }
 
       self.selectedTerm.el.appendChild(self.selectedTerm.txt);
-      self.selectedTerm.el.setAttribute("style", self.defaultNodeStyle)
+      self.selectedTerm.el.setAttribute("style", self.selectedTermStyle)
       setup.terms.appendChild(self.selectedTerm.el);
 
       self.termIndex = self.allTerms.length
@@ -165,6 +186,7 @@ export function integerPlatfromAPI(setup, game) {
         if(self.canOpenInput) {
           self.openInput()
         }
+        var oldIndex = self.termIndex
 
         //set selected term
         for(var i = 0; i < self.allTerms.length; i++) {
@@ -172,7 +194,15 @@ export function integerPlatfromAPI(setup, game) {
             self.termIndex = i
           }
         }
+
+        if (oldIndex != self.termINdex) {
+          if (self.selectedTerm != null) {
+            self.selectedTerm.el.setAttribute("style", self.defaultTermStyle)
+          }
+        }
         self.selectedTerm = self.allTerms[self.termIndex]
+        self.selectedTerm.el.setAttribute("style", self.selectedTermStyle)
+
 
         //change plus/minus
         if (self.selectedTerm.positive) 
@@ -180,11 +210,19 @@ export function integerPlatfromAPI(setup, game) {
         else self.setMinusBtn()
 
         //change selected node
-        self.selectedNode.el.setAttribute("style", self.defaultNodeStyle )
-        self.selectedNode.on = false
-        self.selectedNode = self.selectedTerm.node 
-        self.selectedNode.el.setAttribute("style", self.selectedNodeStyle )
-        self.selectedNode.on = true
+        
+        if (self.selectedNode != null ) {
+          self.selectedNode.el.setAttribute("style", self.defaultNodeStyle )
+          self.selectedNode.on = false
+        }
+        if (self.selectedTerm.node  != null ) {
+          self.selectedNode = self.selectedTerm.node 
+          self.selectedNode.el.setAttribute("style", self.selectedNodeStyle )
+          self.selectedNode.on = true
+        }
+        else {
+          self.selectedNode = null
+        }
 
       }
 
@@ -192,8 +230,21 @@ export function integerPlatfromAPI(setup, game) {
       list.forEach(el => {
         const n = el.children.length;
         (el as HTMLElement).style.setProperty('--total', (n).toString());
-        (el as HTMLElement).style.setProperty('--boxSize', (120).toString() +"px");
+        (el as HTMLElement).style.setProperty('--boxSize', (12).toString() +"vh");
       });
+    }
+
+    updateSize() {
+
+      var width  = setup.cover.getBoundingClientRect().width
+      var height = setup.cover.getBoundingClientRect().height
+
+      gsap.set(setup.inputBtns, {x : 0.05*width, y : height*0.12})
+      gsap.set(setup.inputNums, {x : 0.15*width, y : height*0.12})
+
+      gsap.set(setup.equation, {x : 0.33*width, y : height*0.014})
+      gsap.set(setup.addTerm, {x : 0.57*width, y : height*0.014})
+
     }
 
     main() {
@@ -201,17 +252,22 @@ export function integerPlatfromAPI(setup, game) {
       this.setupPlusMinus()
       this.setupDraggablePlatform()
 
+      this.updateSize()
+      addEventListener("resize", (e) => {this.updateSize()})
+
       //input 
-      gsap.set(setup.inputBtns, {x : -40, y : 100, visibility : "hidden"})
-      gsap.set(setup.inputNums, {x : -80, y : 100, visibility : "hidden"})
+      gsap.set(setup.inputBtns, {visibility : "hidden"})
+      gsap.set(setup.inputNums, {visibility : "hidden"})
 
       setup.addTerm.onpointerdown = function(e) {
         if (self.canOpenInput) {
           self.openInput()
           self.addNewTerm()
         }
-        else {
+        else if (!self.tl.isActive()){
           self.closeInput()
+          self.openInput()
+          self.addNewTerm()
         }
       }
 
@@ -220,8 +276,8 @@ export function integerPlatfromAPI(setup, game) {
       }
 
       //set up equation descriptor
-      gsap.set(setup.equation, {y : 10})
-      gsap.set(setup.addTerm, {x : 180, y : 20})
+      //gsap.set(setup.equation, {x : 420, y : 10})
+      //gsap.set(setup.addTerm, {x : 730, y : 18})
 
       //play buttn 
       setup.playBtn.onpointerdown = function(e) {
@@ -282,24 +338,53 @@ export function integerPlatfromAPI(setup, game) {
         }})
         this.tl.to(setup.cart, {duration : 0.1})
       
+
       //update platform position
       self.sum = 1
+      self.updatePlatformPos()
+
+      //add start balloons 
+      var balloons = []
+      for(var i = 0; i < self.game.startBalloons; i++) {
+        var temp = setup.balloon.cloneNode(true);
+        gsap.set(temp, {x : self.itemStartX + i * 15, y : self.itemStartY + 200, visibility : "visible"})
+        setup.platform.appendChild(temp)
+        balloons.push(temp)
+      }
+
+      var sandbags = []
+      for(var i = 0; i < self.game.startSandbags; i++) {
+        var temp = setup.sandbag.cloneNode(true);
+        gsap.set(temp, {x : self.itemStartX + i * 15, y : self.itemStartY - 500, visibility : "visible"})
+        setup.platform.appendChild(temp)
+        sandbags.push(temp)
+      }
+
+      this.tl.to(balloons, {y : self.itemStartY, 
+        onComplete : function() {
+          self.sum -= self.game.startBalloons
+          self.updatePlatformPos()
+          
+          self.tl.to(sandbags, {y : self.itemStartY - 292, 
+            onComplete : function() {
+              self.sum += self.game.startSandbags
+              self.updatePlatformPos()
+              self.canOpenInput = true
+              
+            }})
+        }})
+    
+      
+    }
+
+    updatePlatformPos() {
       self.pos = self.sum*13.3
       this.tl.to(setup.platform, {y : self.pos, ease : "elastic", duration : 1,
         onUpdate : function() {
           const yVal = Math.round(gsap.getProperty(this.targets()[0], "y"));
           gsap.set(setup.spring, {scaleY : -yVal/self.diff + self.springStart })
         }
-      , onComplete : function() {
-        self.canOpenInput = true
-      }})
-      
-    }
-
-    updatePlatformPos() {
-      self.pos = self.sum*13.3
-      gsap.set(setup.spring, {scaleY : -self.pos/self.diff + self.springStart})
-      gsap.set(setup.platform, {y : self.pos})
+      })
     }
 
     setupInputScrollbar() {
@@ -317,7 +402,7 @@ export function integerPlatfromAPI(setup, game) {
           n.setAttribute("style", self.defaultNodeStyle)
           setup.numbers.appendChild(n);
    
-          (this.items).push({el : n, on : false, val : i, obj : []})
+          (this.items).push({el : n, on : false, val : i})
         }
     
       }
@@ -326,7 +411,7 @@ export function integerPlatfromAPI(setup, game) {
       list.forEach(el => {
         const n = el.children.length;
         (el as HTMLElement).style.setProperty('--total', n.toString());
-        (el as HTMLElement).style.setProperty('--boxSize', (60 * (5 / setup.rangeNum)).toString() +"px");
+        (el as HTMLElement).style.setProperty('--boxSize', (8).toString() +"vh");
       });
   
       //CLICK ON NUMBERS 
@@ -347,7 +432,7 @@ export function integerPlatfromAPI(setup, game) {
             self.selectedTerm.val = node.val
             self.selectedTerm.el.removeChild(self.selectedTerm.txt);
             if (self.selectedTerm.img != null)
-            self.selectedTerm.el.removeChild(self.selectedTerm.img);
+              self.selectedTerm.el.removeChild(self.selectedTerm.img);
   
             if (self.positive) {
               var str = "+" + Math.abs(self.selectedTerm.val).toString()
