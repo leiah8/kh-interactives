@@ -1,35 +1,44 @@
 import { Component, AfterViewInit, ViewChild, Input, ElementRef } from '@angular/core';
-import { inputSetup, integerPlatfromAPI} from "./integer-platform";
+//import { InputSetup, integerPlatfromAPI} from "./integer-platform";
+import { IntegerPlatfromClass} from "./integer-platform2";
 
 
 @Component({
   selector: 'app-integer-platform',
   //templateUrl: './integer-platform.component.html',
-  templateUrl: './ip.html',
-  styleUrls: ['./integer-platform.component.css']
+  //templateUrl: './ip.html',
+  templateUrl: './ip2.html',
+  //styleUrls: ['./integer-platform.component.css']
+  styleUrls: ['./ip2.css']
 })
 export class IntegerPlatformComponent implements AfterViewInit {
-  @ViewChild("numbers") public numbers?: ElementRef<SVGSVGElement>;
-  @ViewChild("plus") public plusBtn?: ElementRef<SVGSVGElement>;
-  @ViewChild("minus") public minusBtn?: ElementRef<SVGSVGElement>;
-  @ViewChild("platform") public platform?: ElementRef<SVGSVGElement>;
-  @ViewChild("spring") public spring?: ElementRef<SVGSVGElement>;
-  @ViewChild("balloon") public balloon?: ElementRef<SVGSVGElement>;
-  @ViewChild("sandbag") public sandbag?: ElementRef<SVGSVGElement>;
-  @ViewChild("cart") public cart?: ElementRef<SVGSVGElement>;
-  @ViewChild("backWheel") public backWheel?: ElementRef<SVGSVGElement>;
-  @ViewChild("frontWheel") public frontWheel?: ElementRef<SVGSVGElement>;
-  @ViewChild("inputNums") public inputNums?: ElementRef<HTMLElement>;
-  @ViewChild("inputBtns") public inputBtns?: ElementRef<HTMLElement>;
-  @ViewChild("playBtn") public playBtn?: ElementRef<SVGSVGElement>;
-  @ViewChild("cover") public cover?: ElementRef<SVGSVGElement>;
-  @ViewChild("equation") public equation?: ElementRef<HTMLElement>;
-  @ViewChild("terms") public terms?: ElementRef<HTMLElement>;
-  @ViewChild("addTerm") public addTerm?: ElementRef<HTMLElement>;
+  // @ViewChild("numbers") public numbers?: ElementRef<SVGSVGElement>;
+  // @ViewChild("plus") public plusBtn?: ElementRef<SVGSVGElement>;
+  // @ViewChild("minus") public minusBtn?: ElementRef<SVGSVGElement>;
+   @ViewChild("platform") public platform?: ElementRef<SVGSVGElement>;
+  // @ViewChild("spring") public spring?: ElementRef<SVGSVGElement>;
+  // @ViewChild("balloon") public balloon?: ElementRef<SVGSVGElement>;
+  // @ViewChild("sandbag") public sandbag?: ElementRef<SVGSVGElement>;
+  // @ViewChild("cart") public cart?: ElementRef<SVGSVGElement>;
+  // @ViewChild("backWheel") public backWheel?: ElementRef<SVGSVGElement>;
+  // @ViewChild("frontWheel") public frontWheel?: ElementRef<SVGSVGElement>;
+  // @ViewChild("inputNums") public inputNums?: ElementRef<HTMLElement>;
+  // @ViewChild("inputBtns") public inputBtns?: ElementRef<HTMLElement>;
+  // @ViewChild("playBtn") public playBtn?: ElementRef<SVGSVGElement>;
+  // @ViewChild("cover") public cover?: ElementRef<SVGSVGElement>;
+  // @ViewChild("equation") public equation?: ElementRef<HTMLElement>;
+  // @ViewChild("terms") public terms?: ElementRef<HTMLElement>;
+  // @ViewChild("addTerm") public addTerm?: ElementRef<HTMLElement>;
+
+  
+  @ViewChild("arena") public arena?: ElementRef<HTMLElement>;
+  @ViewChild("controls") public controls?: ElementRef<HTMLElement>;
 
   constructor() {}
 
   ngAfterViewInit(): void {
+
+    /*
     const setup = {
       lineMin : -5,
       lineMax : 5,
@@ -59,7 +68,7 @@ export class IntegerPlatformComponent implements AfterViewInit {
       equation : this.equation.nativeElement,
       terms : this.terms.nativeElement,
       addTerm : this.addTerm.nativeElement,
-    } as inputSetup
+    } //as InputSetup
 
     const game = {
       startBalloons : 2,
@@ -67,9 +76,18 @@ export class IntegerPlatformComponent implements AfterViewInit {
       leftHeight : 0,
       rightHeight : 0
     }
+    */
 
     //const interactive = new HorizontalScrollClass(setup, game)
-    const interactive = integerPlatfromAPI(setup, game)
+    //const interactive = integerPlatfromAPI(setup, game)
+
+    const setup = {
+      arena : this.arena.nativeElement, 
+      platform : this.platform.nativeElement,
+      controls : this.controls.nativeElement
+    }
+
+    const interactive = new IntegerPlatfromClass(setup)
   }
 
 }

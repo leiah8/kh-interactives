@@ -1,6 +1,6 @@
 import { gsap, Draggable } from "gsap/all";
 
-export interface inputSetup {
+export interface InputSetup {
     lineMin : number,
     lineMax : number,
     rangeNum : number,
@@ -33,22 +33,22 @@ export interface inputSetup {
 }
 
 
-export interface game {
+export interface Game {
   startBalloons : number;
   startSandbags : number;
   leftHeight : number;
   rightHeight : number;
 }
 
-interface node {
+interface Node {
   el : HTMLElement;
   on : boolean;
   val : number 
 }
 
-interface term  {
+interface Term  {
   el : HTMLElement;
-  node : node;
+  node : Node;
   positive : boolean;
   val : number;
   txt : HTMLElement;
@@ -60,11 +60,11 @@ export function integerPlatfromAPI(setup, game) {
   let self;
 
   class IntegerPlatformClass {
-    setup : inputSetup
-    game : game 
+    setup : InputSetup
+    game : Game 
     sum : number
     pos : number
-    items : node[]
+    items : Node[]
 
     defaultNodeStyle : string
     selectedNodeStyle : string 
@@ -77,10 +77,10 @@ export function integerPlatfromAPI(setup, game) {
     itemStartX : number
     itemStartY : number
 
-    selectedNode : node
-    selectedTerm : term 
+    selectedNode : Node | null 
+    selectedTerm : Term | null
     termIndex : number
-    allTerms : term[]
+    allTerms : Term[]
 
     canOpenInput : boolean
     diff : number
@@ -326,17 +326,32 @@ export function integerPlatfromAPI(setup, game) {
       //set wheel attributes
       gsap.set(setup.backWheel, {transformOrigin:"50% 50%"})
       gsap.set(setup.frontWheel, {transformOrigin:"50% 50%"})
-      self.wheelCircumference = 2*Math.PI*((setup.backWheel as HTMLElement).getBoundingClientRect().width / 2) //TO DO FIX SPEED
+      self.wheelCircumference = 2*Math.PI*(setup.backWheel.getBBox().width / 2) //TO DO FIX SPEED
+      //self.wheelCircumference = 2*Math.PI*((setup.backWheel as HTMLElement).getBoundingClientRect().width / 2) //TO DO FIX SPEED
+
+
+      //TRY  gsap.getProperty(yourObject,"x") !!!!!!!!!!!!!!!!!!!!!!!!!
 
       //move cart to center
+      // this.tl.to(setup.cart, {duration : 1})
+      // this.tl.to(setup.cart, {x : 147, duration : 2, ease: "linear", 
+      //   onUpdate : function() {
+      //     const xVal = Math.round(gsap.getProperty(this.targets()[0], "x"));
+      //     gsap.set(setup.backWheel, {rotation : xVal/self.wheelCircumference*360})
+      //     gsap.set(setup.frontWheel, {rotation : xVal/self.wheelCircumference*360})
+      //   }})
+      //   this.tl.to(setup.cart, {duration : 0.1})
+      
       this.tl.to(setup.cart, {duration : 1})
-      this.tl.to(setup.cart, {x : 147, duration : 2, ease: "linear", 
-        onUpdate : function() {
-          const xVal = Math.round(gsap.getProperty(this.targets()[0], "x"));
-          gsap.set(setup.backWheel, {rotation : xVal/self.wheelCircumference*360})
-          gsap.set(setup.frontWheel, {rotation : xVal/self.wheelCircumference*360})
-        }})
-        this.tl.to(setup.cart, {duration : 0.1})
+      this.tl.to(setup.cart, {x : 640, duration : 2, ease: "linear"})
+      this.tl.to([setup.backWheel, setup.frontWheel], {rotation : 640 / self.wheelCircumference * 360, duration : 2, ease: "linear"}, "<")  //458
+      //, onComplete : function() {
+      //   console.log("wheel 1 " + (setup.backWheel as HTMLElement).getBoundingClientRect().x) // = 15
+      // }, onStart : function() {
+      //   console.log("wheel 2 " + (setup.backWheel as HTMLElement).getBoundingClientRect().x) = 473
+      // }
+        
+      this.tl.to(setup.cart, {duration : 0.1})
       
 
       //update platform position
