@@ -1,0 +1,89 @@
+body {
+    display : grid;
+    grid-gap : 10px;
+    grid-template-columns: 0px 0px 0px 0px;
+}
+
+.main {
+    height : 100vh;
+    width : auto
+}
+
+.app {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-rows: 20px 1fr 20px;
+    overflow-y : hidden; 
+
+    border-color : #c0f4ffff;
+    border-width : 10px;
+    border-style : solid;
+    border-radius: 80px;
+    background: #c0f4ffff;
+
+    height : 50vh;
+    width : 20vh 
+
+}
+
+.num {
+    grid-row: 1 / -1;
+    list-style: none;
+    padding: 0;
+
+    display: grid;
+    grid-gap: 10px;
+    
+    grid-template-rows: 10px repeat(var(--total), var(--boxSize)) 10px;
+    
+    overflow-y : scroll; 
+
+    scroll-snap-type: y proximity;
+    padding-bottom: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.equation {
+    display: grid;
+    grid-gap: 10px 0px;
+    grid-template-columns: 20px 1fr 20px;
+
+    overflow-x : hidden;
+    border-color : #c0f4ffff;
+    border-style : solid;
+    border-radius: 80px;
+    background: #c0f4ffff;
+
+     height : 10vh;
+    /*width : 58vh */
+}
+
+  
+/*horizontal scroll input terms*/
+.term {
+    grid-column: 1 / -1;
+    list-style: none;
+    padding: 0;
+
+    display: grid;
+    grid-gap: 0px 10px;
+    
+    grid-template-columns: 10px repeat(var(--total), var(--boxSize)) 10px;
+    
+    overflow-x : scroll; 
+
+    scroll-snap-type: x proximity;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+::-webkit-scrollbar {
+    width : 0;
+    background : transparent;
+}
+
+.hs:before,
+.hs:after {
+    content: '';
+}  

@@ -12,22 +12,22 @@ import { IntegerPlatfromClass} from "./integer-platform2";
   styleUrls: ['./ip2.css']
 })
 export class IntegerPlatformComponent implements AfterViewInit {
-  // @ViewChild("numbers") public numbers?: ElementRef<SVGSVGElement>;
-  // @ViewChild("plus") public plusBtn?: ElementRef<SVGSVGElement>;
-  // @ViewChild("minus") public minusBtn?: ElementRef<SVGSVGElement>;
-   @ViewChild("platform") public platform?: ElementRef<SVGSVGElement>;
+  @ViewChild("numbers") public numbers?: ElementRef<SVGSVGElement>;
+  @ViewChild("plus") public plusBtn?: ElementRef<SVGSVGElement>;
+  @ViewChild("minus") public minusBtn?: ElementRef<SVGSVGElement>;
+  @ViewChild("platform") public platform?: ElementRef<SVGSVGElement>;
   // @ViewChild("spring") public spring?: ElementRef<SVGSVGElement>;
   // @ViewChild("balloon") public balloon?: ElementRef<SVGSVGElement>;
   // @ViewChild("sandbag") public sandbag?: ElementRef<SVGSVGElement>;
-  // @ViewChild("cart") public cart?: ElementRef<SVGSVGElement>;
-  // @ViewChild("backWheel") public backWheel?: ElementRef<SVGSVGElement>;
-  // @ViewChild("frontWheel") public frontWheel?: ElementRef<SVGSVGElement>;
-  // @ViewChild("inputNums") public inputNums?: ElementRef<HTMLElement>;
-  // @ViewChild("inputBtns") public inputBtns?: ElementRef<HTMLElement>;
+  @ViewChild("cart") public cart?: ElementRef<SVGSVGElement>;
+  @ViewChild("backwheel") public backWheel?: ElementRef<SVGSVGElement>;
+  @ViewChild("frontwheel") public frontWheel?: ElementRef<SVGSVGElement>;
+  @ViewChild("inputNums") public inputNums?: ElementRef<HTMLElement>;
+  @ViewChild("inputBtns") public inputBtns?: ElementRef<HTMLElement>;
   // @ViewChild("playBtn") public playBtn?: ElementRef<SVGSVGElement>;
-  // @ViewChild("cover") public cover?: ElementRef<SVGSVGElement>;
-  // @ViewChild("equation") public equation?: ElementRef<HTMLElement>;
-  // @ViewChild("terms") public terms?: ElementRef<HTMLElement>;
+  @ViewChild("cover") public cover?: ElementRef<SVGSVGElement>;
+  @ViewChild("equation") public equation?: ElementRef<HTMLElement>;
+  @ViewChild("terms") public terms?: ElementRef<HTMLElement>;
   // @ViewChild("addTerm") public addTerm?: ElementRef<HTMLElement>;
 
   
@@ -69,14 +69,14 @@ export class IntegerPlatformComponent implements AfterViewInit {
       terms : this.terms.nativeElement,
       addTerm : this.addTerm.nativeElement,
     } //as InputSetup
-
+    */
     const game = {
       startBalloons : 2,
       startSandbags : 3,
       leftHeight : 0,
       rightHeight : 0
     }
-    */
+    
 
     //const interactive = new HorizontalScrollClass(setup, game)
     //const interactive = integerPlatfromAPI(setup, game)
@@ -84,10 +84,21 @@ export class IntegerPlatformComponent implements AfterViewInit {
     const setup = {
       arena : this.arena.nativeElement, 
       platform : this.platform.nativeElement,
-      controls : this.controls.nativeElement
+      controls : this.controls.nativeElement,
+      inputNums : this.inputNums.nativeElement,
+      inputBtns : this.inputBtns.nativeElement,
+      equation : this.equation.nativeElement,
+      terms : this.terms.nativeElement,
+      numbers : this.numbers.nativeElement,
+      plusBtn : this.plusBtn.nativeElement, 
+      minusBtn : this.minusBtn.nativeElement, 
+      cover : this.cover.nativeElement, 
+      cart : this.cart.nativeElement, 
+      backWheel : this.backWheel.nativeElement,
+      frontWheel : this.frontWheel.nativeElement,
     }
 
-    const interactive = new IntegerPlatfromClass(setup)
+    const interactive = new IntegerPlatfromClass(setup, game)
   }
 
 }
