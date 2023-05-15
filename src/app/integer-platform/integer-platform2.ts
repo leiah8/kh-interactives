@@ -25,8 +25,8 @@ interface Term { // extends HTMLElement (TO DO)
 export interface Game {
   startBalloons : number;
   startSandbags : number;
-  leftHeight : number;
-  rightHeight : number;
+  goal : number;
+
 }
 
 export class IntegerPlatfromClass {
@@ -171,11 +171,7 @@ export class IntegerPlatfromClass {
         gsap.set(playBtn, {x : 10, y : 10})
 
         playBtn.onpointerdown = function(e) {
-            //TO DO
-            if(!self.canOpenInput) {
-              return
-            }
-            else {
+            if(self.canOpenInput) {
               self.playAnimation(spring)
             }
         }
@@ -187,8 +183,10 @@ export class IntegerPlatfromClass {
         gsap.set(retryBtn, {x : 10, y : 100})
 
         retryBtn.onpointerdown = function() {
-          self.resetGame(spring)
-          self.setupAnimation(spring)
+          if (self.canOpenInput) {
+            self.resetGame(spring)
+            self.setupAnimation(spring)
+          }
         }
 
         //add button
@@ -208,6 +206,10 @@ export class IntegerPlatfromClass {
               self.addNewTerm()
             }
           }
+
+        gsap.set(self.backWheel, {transformOrigin:"50% 50%"})
+        gsap.set(self.frontWheel, {transformOrigin:"50% 50%"})
+        self.wheelCircumference = 2*Math.PI*(self.backWheel.getBBox().width / 2) 
     
 
         //set up other stuff
@@ -230,6 +232,7 @@ export class IntegerPlatfromClass {
 
     resetGame(spring) {
       var self = this
+      self.canOpenInput = false;
       //reset sum
       self.sum = 0
       self.updatePlatformPos(spring)
@@ -336,6 +339,12 @@ export class IntegerPlatfromClass {
     }
     catch {
 
+    }
+    if(self.sum == self.game.goal) {
+      //cart rolls off 
+      self.tl.to(self.cart, {x : 1400, duration : 2, ease : "linear"})
+      self.tl.to([self.backWheel, self.frontWheel], {rotation : 1400 / self.wheelCircumference * 360, duration : 2, ease: "linear"}, "<")  //458
+        
     }
     }
 
@@ -644,10 +653,7 @@ export class IntegerPlatfromClass {
       setupAnimation(spring) {
         var self = this
         //set wheel attributes
-        gsap.set(self.backWheel, {transformOrigin:"50% 50%"})
-        gsap.set(self.frontWheel, {transformOrigin:"50% 50%"})
         gsap.set([self.backWheel, self.frontWheel], {rotation : 0})
-        self.wheelCircumference = 2*Math.PI*(self.backWheel.getBBox().width / 2) 
         
         this.tl.to(self.cart, {duration : 1})
         this.tl.to(self.cart, {x : 550, duration : 2, ease: "linear"})
