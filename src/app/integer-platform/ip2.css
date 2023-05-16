@@ -9,6 +9,7 @@ body {
     width : auto
 }
 
+/* vertical scroll */
 .app {
     display: grid;
     grid-gap: 10px;
@@ -22,10 +23,11 @@ body {
     background: #c0f4ffff;
 
     height : 50vh;
-    width : 20vh 
+    width : 15vh 
 
 }
 
+/*vertical scroll numbers*/
 .num {
     grid-row: 1 / -1;
     list-style: none;
@@ -44,39 +46,48 @@ body {
     margin-bottom: 0px;
 }
 
-.equation {
-    display: grid;
-    grid-gap: 10px 0px;
-    grid-template-columns: 20px 1fr 20px;
 
+
+.equation {
+    overflow-y : hidden;
     overflow-x : hidden;
+
+    border-width : 10px;
     border-color : #c0f4ffff;
     border-style : solid;
     border-radius: 80px;
     background: #c0f4ffff;
 
-     height : 10vh;
-    /*width : 58vh */
+
+    height : 10vh;
+    
+    padding : 0;
+    margin : 0
 }
 
   
-/*horizontal scroll input terms*/
+
 .term {
     grid-column: 1 / -1;
     list-style: none;
     padding: 0;
 
+    /* justify-content: center; */
+
     display: grid;
     grid-gap: 0px 10px;
-    
+
+    grid-template-rows: 10vh;
     grid-template-columns: 10px repeat(var(--total), var(--boxSize)) 10px;
     
     overflow-x : scroll; 
-
+    overflow-y: hidden;
     scroll-snap-type: x proximity;
-    padding-bottom: 0px;
-    margin-bottom: 0px;
+    
+    margin : 0; 
+    /* margin-bottom : -2% */
 }
+
 
 ::-webkit-scrollbar {
     width : 0;

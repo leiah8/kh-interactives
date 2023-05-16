@@ -71,10 +71,10 @@ body {
     background : transparent;
 }
 
-.hs:before,
+ .hs:before,
 .hs:after {
     content: '';
-}  
+}   
 
 /*horizontal scroll equation*/
 .equation {
@@ -106,17 +106,21 @@ body {
     list-style: none;
     padding: 0;
 
+    /* align-content:center; */ 
+    /* justify-content: center; */
+
     display: grid;
     grid-gap: 0px 10px;
     
     grid-template-columns: 10px repeat(var(--total), var(--boxSize)) 10px;
-    /* grid-template-rows: minmax(50px, 1fr); */
+    grid-template-rows: 1fr;
     
     overflow-x : scroll; 
 
     scroll-snap-type: x proximity;
     padding-bottom: 0px;
     margin-bottom: 0px;
+    margin : 0px;
 }
 
 
