@@ -33,6 +33,8 @@ export class IntegerPlatformComponent implements AfterViewInit {
   
   @ViewChild("arena") public arena?: ElementRef<HTMLElement>;
   @ViewChild("controls") public controls?: ElementRef<HTMLElement>;
+  @ViewChild("plusTxt") public plusTxt?: ElementRef<SVGSVGElement>;
+  @ViewChild("minusTxt") public minusTxt?: ElementRef<SVGSVGElement>;
 
   constructor() {}
 
@@ -70,10 +72,19 @@ export class IntegerPlatformComponent implements AfterViewInit {
       addTerm : this.addTerm.nativeElement,
     } //as InputSetup
     */
-    const game = {
+    
+    const game1 = {
       startBalloons : 2,
       startSandbags : 3,
-      goal : 0
+      goal : 0,
+      start : 0,
+    }
+
+    const game2 = {
+      startBalloons : 2,
+      startSandbags : 0,
+      goal : -5,
+      start : 0,
     }
     
 
@@ -95,9 +106,11 @@ export class IntegerPlatformComponent implements AfterViewInit {
       cart : this.cart.nativeElement, 
       backWheel : this.backWheel.nativeElement,
       frontWheel : this.frontWheel.nativeElement,
+      plusTxt : this.plusTxt.nativeElement,
+      minusTxt : this.minusTxt.nativeElement,
     }
 
-    const interactive = new IntegerPlatfromClass(setup, game)
+    const interactive = new IntegerPlatfromClass(setup, [game1, game2])
   }
 
 }
