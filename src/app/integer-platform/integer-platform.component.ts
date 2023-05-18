@@ -86,6 +86,13 @@ export class IntegerPlatformComponent implements AfterViewInit {
       goal : -5,
       start : 0,
     }
+
+    const game3 = {
+      startBalloons : 1,
+      startSandbags : 1,
+      goal : 2,
+      start : 0,
+    }
     
 
     //const interactive = new HorizontalScrollClass(setup, game)
@@ -110,7 +117,7 @@ export class IntegerPlatformComponent implements AfterViewInit {
       minusTxt : this.minusTxt.nativeElement,
     }
 
-    const interactive = new IntegerPlatfromClass(setup, [game1, game2])
+    const interactive = new IntegerPlatfromClass(setup, [game1, game2, game3])
   }
 
 }

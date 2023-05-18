@@ -6,7 +6,7 @@ import { IntegerPlatformComponent } from './integer-platform/integer-platform.co
 
 const routes: Routes = [
   { path: 'scrollbar', component: ContainerComponent },
-  { path: 'integer-platform', component: IntegerPlatformComponent },
+  { path: 'minecart', component: IntegerPlatformComponent },
 ]
 
 @NgModule({
