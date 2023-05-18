@@ -1,6 +1,8 @@
 import { Component, AfterViewInit, ViewChild, Input, ElementRef } from '@angular/core';
 //import { InputSetup, integerPlatfromAPI} from "./integer-platform";
 import { IntegerPlatfromClass} from "./integer-platform2";
+import {ActivatedRoute} from "@angular/router";
+
 
 
 @Component({
@@ -36,7 +38,17 @@ export class IntegerPlatformComponent implements AfterViewInit {
   @ViewChild("plusTxt") public plusTxt?: ElementRef<SVGSVGElement>;
   @ViewChild("minusTxt") public minusTxt?: ElementRef<SVGSVGElement>;
 
-  constructor() {}
+  addRemove : boolean;
+  useImgs : boolean;
+
+  constructor(private route: ActivatedRoute) {
+    var self = this
+    var p;
+    this.route.params.subscribe( params => p = params);
+
+    self.addRemove = (p.addRemove == "addRemove") ? true : false
+    self.useImgs = (p.useImgs == "imgs") ? true : false
+  }
 
   ngAfterViewInit(): void {
 
@@ -115,6 +127,9 @@ export class IntegerPlatformComponent implements AfterViewInit {
       frontWheel : this.frontWheel.nativeElement,
       plusTxt : this.plusTxt.nativeElement,
       minusTxt : this.minusTxt.nativeElement,
+
+      addRemove : this.addRemove,
+      useImgs : this.useImgs,
     }
 
     const interactive = new IntegerPlatfromClass(setup, [game1, game2, game3])
