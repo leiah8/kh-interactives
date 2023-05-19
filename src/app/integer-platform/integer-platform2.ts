@@ -87,6 +87,7 @@ export class IntegerPlatfromClass {
     finished : boolean;
     canPlay : boolean;
     canReset : boolean;
+    cartOnPlatform : boolean;
 
     addRemove : boolean;
     useImgs : boolean;
@@ -135,6 +136,7 @@ export class IntegerPlatfromClass {
         this.finished = false
         this.canPlay = false
         this.canReset = false
+        this.cartOnPlatform = false;
         this.termIndex = -1
         
         this.balloons = []
@@ -332,19 +334,17 @@ export class IntegerPlatfromClass {
 
     resetGame() {
       var self = this
-      this.finished = false
+      this.finished = false;
+      this.cartOnPlatform = false;
       this.canEdit = false;
       this.canPlay = false;
       this.canReset = false;
       
-      try {
-        self.arena.removeChild(self.cart)
-      } catch {}
-      self.platform.appendChild(self.cart)
-
       this.sum = 0
       this.tl.clear()
       this.updatePlatformPos()
+
+      gsap.set(self.cart, {x : -200, y : 300 + self.game.start*50})
 
       //reset balloons and sandbags 
       self.balloons.forEach(el => {
@@ -358,7 +358,7 @@ export class IntegerPlatfromClass {
       self.sandbags = []
 
       //reset cart  (to outside of screen TO DO)
-      gsap.set(self.cart, {x : -200})
+      gsap.set(self.cart, {x : -200, y : 300 + self.game.start*50})
       gsap.set([self.backWheel, self.frontWheel], {rotation : 0})
 
       //reset terms 
@@ -463,13 +463,21 @@ export class IntegerPlatfromClass {
           self.tl.to(term, {background : "white", color : "black", duration : 0.3})
         });
 
+        self.tl.to(self.cart, {duration : 0, onComplete : function() {
+          self.dragEl[0].enable()
+        }})
+
         //feedback animation
         if(self.sum == self.game.goal) {
           //cart rolls off 
-          self.tl.to(self.cart, {x : 1400, duration : 2, ease : "linear", onStart : function() {
-            //self.platform.removeChild(self.cart)
-            //self.arena.appendChild(self.cart)
-          }})
+          self.tl.to(self.cart, {x : 1400, duration : 2, ease : "linear", 
+          onUpdate : function() { 
+            var cartX = gsap.getProperty(self.cart, "x")
+            if(cartX >= 830 -74) 
+              self.cartOnPlatform = false
+            
+          }
+          })
           self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (1400 - self.cartXPos) / self.wheelCircumference * 360, duration : 2, ease: "linear"}, "<")  //458
         }
         else if (self.sum < 0) { //(self.sum < self.game.goal) {
@@ -480,18 +488,20 @@ export class IntegerPlatfromClass {
           self.tl.to([self.backWheel, self.frontWheel], {rotation : "-=" + ((830 - 148 - self.cartXPos) / self.wheelCircumference * 360), duration : 1, ease: Power1.easeOut}, "<")
         }
         else {
-          self.tl.to(self.platform, {transformOrigin : "center", duration : 0})
-          self.tl.to(self.platform,0.3,{rotation:5})
+          //wiggle platform
+          self.tl.to([self.platform, self.cart], {transformOrigin : "center", duration : 0})
+          self.tl.to([self.platform, self.cart],0.3,{rotation:5})
           self.tl.to(self.spring,0.3,{skewY:3}, "<")
-          self.tl.to(self.platform,3,{rotation:0,ease:Elastic.easeOut.config(0.9,0.1)});
+          self.tl.to([self.platform, self.cart],3,{rotation:0,ease:Elastic.easeOut.config(0.9,0.1)});
           self.tl.to(self.spring,3,{skewY:0, ease:Elastic.easeOut.config(0.9,0.1)}, "<");
+          self.tl.to([self.platform, self.cart], {transformOrigin : "top left", duration : 0})
         }
       } catch {}
       self.tl.to(self.platform, {duration : 0, onComplete : function() {
         self.canEdit = false;
         self.canReset = true;
         self.finished = true;
-        self.dragEl[0].enable()
+        //self.dragEl[0].enable()
       }})
     }
 
@@ -824,12 +834,20 @@ export class IntegerPlatfromClass {
         this.dragEl = Draggable.create(self.platform, {type : "y", 
           onDrag : function() { 
             gsap.set(self.spring, {scaleY : self.getScaleVal(this.y)})
+            if (self.cartOnPlatform) { 
+              const yVal = Math.round(gsap.getProperty(self.platform, "y"));
+              gsap.set(self.cart, {y : 300 + yVal})
+           }
+
           }, 
           onDragEnd : function () {
             gsap.to(self.platform, {y : self.pos, ease : "elastic", duration : 1, 
                 onUpdate : function() {
                 const yVal = Math.round(gsap.getProperty(this.targets()[0], "y"));
                 gsap.set(self.spring, {scaleY : self.getScaleVal(yVal) })
+                if (self.cartOnPlatform) { 
+                  gsap.set(self.cart, {y : 300 + yVal})
+                }
               }  
               
             }) 
@@ -853,14 +871,23 @@ export class IntegerPlatfromClass {
           onUpdate : function() {
             const yVal = Math.round(gsap.getProperty(this.targets()[0], "y"));
             gsap.set(self.spring, {scaleY : self.getScaleVal(yVal) })
+            if (self.cartOnPlatform) { 
+               gsap.set(self.cart, {y : 300 + yVal})
+            }
           }
         })
+      }
+
+      checkCart(cartX, boundary) {
+        //var cartX = gsap.getProperty(self.cart, "x")
+        if(cartX >= boundary)
+          this.cartOnPlatform = true
       }
 
       setupAnimation() {
         var self = this
 
-        this.dragEl[0].disable()
+        //this.dragEl[0].disable()
 
         self.onResize(self.addBtn)
 
@@ -869,7 +896,13 @@ export class IntegerPlatfromClass {
 
         //set wheel attributes
         gsap.set([self.backWheel, self.frontWheel], {rotation : 0})
-        this.tl.to(self.cart, {x : self.cartXPos, duration : 2, ease: "linear"})
+        this.tl.to(self.cart, {x : self.cartXPos, duration : 2, ease: "linear",
+          
+          onUpdate : function() { 
+            var cartX = gsap.getProperty(self.cart, "x")
+            if(cartX >= 450 - 74)
+              self.cartOnPlatform = true
+          }})
         this.tl.to([self.backWheel, self.frontWheel], {rotation : (self.cartXPos + 200) / self.wheelCircumference * 360, duration : 2, ease: "linear"}, "<")  //458
           
         this.tl.to(self.cart, {duration : 0.1})
@@ -904,6 +937,9 @@ export class IntegerPlatfromClass {
         this.tl.to(self.sandbags, {visibility : "visible", duration : 0})
 
         this.tl.to(self.balloons, {y : self.ITEM_START_Y, 
+          onStart : function() {
+            self.dragEl[0].disable()
+          },
           onComplete : function() {
             self.sum += self.game.startBalloons
             self.updatePlatformPos()
