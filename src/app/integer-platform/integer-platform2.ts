@@ -3,10 +3,26 @@ import { CustomEase } from "gsap/CustomEase.js";
 import {svgns} from "../api"
 
 //TO DO 
-interface InputSetup {
-    arena : SVGSVGElement,
-    platform : SVGSVGElement,
-    controls : SVGSVGElement,
+export interface InputSetup {
+  arena : HTMLElement,
+  platform : SVGSVGElement,
+  controls : HTMLElement,
+  inputNums : HTMLElement, 
+  inputBtns : HTMLElement, 
+  equation : HTMLElement, 
+  terms : HTMLElement, 
+  numbers : SVGSVGElement, 
+  plusBtn : SVGSVGElement,
+  minusBtn : SVGSVGElement,
+  cover : SVGSVGElement,
+  cart : SVGSVGElement,
+  backWheel : SVGSVGElement,
+  frontWheel : SVGSVGElement,
+  plusTxt : SVGSVGElement,
+  minusTxt : SVGSVGElement,
+
+  addRemove : boolean,
+  useImgs : boolean,
 }
 
 interface Node extends HTMLElement{
@@ -27,6 +43,7 @@ export interface Game {
   startSandbags : number;
   goal : number;
   start : number;
+  attempts : number;
 }
 
 export class IntegerPlatfromClass {
@@ -47,6 +64,9 @@ export class IntegerPlatfromClass {
     addBtn : SVGUseElement;
     minusBtn : HTMLElement;
     terms : HTMLElement;
+    nextBtn : SVGUseElement;
+    retryBtn : SVGUseElement;
+    playBtn : SVGUseElement;
 
     dragEl : any;
     spring : SVGUseElement; 
@@ -156,6 +176,16 @@ export class IntegerPlatfromClass {
     setLevels() {
       var self = this
 
+      //next btn
+      gsap.set(self.retryBtn, {scale: 0})
+      if (self.game.attempts > 2) {
+        self.tl.to(self.nextBtn,{duration: 1,scale: 1,ease: "elastic"})
+        //self.tl.to(self.retryBtn, {duration: 1,scale: 1,ease: "elastic"}, "<")
+      }
+      else {
+        gsap.set(self.nextBtn,{scale: 0})
+        //self.tl.to(self.retryBtn, {duration: 1,scale: 1,ease: "elastic"}, "<")
+      }
 
       //ground
       gsap.set(self.left, {y : 400 + -self.game.start*50})
@@ -175,6 +205,14 @@ export class IntegerPlatfromClass {
         bridge.setAttribute("href","#bridge")
         gsap.set(bridge, {x : 830, y : 400 + -self.game.goal*50})
         this.levelEls.push(bridge)
+
+        for (var i = 1; i < self.game.goal; i++) {
+          var extension = document.createElementNS(svgns, "use")
+          this.arena.appendChild(extension)
+          extension.setAttribute("href","#bridge-extension")
+          gsap.set(extension, {x : 830, y : 400 + -self.game.goal*50 + i*50})
+          this.levelEls.push(extension)
+        }
       }
 
       gsap.set(self.surface, {x : 450, y : 400 - self.game.start*50})
@@ -220,13 +258,16 @@ export class IntegerPlatfromClass {
         var playBtn = document.createElementNS(svgns,"use")
         this.controls.appendChild(playBtn)
         playBtn.setAttribute("href","#playBtn")
-        gsap.set(playBtn, {x : 10, y : 10})
+        gsap.set(playBtn, {x : 10, y : 10, transformOrigin : "center"})
+        this.playBtn = playBtn
 
         playBtn.onpointerdown = function(e) {
             if(self.canPlay) {
               self.canEdit = false
               self.canReset = false
               self.canPlay = false
+              self.tl.to(self.playBtn, {duration : 0.2, scale : 0})
+              self.closeInput()
               self.playAnimation()
             }
         }
@@ -235,7 +276,8 @@ export class IntegerPlatfromClass {
         var retryBtn = document.createElementNS(svgns,"use")
         this.controls.appendChild(retryBtn)
         retryBtn.setAttribute("href","#retryBtn")
-        gsap.set(retryBtn, {x : 10, y : 100})
+        gsap.set(retryBtn, {x : 10, y : 10, transformOrigin : "center", scale : 0})
+        this.retryBtn = retryBtn
 
         retryBtn.onpointerdown = function() {
           if(self.canReset) {
@@ -270,7 +312,8 @@ export class IntegerPlatfromClass {
         var nextBtn = document.createElementNS(svgns,"use")
         this.controls.appendChild(nextBtn)
         nextBtn.setAttribute("href","#nextBtn")
-        gsap.set(nextBtn, {x : 1200, y : 10})
+        gsap.set(nextBtn, {x : 1180, y : 10})
+        this.nextBtn = nextBtn
 
         nextBtn.onpointerdown = function(e) {
           self.nextGame()
@@ -339,6 +382,9 @@ export class IntegerPlatfromClass {
       this.canEdit = false;
       this.canPlay = false;
       this.canReset = false;
+
+      gsap.set(self.retryBtn, {scale: 0})
+      gsap.set(self.playBtn, {scale : 1})
       
       this.sum = 0
       this.tl.clear()
@@ -370,6 +416,7 @@ export class IntegerPlatfromClass {
     
     playAnimation() {
       var self = this
+      this.game.attempts += 1
       this.dragEl[0].disable()
       
       try {
@@ -463,24 +510,17 @@ export class IntegerPlatfromClass {
           self.tl.to(term, {background : "white", color : "black", duration : 0.3})
         });
 
-        self.tl.to(self.cart, {duration : 0, onComplete : function() {
-          self.dragEl[0].enable()
-        }})
-
         //feedback animation
         if(self.sum == self.game.goal) {
+          self.game.attempts = 3
           //cart rolls off 
           self.tl.to(self.cart, {x : 1400, duration : 2, ease : "linear", 
-          onUpdate : function() { 
-            var cartX = gsap.getProperty(self.cart, "x")
-            if(cartX >= 830 -74) 
-              self.cartOnPlatform = false
-            
-          }
-          })
+          onComplete : function() {
+            self.cartOnPlatform = false
+          }})
           self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (1400 - self.cartXPos) / self.wheelCircumference * 360, duration : 2, ease: "linear"}, "<")  //458
         }
-        else if (self.sum < 0) { //(self.sum < self.game.goal) {
+        else if (self.sum < 0 || self.sum < self.game.goal) { //(self.sum < self.game.goal) {
           //hit the ground TO DO fix wheels
           self.tl.to(self.cart, {x : 830 - 148 /*cart width*/, ease: Power1.easeIn, duration : 0.75})
           self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + ((830 - 148 - self.cartXPos) / self.wheelCircumference * 360), duration : 0.75, ease: Power1.easeIn}, "<")
@@ -501,13 +541,27 @@ export class IntegerPlatfromClass {
         self.canEdit = false;
         self.canReset = true;
         self.finished = true;
-        //self.dragEl[0].enable()
+        //next btn
+        if (self.game.attempts > 2) {
+          self.tl.to(self.nextBtn,{duration: 1,scale: 1,ease: "elastic"})
+          gsap.set(self.retryBtn, {x : 10, y : 10, scale : 0, rotation : 0})
+          self.tl.to(self.retryBtn, {duration: 1,scale: 1,ease: "elastic"}, "<")
+        }
+        else {
+          self.tl.to(self.nextBtn,{duration: 0,scale: 0})
+          //add in rotating retry button
+          self.tl.to(self.retryBtn, {duration : 0, scale : 0, x : 605, y : 300, transformOrigin : "center"})
+          self.tl.to(self.retryBtn, {duration: 1, scale: 3}) 
+          self.tl.to(self.retryBtn, {repeat : -1, duration : 4, rotation : 360, ease: "bounce"}) 
+          //self.tl.to(self.retryBtn, {duration: 1,scale: 1,ease: "elastic"}, "<") 
+        }
+        self.dragEl[0].enable()
       }})
     }
 
     openInput() {
         var self = this
-        this.canPlay = false
+        //this.canPlay = false
         this.canReset = false
         this.setPlusBtn()
         gsap.set(self.cover, {visibility : "visible"})
@@ -825,6 +879,14 @@ export class IntegerPlatfromClass {
         }); 
       } 
 
+      onUpdateDrag(self) {
+        const yVal = Math.round(gsap.getProperty(self.platform, "y"));
+        gsap.set(self.spring, {scaleY : self.getScaleVal(yVal)})
+        if (self.cartOnPlatform) {  //self.cartOnPlatform
+          gsap.set(self.cart, {y : 300 + yVal})
+        }
+      }
+
       setupDraggablePlatform() {
         var self = this
         //MOVE SPRING AND PLATFORM
@@ -832,27 +894,12 @@ export class IntegerPlatfromClass {
         gsap.registerPlugin(Draggable);
         
         this.dragEl = Draggable.create(self.platform, {type : "y", 
-          onDrag : function() { 
-            gsap.set(self.spring, {scaleY : self.getScaleVal(this.y)})
-            if (self.cartOnPlatform) { 
-              const yVal = Math.round(gsap.getProperty(self.platform, "y"));
-              gsap.set(self.cart, {y : 300 + yVal})
-           }
-
-          }, 
+          onDrag : self.onUpdateDrag, onDragParams : [self],  
           onDragEnd : function () {
             gsap.to(self.platform, {y : self.pos, ease : "elastic", duration : 1, 
-                onUpdate : function() {
-                const yVal = Math.round(gsap.getProperty(this.targets()[0], "y"));
-                gsap.set(self.spring, {scaleY : self.getScaleVal(yVal) })
-                if (self.cartOnPlatform) { 
-                  gsap.set(self.cart, {y : 300 + yVal})
-                }
-              }  
-              
-            }) 
+                onUpdate : self.onUpdateDrag, onUpdateParams : [self] }) 
           }
-          }) 
+        }) 
   
       }
 
@@ -887,7 +934,7 @@ export class IntegerPlatfromClass {
       setupAnimation() {
         var self = this
 
-        //this.dragEl[0].disable()
+        this.dragEl[0].disable()
 
         self.onResize(self.addBtn)
 
@@ -896,13 +943,10 @@ export class IntegerPlatfromClass {
 
         //set wheel attributes
         gsap.set([self.backWheel, self.frontWheel], {rotation : 0})
-        this.tl.to(self.cart, {x : self.cartXPos, duration : 2, ease: "linear",
-          
-          onUpdate : function() { 
-            var cartX = gsap.getProperty(self.cart, "x")
-            if(cartX >= 450 - 74)
-              self.cartOnPlatform = true
-          }})
+        this.tl.to(self.cart, {x : self.cartXPos, duration : 2, ease: "linear", 
+        onComplete : function() {
+          self.cartOnPlatform = true;
+        }})
         this.tl.to([self.backWheel, self.frontWheel], {rotation : (self.cartXPos + 200) / self.wheelCircumference * 360, duration : 2, ease: "linear"}, "<")  //458
           
         this.tl.to(self.cart, {duration : 0.1})
@@ -937,9 +981,7 @@ export class IntegerPlatfromClass {
         this.tl.to(self.sandbags, {visibility : "visible", duration : 0})
 
         this.tl.to(self.balloons, {y : self.ITEM_START_Y, 
-          onStart : function() {
-            self.dragEl[0].disable()
-          },
+          
           onComplete : function() {
             self.sum += self.game.startBalloons
             self.updatePlatformPos()

@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, ViewChild, Input, ElementRef } from '@angular/core';
 //import { InputSetup, integerPlatfromAPI} from "./integer-platform";
-import { IntegerPlatfromClass} from "./integer-platform2";
+import { Game, InputSetup, IntegerPlatfromClass} from "./integer-platform2";
 import {ActivatedRoute} from "@angular/router";
 
 
@@ -51,45 +51,13 @@ export class IntegerPlatformComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-
-    /*
-    const setup = {
-      lineMin : -5,
-      lineMax : 5,
-      rangeNum : 5,
-
-      balloonURL : "https://res.cloudinary.com/dxltpgop9/image/upload/v1683303439/integer-platform-balloon_wmfqfh.svg",
-      bagURL : "https://res.cloudinary.com/dxltpgop9/image/upload/v1683303439/integer-platform-sandbag_zdtxyg.svg",
-      
-      plusBtn : this.plusBtn.nativeElement, 
-      minusBtn : this.minusBtn.nativeElement, 
-
-      platform : this.platform.nativeElement, 
-      spring : this.spring.nativeElement, 
-      balloon : this.balloon.nativeElement,
-      sandbag : this.sandbag.nativeElement,
-      cart : this.cart.nativeElement,
-      backWheel : this.backWheel.nativeElement,
-      frontWheel : this.frontWheel.nativeElement,
-
-      inputNums : this.inputNums.nativeElement,
-      inputBtns : this.inputBtns.nativeElement,
-
-      playBtn : this.playBtn.nativeElement,
-      cover : this.cover.nativeElement,
-
-      numbers : this.numbers.nativeElement,
-      equation : this.equation.nativeElement,
-      terms : this.terms.nativeElement,
-      addTerm : this.addTerm.nativeElement,
-    } //as InputSetup
-    */
     
     const game1 = {
       startBalloons : 2,
       startSandbags : 3,
       goal : 0,
       start : 0,
+      attempts : 0,
     }
 
     const game2 = {
@@ -97,13 +65,31 @@ export class IntegerPlatformComponent implements AfterViewInit {
       startSandbags : 0,
       goal : -5,
       start : 0,
+      attempts : 0,
     }
 
     const game3 = {
       startBalloons : 1,
-      startSandbags : 1,
+      startSandbags : 2,
       goal : 2,
       start : 0,
+      attempts : 0,
+    }
+
+    const game4 = {
+      startBalloons : 0,
+      startSandbags : 0,
+      goal : 4,
+      start : 0,
+      attempts : 0,
+    }
+
+    const game5 = {
+      startBalloons : 4,
+      startSandbags : 1,
+      goal : -3,
+      start : 0,
+      attempts : 0,
     }
     
 
@@ -130,9 +116,9 @@ export class IntegerPlatformComponent implements AfterViewInit {
 
       addRemove : this.addRemove,
       useImgs : this.useImgs,
-    }
+    } as InputSetup
 
-    const interactive = new IntegerPlatfromClass(setup, [game1, game2, game3])
+    const interactive = new IntegerPlatfromClass(setup, [game1, game2, game3, game4, game5])
   }
 
 }
