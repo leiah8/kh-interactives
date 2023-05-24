@@ -257,7 +257,7 @@ export class IntegerPlatfromClass {
         this.controls.appendChild(playBtn)
         playBtn.setAttribute("href","#playBtn")
         gsap.set(playBtn, {x : 10, y : 10})
-        self.tl.to(playBtn, {transformOrigin : "center", duration : 0})
+        gsap.set(playBtn, {transformOrigin : "35px 35px"})
         this.playBtn = playBtn
 
         playBtn.onpointerdown = function(e) {
@@ -277,7 +277,7 @@ export class IntegerPlatfromClass {
         this.controls.appendChild(retryBtn)
         retryBtn.setAttribute("href","#retryBtn")
         gsap.set(retryBtn, {x : 10, y : 10})
-        self.tl.to(retryBtn, {transformOrigin : "center", duration : 0})
+        gsap.set(retryBtn, {transformOrigin : "35px 35px"})
         this.retryBtn = retryBtn
 
         retryBtn.onpointerdown = function() {
@@ -314,6 +314,7 @@ export class IntegerPlatfromClass {
         this.controls.appendChild(nextBtn)
         nextBtn.setAttribute("href","#nextBtn")
         gsap.set(nextBtn, {x : 1180, y : 10})
+        gsap.set(nextBtn, {transformOrigin : "35px 35px"})
         this.nextBtn = nextBtn
 
         nextBtn.onpointerdown = function(e) {
@@ -506,11 +507,18 @@ export class IntegerPlatfromClass {
         //feedback animation
         if(self.sum == self.game.goal) { //cart rolls off 
           self.game.attempts = 3
-          self.tl.to(self.cart, {x : 1400, duration : 2, ease : "linear", 
-          onComplete : function() {
-            self.cartOnPlatform = false
-          }})
-          self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (1400 - self.cartXPos) / self.wheelCircumference * 360, duration : 2, ease: "linear"}, "<")  //458
+          self.tl.to(self.cart, {x : 830, duration : 0.8, ease : "linear"})
+          self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (830 - self.cartXPos) / self.wheelCircumference * 360, duration : 0.8, ease: "linear", 
+            onComplete : function() {
+              self.cartOnPlatform = false
+              self.sum += 1
+              self.updatePlatformPos()
+              self.tl.to(self.cart, {x : 1400, duration : 1.73, ease : "linear"}, "<")
+              self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (1400 - 830) / self.wheelCircumference * 360, duration : 1.73, ease: "linear"}, "<")  //458
+            }
+          }, "<")
+
+          
         }
         else if (self.sum < 0 || self.sum < self.game.goal) { 
           //hit the ground
@@ -539,15 +547,17 @@ export class IntegerPlatfromClass {
         self.finished = true;
         //next btn
         if (self.game.attempts > 2) {
-          self.tl.to(self.nextBtn,{duration: 1, scale: 1,ease: "elastic"})
+          gsap.set(self.retryBtn, {transformOrigin : "35px 35px"})
           gsap.set(self.retryBtn, {x : 10, y : 10, scale : 0, rotation : 0})
+          self.tl.to(self.nextBtn,{duration: 1, scale: 1, ease: "elastic"})
           self.tl.to(self.retryBtn, {duration: 1, scale: 1, ease: "elastic"}, "<")
         }
         else {
           self.tl.to(self.nextBtn,{duration: 0, scale: 0})
           
           //rotating retry button
-          self.tl.to(self.retryBtn, {duration : 0, scale : 0, x : 605, y : 300, rotation : 0})
+          gsap.set(self.retryBtn, {transformOrigin : "35px 35px"})
+          self.tl.to(self.retryBtn, {duration : 0, scale : 0, x : 610, y : 320, rotation : 0})
           self.tl.to(self.retryBtn, {duration: 1, scale: 3}) 
           self.tl.to(self.retryBtn, {repeat : -1, duration : 4, rotation : 360, ease: "bounce"}) 
         }
