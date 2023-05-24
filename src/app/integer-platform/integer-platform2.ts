@@ -71,6 +71,8 @@ export class IntegerPlatfromClass {
     nextBtn : SVGUseElement;
     retryBtn : SVGUseElement;
     playBtn : SVGUseElement;
+    gem : SVGUseElement;
+    gemPos : number = 1005;
 
     dragEl : any;
     spring : SVGUseElement; 
@@ -222,6 +224,16 @@ export class IntegerPlatfromClass {
       //cart
       gsap.set(self.cart, {x : -200, y : 300 + self.game.start*50})
       this.cartXPos = 640 - 74
+
+      try {this.arena.removeChild(self.gem)} catch {}
+      
+      //gem
+      var gem = document.createElementNS(svgns, "use")
+      this.arena.appendChild(gem)
+      gem.setAttribute("href","#gem")
+      gsap.set(gem, {x : self.gemPos +26, y : 400 + -self.game.goal*50 - 50})
+      //take width away
+      this.gem = gem
     }
 
     setupEls() {
@@ -366,6 +378,7 @@ export class IntegerPlatfromClass {
       this.levelEls.forEach(el => { self.arena.removeChild(el) }) 
       this.levelEls = []
 
+
       this.setLevels()
       this.resetGame()
       this.setupAnimation()
@@ -403,6 +416,10 @@ export class IntegerPlatfromClass {
       //reset terms 
       self.allTerms.forEach(term => { self.terms.removeChild(term) })
       self.allTerms = []
+
+      
+      gsap.set(self.gem, {x : self.gemPos +26, y : 400 + -self.game.goal*50 - 50})
+
     }
     
     playAnimation() {
@@ -443,7 +460,7 @@ export class IntegerPlatfromClass {
                 elements.push(temp)
                 self.sandbags.push(temp)
               }
-              self.tl.to(elements, {y : self.ITEM_START_Y + self.ADDITIONAL_SANDBAG_Y, ease : "sandbagBounce", visibility : "visible"})
+              self.tl.to(elements, {y : self.ITEM_START_Y + self.ADDITIONAL_SANDBAG_Y, ease : "linear", visibility : "visible"})
             }
 
             self.sum += term.val
@@ -504,10 +521,24 @@ export class IntegerPlatfromClass {
               self.cartOnPlatform = false
               self.sum += 1
               self.updatePlatformPos()
-              self.tl.to(self.cart, {x : 1400, duration : 1.73, ease : "linear"}, "<")
-              self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (1400 - 830) / self.wheelCircumference * 360, duration : 1.73, ease: "linear"}, "<")  //458
+              
+              var time = ((self.gemPos - 830) / 264)*0.8
+              self.tl.to(self.cart, {x : self.gemPos, duration : time, ease : "linear"}, "<")
+              self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (self.gemPos - 830) / self.wheelCircumference * 360, duration : time, ease: "linear"}, "<") 
+              
+              time = ((1400 - self.gemPos) / 264)*0.8
+              self.tl.to(self.cart, {x : 1400, duration : time, ease : "linear", 
+                onStart : function() {
+                  //TO DO: put gem in cart
+                  gsap.set(self.gem, {y : "-="+75})
+                }, 
+                onUpdate : self.moveGemWithCart, onUpdateParams : [self]
+              }, ">")
+              self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (1400 - self.gemPos) / self.wheelCircumference * 360, duration : time, ease: "linear"}, "<") 
+              
             }
           }, "<")
+          
         }
 
         //too low -> hit the ground
@@ -556,6 +587,11 @@ export class IntegerPlatfromClass {
         }
         self.dragEl[0].enable()
       }})
+    }
+
+    moveGemWithCart(self) {
+      const xVal = Math.round(gsap.getProperty(self.cart, "x"));
+      gsap.set(self.gem, {x : xVal + 20})
     }
     
 
@@ -707,10 +743,11 @@ export class IntegerPlatfromClass {
         var self = this
         gsap.set(self.plusBtn, {stroke : "#fff"})
         gsap.set(self.minusBtn, {stroke : "#23a3ff"})
-  
-        if(self.selectedTerm != null && this.selectedTerm.val != 0) {
+
+        if(self.selectedTerm != null) {
+          if(this.selectedTerm.val != 0) 
+            self.selectedTerm.txt.textContent = "+"+Math.abs(self.selectedTerm.val).toString()
           self.selectedTerm.positive = true
-          self.selectedTerm.txt.textContent = "+"+Math.abs(self.selectedTerm.val).toString()
         }
         self.positive = true
     }
@@ -719,10 +756,10 @@ export class IntegerPlatfromClass {
         var self = this
         gsap.set(self.minusBtn, {stroke : "#fff"})
         gsap.set(self.plusBtn, {stroke : "#23a3ff"})        
-  
+      
+        self.selectedTerm.positive = false
         if (this.selectedTerm.val != 0) {
           self.selectedTerm.txt.textContent = "-"+Math.abs(self.selectedTerm.val).toString()
-          self.selectedTerm.positive = false
         }
         self.positive = false
     }
@@ -916,7 +953,7 @@ export class IntegerPlatfromClass {
             self.sum += self.game.startBalloons
             self.updatePlatformPos()
             
-            self.tl.to(self.sandbags, {y : self.ITEM_START_Y + self.ADDITIONAL_SANDBAG_Y, ease : "sandbagBounce", 
+            self.tl.to(self.sandbags, {y : self.ITEM_START_Y + self.ADDITIONAL_SANDBAG_Y, ease : "linear", 
               onComplete : function() {
                 self.sum -= self.game.startSandbags
                 self.updatePlatformPos()
