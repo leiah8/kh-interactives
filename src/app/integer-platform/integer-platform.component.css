@@ -1,30 +1,15 @@
 body {
     display : grid;
     grid-gap : 10px;
-    grid-template-columns: 0px 0px 0px 0px 0px 0px;
+    grid-template-columns: 0px 0px 0px 0px;
 }
 
-.mainsvg {
+.main {
     height : 100vh;
-    width : auto;
-}
- 
-/* +/-  buttons */
-.inputsvg {
-    height : 60vh;
-    width : 10vh;
-    max-height : 500px;
-    width : auto;
+    width : auto
 }
 
-/* add term button*/
-.equationsvg {
-    height : 10vh;
-    width : 10vh;
-    
-}
-
-/*vertical scroll input*/
+/* vertical scroll */
 .app {
     display: grid;
     grid-gap: 10px;
@@ -37,16 +22,12 @@ body {
     border-radius: 80px;
     background: #c0f4ffff;
 
-    /* width : 120px;
-    height : 400px */
-    height : 60vh;
-    max-height : 500px;
-    width : 18vh;
-    max-width : 150px
-    
+    height : 50vh;
+    width : 15vh 
+
 }
 
-/* vertical scroll input nodes*/
+/*vertical scroll numbers*/
 .num {
     grid-row: 1 / -1;
     list-style: none;
@@ -56,13 +37,47 @@ body {
     grid-gap: 10px;
     
     grid-template-rows: 10px repeat(var(--total), var(--boxSize)) 10px;
-    /* grid-template-columns: minmax(67px, 1fr); */
     
     overflow-y : scroll; 
 
     scroll-snap-type: y proximity;
     padding-bottom: 0px;
+    margin-top: 0px;
     margin-bottom: 0px;
+}
+
+.equation {
+    overflow-y : hidden;
+    overflow-x : hidden;
+
+    border-width : 10px;
+    border-color : #c0f4ffff;
+    border-style : solid;
+    border-radius: 80px;
+    background: #c0f4ffff;
+
+    height : 10vh;
+    
+    padding : 0;
+    margin : 0
+}
+
+.term {
+    grid-column: 1 / -1;
+    list-style: none;
+    padding: 0;
+
+    display: grid;
+    grid-gap: 0px 10px;
+
+    grid-template-rows: 10vh;
+    grid-template-columns: 10px repeat(var(--total), var(--boxSize)) 10px;
+    
+    overflow-x : scroll; 
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    
+    margin : 0; 
 }
 
 
@@ -71,57 +86,7 @@ body {
     background : transparent;
 }
 
- .hs:before,
+.hs:before,
 .hs:after {
     content: '';
-}   
-
-/*horizontal scroll equation*/
-.equation {
-    display: grid;
-    grid-gap: 10px 0px;
-    grid-template-columns: 20px 1fr 20px;
-
-    overflow-x : hidden;
-
-    border-color : #c0f4ffff;
-    border-width : 0px;
-    border-style : solid;
-    border-radius: 80px;
-    background: #c0f4ffff;
-
-    /* width : 300px;
-    height : 90px; */
-
-    width : 42vh;
-    height : 10vh;
-    min-height:90px
-    
-
-}
-  
-/*horizontal scroll input terms*/
-.term {
-    grid-column: 1 / -1;
-    list-style: none;
-    padding: 0;
-
-    /* align-content:center; */ 
-    /* justify-content: center; */
-
-    display: grid;
-    grid-gap: 0px 10px;
-    
-    grid-template-columns: 10px repeat(var(--total), var(--boxSize)) 10px;
-    grid-template-rows: 1fr;
-    
-    overflow-x : scroll; 
-
-    scroll-snap-type: x proximity;
-    padding-bottom: 0px;
-    margin-bottom: 0px;
-    margin : 0px;
-}
-
-
-
+}  
