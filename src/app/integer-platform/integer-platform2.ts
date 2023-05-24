@@ -180,11 +180,9 @@ export class IntegerPlatfromClass {
       gsap.set(self.retryBtn, {scale: 0})
       if (self.game.attempts > 2) {
         self.tl.to(self.nextBtn,{duration: 1,scale: 1,ease: "elastic"})
-        //self.tl.to(self.retryBtn, {duration: 1,scale: 1,ease: "elastic"}, "<")
       }
       else {
         gsap.set(self.nextBtn,{scale: 0})
-        //self.tl.to(self.retryBtn, {duration: 1,scale: 1,ease: "elastic"}, "<")
       }
 
       //ground
@@ -258,7 +256,8 @@ export class IntegerPlatfromClass {
         var playBtn = document.createElementNS(svgns,"use")
         this.controls.appendChild(playBtn)
         playBtn.setAttribute("href","#playBtn")
-        gsap.set(playBtn, {x : 10, y : 10, transformOrigin : "center"})
+        gsap.set(playBtn, {x : 10, y : 10})
+        self.tl.to(playBtn, {transformOrigin : "center", duration : 0})
         this.playBtn = playBtn
 
         playBtn.onpointerdown = function(e) {
@@ -266,6 +265,7 @@ export class IntegerPlatfromClass {
               self.canEdit = false
               self.canReset = false
               self.canPlay = false
+
               self.tl.to(self.playBtn, {duration : 0.2, scale : 0})
               self.closeInput()
               self.playAnimation()
@@ -276,7 +276,8 @@ export class IntegerPlatfromClass {
         var retryBtn = document.createElementNS(svgns,"use")
         this.controls.appendChild(retryBtn)
         retryBtn.setAttribute("href","#retryBtn")
-        gsap.set(retryBtn, {x : 10, y : 10, transformOrigin : "center", scale : 0})
+        gsap.set(retryBtn, {x : 10, y : 10})
+        self.tl.to(retryBtn, {transformOrigin : "center", duration : 0})
         this.retryBtn = retryBtn
 
         retryBtn.onpointerdown = function() {
@@ -367,10 +368,7 @@ export class IntegerPlatfromClass {
       }) 
       this.levelEls = []
 
-      
-
       this.setLevels()
-
       this.resetGame()
       this.setupAnimation()
     }
@@ -383,6 +381,7 @@ export class IntegerPlatfromClass {
       this.canPlay = false;
       this.canReset = false;
 
+      //buttons
       gsap.set(self.retryBtn, {scale: 0})
       gsap.set(self.playBtn, {scale : 1})
       
@@ -403,7 +402,7 @@ export class IntegerPlatfromClass {
       })
       self.sandbags = []
 
-      //reset cart  (to outside of screen TO DO)
+      //reset cart  (to outside of screen)
       gsap.set(self.cart, {x : -200, y : 300 + self.game.start*50})
       gsap.set([self.backWheel, self.frontWheel], {rotation : 0})
 
@@ -434,9 +433,11 @@ export class IntegerPlatfromClass {
 
                 self.balloonX += 50
                 gsap.set(temp, {x : self.balloonX, y : self.ITEM_START_Y + 600, visibility : "hidden"})
+                
                 elements.push(temp)
                 self.balloons.push(temp)
               }
+              self.tl.to(elements, {y : self.ITEM_START_Y, visibility : "visible"})
             }
             else {
               for(var i = 0; i < Math.abs(term.val); i++) {
@@ -446,28 +447,18 @@ export class IntegerPlatfromClass {
 
                 self.sandbagX += 50
                 gsap.set(temp, {x : self.sandbagX, y : self.ITEM_START_Y - 400, visibility : "hidden"})
+
                 elements.push(temp)
                 self.sandbags.push(temp)
               }
-            }
-            
-            if (term.val > 0) {
-              self.tl.to(elements, {y : self.ITEM_START_Y, visibility : "visible"})
-            }
-            else {
               var additionalY = 160
               self.tl.to(elements, {y : self.ITEM_START_Y + additionalY, ease : "sandbagBounce", visibility : "visible"})
             }
-            //TO DO: fix sandbag bounce
+
             self.sum += term.val
             self.updatePlatformPos()
-            // if (term.val < 0 ) {
-            //   //bounce sandbags 
-            //   var n = elements.length
-            //   //self.tl.to(elements, {y : self.ITEM_START_Y + additionalY - 10, ease : Power1.easeOut, duration : 0.2}, "-="+(0.8+n/10))
-            //   //self.tl.to(elements, {y : self.ITEM_START_Y + additionalY, ease : Power1.easeIn, duration : 0.2}, "-="+(0.8+n/10 -(n/10 + (n%2 - 1)/10)))
-            // }
           }
+
           //remove balloons or sandbags
           else {
             if (term.val > 0) {
@@ -478,6 +469,7 @@ export class IntegerPlatfromClass {
                     elements.push(temp)  
                     self.balloonX -= 50
                   }
+
                   self.tl.to(elements, {y : self.ITEM_START_Y - 600}) 
                   self.sum -= term.val
                   self.tl.to(elements, {visibility : "hidden", duration : 0}) 
@@ -488,6 +480,7 @@ export class IntegerPlatfromClass {
                   throw new Error("Break the loop.")
                 }
             }
+
             else {
               if (Math.abs(term.val) <= self.sandbags.length) {
                 var elements = []
@@ -511,17 +504,16 @@ export class IntegerPlatfromClass {
         });
 
         //feedback animation
-        if(self.sum == self.game.goal) {
+        if(self.sum == self.game.goal) { //cart rolls off 
           self.game.attempts = 3
-          //cart rolls off 
           self.tl.to(self.cart, {x : 1400, duration : 2, ease : "linear", 
           onComplete : function() {
             self.cartOnPlatform = false
           }})
           self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (1400 - self.cartXPos) / self.wheelCircumference * 360, duration : 2, ease: "linear"}, "<")  //458
         }
-        else if (self.sum < 0 || self.sum < self.game.goal) { //(self.sum < self.game.goal) {
-          //hit the ground TO DO fix wheels
+        else if (self.sum < 0 || self.sum < self.game.goal) { 
+          //hit the ground
           self.tl.to(self.cart, {x : 830 - 148 /*cart width*/, ease: Power1.easeIn, duration : 0.75})
           self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + ((830 - 148 - self.cartXPos) / self.wheelCircumference * 360), duration : 0.75, ease: Power1.easeIn}, "<")
           self.tl.to(self.cart, {x : self.cartXPos, ease: Power1.easeOut, duration : 1})
@@ -530,30 +522,34 @@ export class IntegerPlatfromClass {
         else {
           //wiggle platform
           self.tl.to([self.platform, self.cart], {transformOrigin : "center", duration : 0})
+
           self.tl.to([self.platform, self.cart],0.3,{rotation:5})
           self.tl.to(self.spring,0.3,{skewY:3}, "<")
           self.tl.to([self.platform, self.cart],3,{rotation:0,ease:Elastic.easeOut.config(0.9,0.1)});
           self.tl.to(self.spring,3,{skewY:0, ease:Elastic.easeOut.config(0.9,0.1)}, "<");
+
           self.tl.to([self.platform, self.cart], {transformOrigin : "top left", duration : 0})
         }
       } catch {}
+      
+      //on animation end, set values 
       self.tl.to(self.platform, {duration : 0, onComplete : function() {
         self.canEdit = false;
         self.canReset = true;
         self.finished = true;
         //next btn
         if (self.game.attempts > 2) {
-          self.tl.to(self.nextBtn,{duration: 1,scale: 1,ease: "elastic"})
+          self.tl.to(self.nextBtn,{duration: 1, scale: 1,ease: "elastic"})
           gsap.set(self.retryBtn, {x : 10, y : 10, scale : 0, rotation : 0})
-          self.tl.to(self.retryBtn, {duration: 1,scale: 1,ease: "elastic"}, "<")
+          self.tl.to(self.retryBtn, {duration: 1, scale: 1, ease: "elastic"}, "<")
         }
         else {
-          self.tl.to(self.nextBtn,{duration: 0,scale: 0})
-          //add in rotating retry button
-          self.tl.to(self.retryBtn, {duration : 0, scale : 0, x : 605, y : 300, transformOrigin : "center"})
+          self.tl.to(self.nextBtn,{duration: 0, scale: 0})
+          
+          //rotating retry button
+          self.tl.to(self.retryBtn, {duration : 0, scale : 0, x : 605, y : 300, rotation : 0})
           self.tl.to(self.retryBtn, {duration: 1, scale: 3}) 
           self.tl.to(self.retryBtn, {repeat : -1, duration : 4, rotation : 360, ease: "bounce"}) 
-          //self.tl.to(self.retryBtn, {duration: 1,scale: 1,ease: "elastic"}, "<") 
         }
         self.dragEl[0].enable()
       }})
@@ -561,7 +557,6 @@ export class IntegerPlatfromClass {
 
     openInput() {
         var self = this
-        //this.canPlay = false
         this.canReset = false
         this.setPlusBtn()
         gsap.set(self.cover, {visibility : "visible"})
@@ -570,6 +565,7 @@ export class IntegerPlatfromClass {
   
         self.canEdit = false;
     }
+
     closeInput() {
         var self = this
         this.canPlay = true
@@ -577,7 +573,6 @@ export class IntegerPlatfromClass {
         gsap.set(self.cover, {visibility : "hidden"})
         gsap.set(self.inputBtns, {visibility : "hidden"})
         gsap.set(self.inputNums, {visibility : "hidden"})
-  
         
         //remove empty terms (for some reason needs to run twice)
         for(var j = 0; j < 2; j++) {
@@ -610,15 +605,6 @@ export class IntegerPlatfromClass {
 
       addNewTerm() {
         var self = this
-        // self.selectedTerm = {
-        //   el : document.createElement('li'), 
-        //   node : null,
-        //   positive : true,
-        //   val : 0,
-        //   txt : document.createTextNode(""),
-        //   img : null,
-        // }
-
         self.selectedTerm =  Object.assign(document.createElement('li'), {
           node : null,
            positive : true,
@@ -635,13 +621,9 @@ export class IntegerPlatfromClass {
         self.allTerms.push(self.selectedTerm)
         
         self.selectedTerm.onpointerdown = function(e) {
-          if (self.tl.isActive()) {
-            return
-          }
-
-          if(self.canEdit) {
-            self.openInput()
-          }
+          if (self.tl.isActive()) return
+          if(self.canEdit) self.openInput()
+          
           var oldIndex = self.termIndex
   
           //set selected term
@@ -651,10 +633,8 @@ export class IntegerPlatfromClass {
             }
           }
   
-          if (oldIndex != self.termIndex) {
-            if (self.selectedTerm != null) {
-              self.selectedTerm.setAttribute("style", self.DEFAULT_TERM_STYLE)
-            }
+          if (oldIndex != self.termIndex && self.selectedTerm != null) {
+            self.selectedTerm.setAttribute("style", self.DEFAULT_TERM_STYLE)
           }
           self.selectedTerm = self.allTerms[self.termIndex]
           self.selectedTerm.setAttribute("style", self.SELECTED_TERM_STYLE)
@@ -684,12 +664,6 @@ export class IntegerPlatfromClass {
         self.adjustSpacing(".term")
         this.adjustEquationWidth()
   
-        // const list = document.querySelectorAll('.term'); 
-        // list.forEach(el => {
-        //   const n = el.children.length;
-        //   (el as HTMLElement).style.setProperty('--total', (n).toString());
-        //   (el as HTMLElement).style.setProperty('--boxSize', (12).toString() +"vh");
-        // });
       }
 
     adjustEquationWidth() {
@@ -698,29 +672,18 @@ export class IntegerPlatfromClass {
       var h = (this.arena as any as HTMLElement).getBoundingClientRect().height 
       var x = (this.addBtn as any as HTMLElement).getBoundingClientRect().x 
       var btnW = w * (70 / 1280) //(addBtn as any as HTMLElement).getBoundingClientRect().width
-        
 
       var equationW = Math.max((0.18*h + 10), self.allTerms.length*(0.18*h + 10))
       gsap.set(this.equation, {width : equationW, x : x - equationW - btnW, y : "1.5vh"})
     }
 
     onResize(addBtn) {
-        
       this.adjustEquationWidth()
 
-        //input vertical scrollbar
-        gsap.set(this.inputNums, {x : "20vh", y : "25vh"})
-        gsap.set(this.inputBtns, {width : "20vh", height : "50vh", x : "-5vh", y : "25vh"})
-
-
-        // var w = (this.arena as any as HTMLElement).getBoundingClientRect().width 
-        // var x = (addBtn as any as HTMLElement).getBoundingClientRect().x 
-        // var btnW = w * (70 / 1280) //(addBtn as any as HTMLElement).getBoundingClientRect().width
-
-        // //equation
-        // var equationW = w*0.3
-        // //TO DO : make width depend on number of terms 
-        // gsap.set(this.equation, {width : equationW, x : x - equationW - btnW, y : "1.5vh"})
+      //input vertical scrollbar
+      gsap.set(this.inputNums, {x : "20vh", y : "25vh"})
+      gsap.set(this.inputBtns, {width : "20vh", height : "50vh", x : "-5vh", y : "25vh"})
+    
     }
 
     setupPlusMinus() {
@@ -803,13 +766,7 @@ export class IntegerPlatfromClass {
         
         self.adjustSpacing(".num")
 
-        // const list = document.querySelectorAll('.num'); 
-        // list.forEach(el => {
-        //   const n = el.children.length;
-        //   (el as HTMLElement).style.setProperty('--total', n.toString());
-        //   (el as HTMLElement).style.setProperty('--boxSize', (8).toString() +"vh");
-        // });
-    
+        
         //CLICK ON NUMBERS 
         
         this.items.forEach(node => {
@@ -923,12 +880,6 @@ export class IntegerPlatfromClass {
             }
           }
         })
-      }
-
-      checkCart(cartX, boundary) {
-        //var cartX = gsap.getProperty(self.cart, "x")
-        if(cartX >= boundary)
-          this.cartOnPlatform = true
       }
 
       setupAnimation() {
