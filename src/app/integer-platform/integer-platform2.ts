@@ -127,6 +127,8 @@ export class IntegerPlatfromClass {
     ITEM_START_X : number = 450;
     ITEM_START_Y : number = 202;
     ADDITIONAL_SANDBAG_Y : number = 160;
+    BALLOON_DURATION : number = 1;
+    SANDBAG_DURATION : number = 0.7;
 
     constructor(setup, games) {
         this.games = games
@@ -446,7 +448,7 @@ export class IntegerPlatfromClass {
                 elements.push(temp)
                 self.balloons.push(temp)
               }
-              self.tl.to(elements, {y : self.ITEM_START_Y, visibility : "visible"})
+              self.tl.to(elements, {y : self.ITEM_START_Y, visibility : "visible", duration : self.BALLOON_DURATION})
             }
             else {
               for(var i = 0; i < Math.abs(term.val); i++) {
@@ -460,7 +462,7 @@ export class IntegerPlatfromClass {
                 elements.push(temp)
                 self.sandbags.push(temp)
               }
-              self.tl.to(elements, {y : self.ITEM_START_Y + self.ADDITIONAL_SANDBAG_Y, ease : "linear", visibility : "visible"})
+              self.tl.to(elements, {y : self.ITEM_START_Y + self.ADDITIONAL_SANDBAG_Y, ease : "linear", visibility : "visible", duration : self.SANDBAG_DURATION})
             }
 
             self.sum += term.val
@@ -478,7 +480,7 @@ export class IntegerPlatfromClass {
                     self.balloonX -= 50
                   }
 
-                  self.tl.to(elements, {y : self.ITEM_START_Y - 600}) 
+                  self.tl.to(elements, {y : self.ITEM_START_Y - 600, duration : self.BALLOON_DURATION}) 
                   self.sum -= term.val
                   self.tl.to(elements, {visibility : "hidden", duration : 0}) 
                   self.updatePlatformPos() 
@@ -497,7 +499,7 @@ export class IntegerPlatfromClass {
                   elements.push(temp)
                   self.sandbagX -= 50  
                 }
-                self.tl.to(elements, {y : self.ITEM_START_Y + 600}) 
+                self.tl.to(elements, {y : self.ITEM_START_Y + 600, duration : self.SANDBAG_DURATION, ease : "linear"}) 
                 self.tl.to(elements, {visibility : "hidden", duration : 0}) 
                 self.sum -= term.val
                 self.updatePlatformPos() 
@@ -948,12 +950,12 @@ export class IntegerPlatfromClass {
         //add balloons and sandbags
         this.tl.to(self.balloons, {visibility : "visible", duration : 0})
         this.tl.to(self.sandbags, {visibility : "visible", duration : 0})
-        this.tl.to(self.balloons, {y : self.ITEM_START_Y, 
+        this.tl.to(self.balloons, {y : self.ITEM_START_Y, duration : self.BALLOON_DURATION, 
           onComplete : function() {
             self.sum += self.game.startBalloons
             self.updatePlatformPos()
             
-            self.tl.to(self.sandbags, {y : self.ITEM_START_Y + self.ADDITIONAL_SANDBAG_Y, ease : "linear", 
+            self.tl.to(self.sandbags, {y : self.ITEM_START_Y + self.ADDITIONAL_SANDBAG_Y, ease : "linear", duration : self.SANDBAG_DURATION,
               onComplete : function() {
                 self.sum -= self.game.startSandbags
                 self.updatePlatformPos()
