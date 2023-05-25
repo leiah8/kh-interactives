@@ -42,7 +42,7 @@ export class IntegerPlatformComponent implements AfterViewInit {
     const game1 = {
       startBalloons : 2,
       startSandbags : 3,
-      goal : 0,
+      goal : 1,
       start : 0,
       attempts : 0,
     } as Game

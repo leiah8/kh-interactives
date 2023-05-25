@@ -38,7 +38,7 @@ interface Term extends HTMLElement{
     node : Node;
     positive : boolean;
     val : number;
-    txt : HTMLElement | Text;
+    txt : any[]; //CHANGE
     img : HTMLElement,
 }
 
@@ -94,8 +94,8 @@ export class IntegerPlatfromClass {
     
     DEFAULT_NODE_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8px; font-size : 20px; font-family : 'Poppins'; color:#000"
     SELECTED_NODE_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #23a3ff; border-radius: 8px; font-size : 20px; font-family : 'Poppins'; color:#fff"
-    DEFAULT_TERM_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8vh; font-size : 20px; font-family : 'Poppins'; color:#000"
-    SELECTED_TERM_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #23a3ff; border-radius: 8vh; font-size : 20px; font-family : 'Poppins'; color:#fff"
+    DEFAULT_TERM_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8vh; font-size : 20px; font-family : 'Poppins'; color:#000; padding-bottom : 0.3vh"
+    SELECTED_TERM_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #23a3ff; border-radius: 8vh; font-size : 20px; font-family : 'Poppins'; color:#fff; padding-bottom : 0.3vh"
 
     selectedTerm : Term;
     allTerms : Term[]
@@ -114,6 +114,7 @@ export class IntegerPlatfromClass {
     canPlay : boolean;
     canReset : boolean;
     cartOnPlatform : boolean;
+    editing : boolean
 
     addRemove : boolean;
     useImgs : boolean;
@@ -166,6 +167,7 @@ export class IntegerPlatfromClass {
         this.canPlay = false
         this.canReset = false
         this.cartOnPlatform = false;
+        this.editing = false;
         this.termIndex = -1
         
         this.balloons = []
@@ -204,6 +206,13 @@ export class IntegerPlatfromClass {
         gsap.set(tunnel, {x : 830, y : 400 + -self.game.goal*50 - 125})
         this.levelEls.push(tunnel)
       }
+      else if (self.game.goal == 1) {
+        var bridge = document.createElementNS(svgns,"use")
+        this.arena.appendChild(bridge)
+        bridge.setAttribute("href","#bridge-wall")
+        gsap.set(bridge, {x : 830, y : 400 + -self.game.goal*50})
+        this.levelEls.push(bridge)
+      }
       else if (self.game.goal > 0) {
         var bridge = document.createElementNS(svgns,"use")
         this.arena.appendChild(bridge)
@@ -211,7 +220,7 @@ export class IntegerPlatfromClass {
         gsap.set(bridge, {x : 830, y : 400 + -self.game.goal*50})
         this.levelEls.push(bridge)
 
-        for (var i = 1; i < self.game.goal; i++) {
+        for (var i = 2; i < self.game.goal; i++) {
           var extension = document.createElementNS(svgns, "use")
           this.arena.appendChild(extension)
           extension.setAttribute("href","#bridge-extension")
@@ -309,6 +318,7 @@ export class IntegerPlatfromClass {
         this.controls.appendChild(addBtn)
         addBtn.setAttribute("href","#addBtn")
         gsap.set(addBtn, {x : 840, y : 10})
+        gsap.set(addBtn, {transformOrigin : "35px 35px"})
         this.addBtn = addBtn
 
         addBtn.onpointerdown = function(e) {
@@ -334,6 +344,10 @@ export class IntegerPlatfromClass {
         this.nextBtn = nextBtn
 
         nextBtn.onpointerdown = function(e) { self.nextGame() }
+
+        //arena click
+        this.arena.onpointerdown = function(e) { self.highlightEdit() }
+        this.cart.onpointerdown = function(e) { self.highlightEdit() }
 
         //other event listeners
         addEventListener("resize", (e) => {self.onResize(addBtn)})
@@ -369,6 +383,16 @@ export class IntegerPlatfromClass {
         this.tl.to(self.cart, {duration : 1})
         this.onResize(addBtn)
         this.setupAnimation()
+    }
+
+    highlightEdit() {
+      var self = this
+      if(!self.editing && self.canEdit) {
+        //highlight edit button
+        self.tl.to(self.addBtn, {scale : 1.5, duration : 0.25})
+        self.tl.to(self.addBtn, {scale : 1, ease : "bounce", duration : 0.5})
+        
+      }
     }
 
     nextGame() {
@@ -599,6 +623,7 @@ export class IntegerPlatfromClass {
 
     openInput() {
         var self = this
+        this.editing = true;
         this.canReset = false
         this.setPlusBtn()
         gsap.set([self.cover, self.inputBtns, self.inputNums], {visibility : "visible"})
@@ -607,6 +632,7 @@ export class IntegerPlatfromClass {
 
     closeInput() {
         var self = this
+        this.editing = false;
         this.canPlay = true
         this.canReset = true
         gsap.set([self.cover, self.inputBtns, self.inputNums], {visibility : "hidden"})
@@ -647,11 +673,11 @@ export class IntegerPlatfromClass {
           node : null,
            positive : true,
            val : 0,
-           txt : document.createTextNode(""),
+           txt : [document.createTextNode("")],
            img : null
         })
   
-        self.selectedTerm.appendChild(self.selectedTerm.txt);
+        self.selectedTerm.appendChild(self.selectedTerm.txt[0]); //CHANGE
         self.selectedTerm.setAttribute("style", self.SELECTED_TERM_STYLE)
         self.terms.appendChild(self.selectedTerm);
   
@@ -747,9 +773,12 @@ export class IntegerPlatfromClass {
         gsap.set(self.minusBtn, {stroke : "#23a3ff"})
 
         if(self.selectedTerm != null) {
-          if(this.selectedTerm.val != 0) 
-            self.selectedTerm.txt.textContent = "+"+Math.abs(self.selectedTerm.val).toString()
           self.selectedTerm.positive = true
+          if(this.selectedTerm.val != 0) {
+            self.removeText()
+            self.addText(self.selectedTerm.node)
+            //self.selectedTerm.txt[0].textContent = "+"+Math.abs(self.selectedTerm.val).toString() //CHANGE!!!!!!
+          }
         }
         self.positive = true
     }
@@ -761,9 +790,65 @@ export class IntegerPlatfromClass {
       
         self.selectedTerm.positive = false
         if (this.selectedTerm.val != 0) {
-          self.selectedTerm.txt.textContent = "-"+Math.abs(self.selectedTerm.val).toString()
+          self.removeText()
+          self.addText(self.selectedTerm.node)
+          //self.selectedTerm.txt[0].textContent = "-"+Math.abs(self.selectedTerm.val).toString() //CHANGE
         }
         self.positive = false
+    }
+
+    removeText() {
+      var self = this
+      self.selectedTerm.txt.forEach(t => {
+        self.selectedTerm.removeChild(t);
+      });
+    }
+
+    addText(node) {
+      var self = this
+      var str;
+      if (self.selectedTerm.positive && self.addRemove) str = "add "
+      else if (!self.selectedTerm.positive && self.addRemove) str = "remove "
+      else if (self.selectedTerm.positive && !self.addRemove) str = "+ "
+      else  str = "- "
+
+      if (self.useImgs) {
+        str += Math.abs(self.selectedTerm.val).toString()
+        
+        self.selectedTerm.txt[0] = document.createTextNode(str) //CHANGE
+        self.selectedTerm.appendChild(self.selectedTerm.txt[0]); //CHANGE
+        
+        var s = document.createElement('img')
+        if (node.val > 0)  s.src = self.balloonURL
+        else  s.src = self.sandbagURL
+        self.selectedTerm.img = s
+        self.selectedTerm.appendChild(s)
+      }
+      else {
+        str += "("
+        self.selectedTerm.txt = [document.createTextNode(str)] //CHECK
+        self.selectedTerm.appendChild(self.selectedTerm.txt[0]); //CHECK
+        
+        var sign;
+        if (self.selectedTerm.val > 0) sign = "+"
+        else if (self.selectedTerm.val < 0) sign = "-"
+
+        var span = document.createElement('span')
+        span.style.fontSize="16px"
+        span.appendChild(document.createTextNode(sign))
+        self.selectedTerm.appendChild(span);
+        self.selectedTerm.txt.push(span) //CHECK
+
+        str = (Math.abs(self.selectedTerm.val)).toString()+")"
+        
+        self.selectedTerm.txt.push(document.createTextNode(str)) //CHECK
+        self.selectedTerm.appendChild(self.selectedTerm.txt[2]);
+  
+        // var span = document.createElement('span')
+        // span.style.fontSize="16px"
+        // span.appendChild(document.createTextNode("hi"))
+        // self.selectedTerm.appendChild(span);
+      }
     }
 
     setupInputScrollbar() {
@@ -778,8 +863,10 @@ export class IntegerPlatfromClass {
               if (i < 0) s.src = this.sandbagURL
               n.appendChild(s)
             }
-            else 
-              n.appendChild(document.createTextNode((i).toString()));
+            else {
+              if (i > 0) n.appendChild(document.createTextNode("+"+(i).toString()));
+              else n.appendChild(document.createTextNode((i).toString()));
+            }
     
             n.setAttribute("style", self.DEFAULT_NODE_STYLE)
             this.numbers.appendChild(n);
@@ -822,34 +909,12 @@ export class IntegerPlatfromClass {
               self.selectedTerm.node = node
               self.selectedTerm.val = node.val
 
-              self.selectedTerm.removeChild(self.selectedTerm.txt);
+              self.removeText()
+              //self.selectedTerm.removeChild(self.selectedTerm.txt); //CHANGE
               if (self.selectedTerm.img != null)
                 self.selectedTerm.removeChild(self.selectedTerm.img);
               
-              var str;
-              if (self.positive && self.addRemove) str = "add "
-              else if (!self.positive && self.addRemove) str = "remove "
-              else if (self.positive && !self.addRemove) str = "+ "
-              else  str = "- "
-
-              if (self.useImgs) {
-                str += Math.abs(self.selectedTerm.val).toString()
-                
-                self.selectedTerm.txt = document.createTextNode(str)
-                self.selectedTerm.appendChild(self.selectedTerm.txt);
-                
-                var s = document.createElement('img')
-                if (node.val > 0)  s.src = self.balloonURL
-                else  s.src = self.sandbagURL
-                self.selectedTerm.img = s
-                self.selectedTerm.appendChild(s)
-              }
-              else {
-                str += (self.selectedTerm.val).toString()
-                
-                self.selectedTerm.txt = document.createTextNode(str)
-                self.selectedTerm.appendChild(self.selectedTerm.txt);
-              }
+              self.addText(node)
             }
             else {
               node.setAttribute("style", self.DEFAULT_NODE_STYLE )
@@ -858,15 +923,16 @@ export class IntegerPlatfromClass {
               //remove all node info from term
               self.selectedNode = null
               self.selectedTerm.node = null
-              self.selectedTerm.removeChild(self.selectedTerm.txt);
+              //self.selectedTerm.removeChild(self.selectedTerm.txt); //CHANGE
+              self.removeText()
               if(self.selectedTerm.img != null)
                 self.selectedTerm.removeChild(self.selectedTerm.img);
     
               self.selectedTerm.img = null
               self.selectedTerm.val = 0
               
-              self.selectedTerm.txt = document.createTextNode("")
-              self.selectedTerm.appendChild(self.selectedTerm.txt);
+              self.selectedTerm.txt[0] = document.createTextNode("") //CHANGE
+              self.selectedTerm.appendChild(self.selectedTerm.txt[0]); //CHANGE
             }
           }
         }); 
