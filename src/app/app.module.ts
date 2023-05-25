@@ -7,6 +7,7 @@ import { TstDotConnectComponent } from './tst-dot-connect/tst-dot-connect.compon
 import { ContainerComponent } from './container/container.component';
 import { HorizontalScrollbarComponent } from './horizontal-scrollbar/horizontal-scrollbar.component';
 import { IntegerPlatformComponent } from './integer-platform/integer-platform.component';
+import { MoonsPlanetsComponent } from './moons-planets/moons-planets.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { IntegerPlatformComponent } from './integer-platform/integer-platform.co
     ContainerComponent,
     HorizontalScrollbarComponent,
     IntegerPlatformComponent,
+    MoonsPlanetsComponent,
   ],
   imports: [
     BrowserModule,
