@@ -15,23 +15,37 @@ interface InputEl extends SVGUseElement {
 export class MoonsPlanetsAPI {
     arena : SVGSVGElement
 
-    inputMoons : InputEl[]
+    inputMoons : InputEl[][]
     totalMoons : number
+    TOTAL_ROWS : number = 10;
+    TOTAL_COLS : number = 10;
+    moonRows : number
+    moonCols : number
     p1Moons : number
     p2Moons : number
+    p1Num : number
+    p2Num : number
+
+    targetMoonCoords : Pos[]
 
     animationEls : SVGUseElement[]
 
     tl : any
 
-    constructor(setup, p1Moons, p2Moons) {
+    constructor(setup, p1Num, p1Moons, p2Num, p2Moons) {
 
         this.arena = setup.arena
         this.inputMoons = []
         this.totalMoons = 0
+        
+        this.moonRows = 0;
+        this.moonCols = 0;
         this.p1Moons = p1Moons
         this.p2Moons = p2Moons
+        this.p1Num = p1Num
+        this.p2Num = p2Num
         this.animationEls = []
+        this.targetMoonCoords = []
 
         this.tl = gsap.timeline()
 
@@ -45,8 +59,9 @@ export class MoonsPlanetsAPI {
 
     setupEls() {
         var self = this
-        this.setupInputMoons()
+        this.setupInputMoons(this.TOTAL_ROWS, this.TOTAL_COLS)
         this.setupArrows()
+        this.setupPlanets()
 
         var playBtn = document.createElementNS(svgns,"use")
         this.arena.appendChild(playBtn)
@@ -68,16 +83,16 @@ export class MoonsPlanetsAPI {
         gsap.set(up, {x : 300, y : 575})
 
         up.onpointerdown = function(e) {
-            self.fill(self.totalMoons - 10)
+            self.fill(self.moonRows - 1, self.moonCols) //TO DO
         }
 
         var down = document.createElementNS(svgns,"use")
         this.arena.appendChild(down)
         down.setAttribute("href","#arrow-down")
-        gsap.set(down, {x : 300, y : 660})
+        gsap.set(down, {x : 300, y : 660}) 
 
         down.onpointerdown = function(e) {
-            self.fill(self.totalMoons + 10)
+            self.fill(self.moonRows + 1, self.moonCols) // TO DO 
         }
 
         var left = document.createElementNS(svgns,"use")
@@ -86,7 +101,7 @@ export class MoonsPlanetsAPI {
         gsap.set(left, {x : 240, y : 615})
 
         left.onpointerdown = function(e) {
-            self.fill(self.totalMoons - 1)
+            self.fill(self.moonRows, self.moonCols - 1) // TO DO 
         }
 
         var right = document.createElementNS(svgns,"use")
@@ -95,75 +110,179 @@ export class MoonsPlanetsAPI {
         gsap.set(right, {x : 360, y : 615})
 
         right.onpointerdown = function(e) {
-            self.fill(self.totalMoons + 1)
+            self.fill(self.moonRows, self.moonCols + 1) // TO DO 
         }
 
     }
 
-    setupInputMoons() {
+    setupInputMoons(rows, cols) {
         var self = this
-        var inputMoonCoords = this.gridCoords(80, 75, 10, 10, 40 + 10)
+        var inputMoonCoords = this.gridCoords(80, 75, rows, cols, 40 + 10)
 
-        var i = 0
-        inputMoonCoords.forEach(p => {
-            //var moon = document.createElementNS(svgns,"use")
-            var moon = Object.assign(document.createElementNS(svgns,"use"), {
-                num : i+1,
-                on : false, 
-            })
-            this.arena.appendChild(moon)
-            moon.setAttribute("href","#moon-outline")
-            gsap.set(moon, {x : p.x, y : p.y})
+        for(var i = 0; i < rows; i++) {
+            this.inputMoons.push([])
+            for(var j = 0; j < cols; j++) {
+                var p = inputMoonCoords[i][j]
+                var moon = Object.assign(document.createElementNS(svgns,"use"), {
+                    num : i+1,
+                    on : false, 
+                })
+                this.arena.appendChild(moon)
+                moon.setAttribute("href","#moon-outline")
+                gsap.set(moon, {x : p.x, y : p.y})
+    
+                this.inputMoons[i].push(moon)
+            
+            }
+        }
 
-            this.inputMoons.push(moon)
 
-            moon.onpointerdown = function(e) {
-                self.fill(moon.num)
+    }
+
+    fill(rows : number, cols : number) {
+
+        if (rows < 0) rows = 0
+        else if (rows > this.TOTAL_ROWS) rows = this.TOTAL_ROWS
+
+        if (cols < 0) cols = 0
+        else if (cols > this.TOTAL_COLS) cols = this.TOTAL_COLS
+
+
+        //turn on needed rows 
+        for(var i = 0; i < rows; i++) {
+            for(var j = 0; j < cols; j++) {
+                var m = this.inputMoons[i][j]
+                if (!m.on) {
+                    m.on = true
+                    m.setAttribute("href", "#moon")
+                }
+            
+            }
+        }
+
+        //turn off needed rows 
+        for(var i = rows; i < this.TOTAL_ROWS; i++) {
+            for(var j = 0; j < cols; j++) {
+                var m = this.inputMoons[i][j]
+                if (m.on) {
+                    m.on = false
+                    m.setAttribute("href", "#moon-outline")
+                }
+            
+            }
+        }
+
+        //turn on needed columns 
+        console.log(rows, cols)
+        for(var j = 0; j < cols; j++) {
+            for(var i = 0; i < rows; i++) {
+                var m = this.inputMoons[i][j]
+                if (!m.on) {
+                    m.on = true
+                    m.setAttribute("href", "#moon")
+            }
+        
+        }
+
+        //turn off needed columns 
+        for(var j = cols; j < this.TOTAL_COLS; j++) {
+            for(var i = 0; i < rows; i++) {
+                var m = this.inputMoons[i][j]
+                if (m.on) {
+                    m.on = false
+                    m.setAttribute("href", "#moon-outline")
+                }
+            
+            }
+        }
+    }
+
+        this.moonRows = rows
+        this.moonCols = cols
+        this.totalMoons = rows*cols
+    }
+
+    setupPlanets() {
+        var planetsNum = this.p1Num + this.p2Num
+        var pCoords = this.gridCoords(635, 50, Math.ceil((planetsNum + 1)/ 4), 4, 100 + 75)
+
+        var r = 60
+
+        var moonIndex = 0
+        for(var i = 0; i < this.p1Num; i++) {
+            var planet = document.createElementNS(svgns,"use")
+            this.arena.appendChild(planet)
+            planet.setAttribute("href","#planet1")
+            
+            var p = pCoords[Math.floor(i / 4)][i % 4]
+            gsap.set(planet, {x : p.x, y : p.y, scale : 1, transformOrigin : "center"})
+
+            //add moons 
+            var coords = this.circleCoords(this.p1Moons, p.x + 10, p.y + 30, 60)
+            for(var j = 0; j < this.p1Moons; j++) {
+                var moon = document.createElementNS(svgns,"use")
+                this.arena.appendChild(moon)
+                moon.setAttribute("href","#moon-outline")
+
+                this.targetMoonCoords.push(coords[j])
+                
+                gsap.set(moon, {x : coords[j].x, y : coords[j].y})
+                moonIndex++;
             }
 
-            i++;
-        }); 
+        }
+
+        for(var i = this.p1Num; i < this.p1Num + this.p2Num; i++) {
+            var planet = document.createElementNS(svgns,"use")
+            this.arena.appendChild(planet)
+            planet.setAttribute("href","#planet2")
+            
+            var p = pCoords[Math.floor(i / 4)][i % 4]
+            gsap.set(planet, {x : p.x, y : p.y, scale : 1, transformOrigin : "center"})
+
+            //add moons 
+            var coords = this.circleCoords(this.p2Moons, p.x + 10, p.y + 30, 60)
+            for(var j = 0; j < this.p2Moons; j++) {
+                var moon = document.createElementNS(svgns,"use")
+                this.arena.appendChild(moon)
+                moon.setAttribute("href","#moon-outline")
+
+                this.targetMoonCoords.push(coords[j])
+                
+                gsap.set(moon, {x : coords[j].x, y : coords[j].y})
+                moonIndex++;
+            }
+        }
     }
     
-    fill(num) {
-        //var num = moon.num
-        if (num <= 0) {
-            for(var i = 0; i < this.totalMoons; i++) {
-                m = this.inputMoons[i]
-                if (m.on) {
-                    m.setAttribute("href","#moon-outline")
-                    m.on = false
-                }
-            }
-            this.totalMoons = 0
-            return
-        }
-        else if(num > 100) num = 100
 
-        var moon = this.inputMoons[num-1]
-        
-        if (!moon.on) {
-            
-            for(var i = this.totalMoons; i < num; i++) {
-                var m = this.inputMoons[i]
-                if (!m.on) {
-                    m.setAttribute("href","#moon")
-                    m.on = true
-                }
+    playAnimation() {
+        //make animation moons and reset input moons 
+        var moons = []
+        for(var i = 0; i < this.moonRows; i++) {
+            for(var j = 0; j < this.moonCols; j++) {
+                var m = this.inputMoons[i][j]
+                m.setAttribute("href", "#moon-outline")
+                m.on = false
+
+                var moon = document.createElementNS(svgns,"use")
+                this.arena.appendChild(moon)
+                moon.setAttribute("href","#moon")
+                gsap.set(moon, {x : gsap.getProperty(m, "x"), y : gsap.getProperty(m, "y")})
+                moons.push(moon)
             }
         }
-        else {
-            for(var j = num; j < this.totalMoons; j++) {
-                var m = this.inputMoons[j]
-                if (m.on) {
-                    m.setAttribute("href","#moon-outline")
-                    m.on = false
-                }
-            }
+
+        for(var i = 0; i < this.totalMoons; i++) {
+            this.tl.to(moons[i], {x : this.targetMoonCoords[i].x, y : this.targetMoonCoords[i].y })
         }
-        this.totalMoons = num
-        //console.log(this.totalMoons)
+
+        this.totalMoons = 0
+        this.moonCols = 0
+        this.moonRows = 0
     }
+
+    /*
 
     reset() {
         this.animationEls.forEach(el => {
@@ -253,6 +372,7 @@ export class MoonsPlanetsAPI {
 
         
     }
+    */
 
     circleCoords(num, xVal, yVal, r) {
         var coords : Pos[] = [];
@@ -267,10 +387,11 @@ export class MoonsPlanetsAPI {
     }
 
     gridCoords(xVal, yVal, rows, cols, delta) {
-        var coords : Pos[] = [];
+        var coords : Pos[][] = [];
           for (var i = 0; i < rows; i++) {
+            coords.push([])
             for (var j = 0; j < cols; j++) {
-              coords.push({x : xVal + j * delta, y : yVal + i * delta});
+              coords[i].push({x : xVal + j * delta, y : yVal + i * delta});
             }
           }
           return coords;

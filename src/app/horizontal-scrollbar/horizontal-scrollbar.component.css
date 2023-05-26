@@ -1,7 +1,7 @@
 /* for the 3rd version */
 .app {
     display: grid;
-    grid-gap: 10px 0;
+    grid-gap: 10px;
     grid-template-columns: 20px 1fr 20px;
     align-content: start;
     overflow-x : hidden; 
@@ -11,19 +11,20 @@
     border-style : solid;
     border-radius: 80px;
     background: #43c0d6;
-}
-  
-ul {
-    grid-column: 1 / -1;
-    list-style: none;
-    padding: 0;
+
+    width : 600px;
 }
   
 .hs {
+    grid-column: 1 / -1;
+    list-style: none;
+    padding: 0;
+
     display: grid;
     grid-gap: 10px;
+    /* CHECK */
     grid-template-columns: 10px repeat(var(--total), var(--boxSize)) 10px;
-    grid-template-rows: minmax(50px, 1fr);
+    grid-template-rows: 50px;
     
     overflow-x : scroll; 
 
@@ -33,31 +34,12 @@ ul {
 }
 
 
-::-webkit-scrollbar {
-    width : 0;
-    background : transparent;
-}
-
-
 .hs:before,
 .hs:after {
     content: '';
 }  
-  
-.app {
-    width : 600px;
-    
-}
-  
-.item {
-    scroll-snap-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #fff;
-    border-radius: 8px;
 
-    font-size : 14px;
-    font-family : "Poppins";
-    
+::-webkit-scrollbar {
+    width : 0;
+    background : transparent;
 }
