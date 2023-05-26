@@ -16,7 +16,7 @@ export class MoonsPlanetsComponent implements AfterViewInit {
       arena : this.arena.nativeElement,
     }
 
-    var p1Moons = 2
+    var p1Moons = 7
     var p2Moons = 3
   
     const interactive = new MoonsPlanetsAPI(setup, p1Moons, p2Moons)

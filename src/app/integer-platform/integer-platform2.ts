@@ -27,6 +27,7 @@ export interface InputSetup {
 
   addRemove : boolean,
   useImgs : boolean,
+  scrollbarRange : number,
 }
 
 interface Node extends HTMLElement{
@@ -118,6 +119,7 @@ export class IntegerPlatfromClass {
 
     addRemove : boolean;
     useImgs : boolean;
+    scrollbarRange : number;
 
     balloons : SVGUseElement[]
     balloonVal : number = 1;
@@ -176,6 +178,7 @@ export class IntegerPlatfromClass {
 
         this.addRemove = setup.addRemove
         this.useImgs = setup.useImgs
+        this.scrollbarRange = setup.scrollbarRange
 
         gsap.registerPlugin(CustomEase);
         this.sandbagBounce = CustomEase.create("sandbagBounce", "M0,0 C0,0 0.014,0.001 0.022,0.003 0.031,0.006 0.037,0.01 0.045,0.015 0.054,0.021 0.06,0.027 0.068,0.035 0.077,0.044 0.083,0.05 0.09,0.061 0.108,0.089 0.12,0.107 0.135,0.137 0.155,0.179 0.165,0.205 0.181,0.249 0.201,0.305 0.211,0.336 0.228,0.394 0.247,0.46 0.256,0.497 0.273,0.565 0.292,0.644 0.301,0.686 0.318,0.766 0.337,0.858 0.359,0.98 0.363,0.998 0.367,0.989 0.39,0.949 0.411,0.907 0.426,0.877 0.438,0.859 0.456,0.831 0.464,0.82 0.47,0.813 0.48,0.804 0.487,0.796 0.492,0.792 0.501,0.786 0.509,0.781 0.515,0.778 0.524,0.775 0.531,0.772 0.538,0.771 0.546,0.772 0.554,0.772 0.561,0.773 0.569,0.776 0.578,0.779 0.584,0.783 0.592,0.788 0.601,0.794 0.606,0.799 0.614,0.807 0.623,0.817 0.629,0.824 0.637,0.836 0.655,0.864 0.667,0.882 0.682,0.914 0.701,0.953 0.72,0.982 0.726,0.998 0.73,0.994 0.743,0.979 0.754,0.968 0.761,0.961 0.766,0.957 0.774,0.952 0.782,0.947 0.788,0.943 0.796,0.941 0.804,0.938 0.811,0.937 0.819,0.937 0.827,0.937 0.833,0.938 0.841,0.941 0.85,0.944 0.855,0.947 0.863,0.952 0.872,0.958 0.877,0.963 0.885,0.971 0.894,0.981 0.902,0.992 0.908,0.998 0.914,0.996 1,1 1,1 ")
@@ -802,6 +805,11 @@ export class IntegerPlatfromClass {
       self.selectedTerm.txt.forEach(t => {
         self.selectedTerm.removeChild(t);
       });
+
+      if (self.selectedTerm.img != null) {
+        self.selectedTerm.removeChild(self.selectedTerm.img);
+      }
+      self.selectedTerm.img = null
     }
 
     addText(node) {
@@ -853,7 +861,7 @@ export class IntegerPlatfromClass {
 
     setupInputScrollbar() {
         var self = this
-        for(var i = 5; i >= -5; i--) {
+        for(var i = this.scrollbarRange; i >= -this.scrollbarRange; i--) {
           if (i != 0) {
             var n = document.createElement('li');
             if (self.useImgs) {
@@ -899,7 +907,7 @@ export class IntegerPlatfromClass {
               self.selectedNode.setAttribute("style", self.DEFAULT_NODE_STYLE )
               self.selectedNode.on = false
             }
-    
+
             if(!node.on) {
               node.setAttribute("style", self.SELECTED_NODE_STYLE )
               node.on = true
@@ -911,8 +919,8 @@ export class IntegerPlatfromClass {
 
               self.removeText()
               //self.selectedTerm.removeChild(self.selectedTerm.txt); //CHANGE
-              if (self.selectedTerm.img != null)
-                self.selectedTerm.removeChild(self.selectedTerm.img);
+              // if (self.selectedTerm.img != null)
+              //   self.selectedTerm.removeChild(self.selectedTerm.img);
               
               self.addText(node)
             }
@@ -925,10 +933,10 @@ export class IntegerPlatfromClass {
               self.selectedTerm.node = null
               //self.selectedTerm.removeChild(self.selectedTerm.txt); //CHANGE
               self.removeText()
-              if(self.selectedTerm.img != null)
-                self.selectedTerm.removeChild(self.selectedTerm.img);
+              // if(self.selectedTerm.img != null)
+              //   self.selectedTerm.removeChild(self.selectedTerm.img);
     
-              self.selectedTerm.img = null
+              // self.selectedTerm.img = null
               self.selectedTerm.val = 0
               
               self.selectedTerm.txt[0] = document.createTextNode("") //CHANGE

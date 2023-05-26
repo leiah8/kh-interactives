@@ -34,7 +34,7 @@ export class IntegerPlatformComponent implements AfterViewInit {
     this.route.params.subscribe( params => p = params);
 
     this.addRemove = (p.addRemove == "addRemove") ? true : false
-    this.useImgs = (p.useImgs == "imgs") ? true : false
+    this.useImgs = (p.useImgs == "imgs" || p.useImgs ==  null) ? true : false
   }
 
   ngAfterViewInit(): void {
@@ -100,6 +100,8 @@ export class IntegerPlatformComponent implements AfterViewInit {
 
       addRemove : this.addRemove,
       useImgs : this.useImgs,
+      scrollbarRange : 5,
+
     } as InputSetup
 
     const interactive = new IntegerPlatfromClass(setup, [game1, game2, game3, game4, game5])

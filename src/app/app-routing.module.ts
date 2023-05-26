@@ -10,6 +10,7 @@ const routes: Routes = [
   { path: 'scrollbar', component: ContainerComponent },
   { path: 'moonsplanets', component: MoonsPlanetsComponent },
   { path: 'minecart/:addRemove/:useImgs', component: IntegerPlatformComponent },
+  { path: 'minecart', component: IntegerPlatformComponent },
   
 ]
 
