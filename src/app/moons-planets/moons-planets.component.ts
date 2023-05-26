@@ -16,10 +16,15 @@ export class MoonsPlanetsComponent implements AfterViewInit {
       arena : this.arena.nativeElement,
     }
 
-    var p1Moons = 7
-    var p2Moons = 3
+    var p1Moons = 8
+    var p2Moons = 2
+    var p1Num = 8
+    var p2Num = 2
+
+    //max 10 moons per planet
+    //max 10 planets total
   
-    const interactive = new MoonsPlanetsAPI(setup, p1Moons, p2Moons)
+    const interactive = new MoonsPlanetsAPI(setup, p1Num, p1Moons, p2Num, p2Moons)
   }
 
   
