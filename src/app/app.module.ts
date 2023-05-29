@@ -8,6 +8,7 @@ import { ContainerComponent } from './container/container.component';
 import { HorizontalScrollbarComponent } from './horizontal-scrollbar/horizontal-scrollbar.component';
 import { IntegerPlatformComponent } from './integer-platform/integer-platform.component';
 import { MoonsPlanetsComponent } from './moons-planets/moons-planets.component';
+import { SlingshotInputComponent } from './slingshot-input/slingshot-input.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { MoonsPlanetsComponent } from './moons-planets/moons-planets.component';
     HorizontalScrollbarComponent,
     IntegerPlatformComponent,
     MoonsPlanetsComponent,
+    SlingshotInputComponent,
   ],
   imports: [
     BrowserModule,

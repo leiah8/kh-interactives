@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { MoonsPlanetsAPI} from "./moons-planets";
+import { Game, MoonsPlanetsAPI} from "./moons-planets";
 
 @Component({
   selector: 'app-moons-planets',
@@ -8,23 +8,36 @@ import { MoonsPlanetsAPI} from "./moons-planets";
 })
 export class MoonsPlanetsComponent implements AfterViewInit {
   @ViewChild("arena") public arena?: ElementRef<HTMLElement>;
+  @ViewChild("controls") public controls?: ElementRef<HTMLElement>;
 
   constructor() { }
 
   ngAfterViewInit(): void {
     const setup = {
       arena : this.arena.nativeElement,
+      controls : this.controls.nativeElement
     }
 
-    var p1Moons = 8
-    var p2Moons = 2
-    var p1Num = 8
-    var p2Num = 2
+    const game1 = {
+      p1Num : 8,
+      p2Num : 2,
+      p1Moons : 10,
+      p2Moons : 3,
+      attempts: 0, //must be initialized to 0
+    } as Game
+
+    const game2 = {
+      p1Num : 4,
+      p2Num : 3,
+      p1Moons : 4,
+      p2Moons : 3,
+      attempts: 0, //must be initialized to 0
+    } as Game
 
     //max 10 moons per planet
     //max 10 planets total
   
-    const interactive = new MoonsPlanetsAPI(setup, p1Num, p1Moons, p2Num, p2Moons)
+    const interactive = new MoonsPlanetsAPI(setup, [game1, game2])
   }
 
   

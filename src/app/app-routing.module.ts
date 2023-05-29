@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ContainerComponent } from './container/container.component';
 import { IntegerPlatformComponent } from './integer-platform/integer-platform.component';
 import { MoonsPlanetsComponent } from './moons-planets/moons-planets.component';
+import { SlingshotInputComponent } from './slingshot-input/slingshot-input.component';
 
 
 const routes: Routes = [
@@ -11,6 +12,7 @@ const routes: Routes = [
   { path: 'moonsplanets', component: MoonsPlanetsComponent },
   { path: 'minecart/:addRemove/:useImgs', component: IntegerPlatformComponent },
   { path: 'minecart', component: IntegerPlatformComponent },
+  { path: 'slingshot', component: SlingshotInputComponent },
   
 ]
 
