@@ -353,15 +353,23 @@ export class MoonsPlanetsAPI {
         var switchMoons = this.p1Num*this.p1Moons
         var time = 0.5
         self.tl.to(self.playBtn, {duration : 0.5})
+        var moonGroups = []
+        var tempMoons = []
         for(var i = 0; i < this.totalMoons && i < goal; i++) {
             if (i >= switchMoons && (i - switchMoons) % this.p2Moons == 0) {
                 self.tl.to(moons[i], {x : this.targetMoonCoords[i].x, y : this.targetMoonCoords[i].y, scale : 1, duration : time})
+                if (tempMoons.length > 0) moonGroups.push(tempMoons)
+                tempMoons = [moons[i]]
+
             }
             else if (i < switchMoons && i % this.p1Moons == 0) {
                 self.tl.to(moons[i], {x : this.targetMoonCoords[i].x, y : this.targetMoonCoords[i].y, scale : 1, duration : time})
+                if (tempMoons.length > 0) moonGroups.push(tempMoons)
+                tempMoons = [moons[i]]
             }
             else {
                 self.tl.to(moons[i], {x : this.targetMoonCoords[i].x, y : this.targetMoonCoords[i].y, scale : 1, duration : time}, "<")
+                tempMoons.push(moons[i])
             }
         }
 
@@ -369,8 +377,31 @@ export class MoonsPlanetsAPI {
         if (this.totalMoons == goal) {
             //console.log("success")
             this.game.attempts = 3
-            //TO DO: spin moons around planets
             this.tl.to([self.retryBtn, self.nextBtn], {scale : 1, rotation : 0})
+
+            //TO DO: spin moons around planets
+            //this.tl.to(moonGroups[0], {transformOrigin : "10px 10px", duration : 0})
+            //this.tl.to(moonGroups[0], {rotation : 360, duration : 1})
+            // 
+            for(var i = 0; i < this.pCoords.length; i++) {
+                var cx = this.pCoords[i].x + 27.5
+                var cy = this.pCoords[i].y + 27.5
+
+                console.log(cx, cy)
+
+                //not working
+                // for(var j = 0; j < moonGroups[i].length; j++) {
+                //     var mx = gsap.getProperty(moonGroups[i][j], "x")
+                //     var my = gsap.getProperty(moonGroups[i][j], "y")
+
+                //     console.log(mx, my, cx, cy)
+                //     this.tl.to(moonGroups[i][j], {transformOrigin : (cx - mx) + " " + (cy - my), duration : 0})
+                //     this.tl.to(moonGroups[i][j], {rotation : 360, duration : 1})
+                // }
+                //this.tl.to(moonGroups[i], {transformOrigin : cx + " " + cy, duration : 0})
+                //this.tl.to(moonGroups[i], {rotation : 360, duration : 1})
+            }
+
         }
         else if (this.totalMoons < goal){
             //console.log("fail")
