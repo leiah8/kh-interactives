@@ -18,7 +18,7 @@ export class MoonsPlanetsComponent implements AfterViewInit {
     var p;
     this.route.params.subscribe( params => p = params);
 
-    this.groups = (p.groups == "groups" || p.groups == "") ? true : false
+    this.groups = (p.groups == "ones") ? false : true
   }
 
   ngAfterViewInit(): void {
