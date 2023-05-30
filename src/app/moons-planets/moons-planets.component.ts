@@ -1,5 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Game, MoonsPlanetsAPI} from "./moons-planets";
+import {ActivatedRoute} from "@angular/router";
+
 
 @Component({
   selector: 'app-moons-planets',
@@ -10,12 +12,20 @@ export class MoonsPlanetsComponent implements AfterViewInit {
   @ViewChild("arena") public arena?: ElementRef<HTMLElement>;
   @ViewChild("controls") public controls?: ElementRef<HTMLElement>;
 
-  constructor() { }
+  groups : boolean
+
+  constructor(private route: ActivatedRoute) {
+    var p;
+    this.route.params.subscribe( params => p = params);
+
+    this.groups = (p.groups == "groups" || p.feedbackType == "") ? true : false
+  }
 
   ngAfterViewInit(): void {
     const setup = {
       arena : this.arena.nativeElement,
-      controls : this.controls.nativeElement
+      controls : this.controls.nativeElement,
+      groups : this.groups
     }
 
     const game1 = {

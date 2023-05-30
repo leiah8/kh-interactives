@@ -10,6 +10,7 @@ import { SlingshotInputComponent } from './slingshot-input/slingshot-input.compo
 const routes: Routes = [
   { path: 'scrollbar', component: ContainerComponent },
   { path: 'moonsplanets', component: MoonsPlanetsComponent },
+  { path: 'moonsplanets/:groups', component: MoonsPlanetsComponent },
   { path: 'minecart/:addRemove/:useImgs', component: IntegerPlatformComponent },
   { path: 'minecart', component: IntegerPlatformComponent },
   { path: 'slingshot', component: SlingshotInputComponent },

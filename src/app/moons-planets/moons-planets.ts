@@ -1,7 +1,6 @@
 import {svgns} from "../api"
 import { gsap, Draggable, Power1, Elastic } from "gsap/all";
 
-
 interface Pos {
     x : number,
     y : number
@@ -29,6 +28,7 @@ export interface Game {
 export class MoonsPlanetsAPI {
     arena : SVGSVGElement
     controls : SVGSVGElement
+    groups : boolean
     games : Game[]
     game : Game
     gameIndex : number;
@@ -63,6 +63,7 @@ export class MoonsPlanetsAPI {
 
         this.arena = setup.arena
         this.controls = setup.controls
+        this.groups = setup.groups
         this.inputMoons = []
         this.totalMoons = 0
         
@@ -374,11 +375,11 @@ export class MoonsPlanetsAPI {
         self.tl.to(self.playBtn, {duration : 0.5})
 
         //move moons to targets
-
-        this.moveMoonsToTargets(goal)
+        if (this.groups)
+            this.moveMoonsToTargetsGroups(goal)
+        else 
+            this.moveMoonsToTargetsOnes(goal)
         
-        
-
         if (this.totalMoons == goal) {
             this.game.attempts = 3
 
@@ -462,31 +463,34 @@ export class MoonsPlanetsAPI {
         this.moonRows = 0
     }
 
-    moveMoonsToTargets(goal) {
+    moveMoonsToTargetsOnes(goal) {
+        var self = this
+        var time = 0.3
+        
+        for(var i = 0; i < this.totalMoons && i < goal; i++) {
+            self.tl.to(this.animationMoons[i], {x : this.targetMoonCoords[i].x, y : this.targetMoonCoords[i].y, scale : 1, duration : time})
+        }
+
+    }
+
+    moveMoonsToTargetsGroups(goal) {
         var self = this
         var switchPlanets = this.p1Num*this.p1Moons
         var time = 0.5
 
-        var moonGroups = []
-        var tempMoons = []
         for(var i = 0; i < this.totalMoons && i < goal; i++) {
             //first moon to planet 2
             if (i >= switchPlanets && (i - switchPlanets) % this.p2Moons == 0) {
                 self.tl.to(this.animationMoons[i], {x : this.targetMoonCoords[i].x, y : this.targetMoonCoords[i].y, scale : 1, duration : time})
-                if (tempMoons.length > 0) moonGroups.push(tempMoons)
-                tempMoons = [this.animationMoons[i]]
 
             }
             //first moon to planet 1
             else if (i < switchPlanets && i % this.p1Moons == 0) {
                 self.tl.to(this.animationMoons[i], {x : this.targetMoonCoords[i].x, y : this.targetMoonCoords[i].y, scale : 1, duration : time})
-                if (tempMoons.length > 0) moonGroups.push(tempMoons)
-                tempMoons = [this.animationMoons[i]]
             }
             //other moons (follow the first)
             else {
                 self.tl.to(this.animationMoons[i], {x : this.targetMoonCoords[i].x, y : this.targetMoonCoords[i].y, scale : 1, duration : time}, "<")
-                tempMoons.push(this.animationMoons[i])
             }
         }
     }
