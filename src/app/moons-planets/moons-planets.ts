@@ -54,6 +54,8 @@ export class MoonsPlanetsAPI {
     retryBtn : SVGUseElement;
     nextBtn : SVGUseElement
 
+    canEdit : boolean
+
     tl : any
 
     constructor(setup, games) {
@@ -79,6 +81,8 @@ export class MoonsPlanetsAPI {
         this.targetMoons = []
         this.pCoords = []
 
+        this.canEdit = true
+
         this.tl = gsap.timeline()
 
         this.init()
@@ -103,6 +107,7 @@ export class MoonsPlanetsAPI {
 
         playBtn.onpointerdown = function(e) {
             self.game.attempts++;
+            self.canEdit = false
             self.tl.to(playBtn, {duration : 0.2, scale : 0})
             self.playAnimation()
         }   
@@ -207,6 +212,8 @@ export class MoonsPlanetsAPI {
 
     //fill the array of moons to an n by m array
     fill(rows : number, cols : number) {
+
+        if (!this.canEdit) return
 
         if (rows < 0) rows = 0
         else if (rows > this.TOTAL_ROWS) rows = this.TOTAL_ROWS
@@ -511,6 +518,8 @@ export class MoonsPlanetsAPI {
         else
             gsap.set(self.nextBtn, {scale : 0})
 
+        this.canEdit = true
+        
         this.tl.clear()
     }
     
