@@ -69,8 +69,8 @@ export class MoonsPlanetsAPI {
         this.inputMoons = []
         this.totalMoons = 0
         
-        this.moonRows = 0;
-        this.moonCols = 0;
+        this.moonRows = 1;
+        this.moonCols = 1;
         this.p1Moons = this.game.p1Moons
         this.p2Moons = this.game.p2Moons
         this.p1Num = this.game.p1Num
@@ -96,6 +96,7 @@ export class MoonsPlanetsAPI {
     setupEls() {
         var self = this
         this.setupInputMoons()
+        this.fill(1,1)
         this.setupArrows()
         this.setupPlanets()
 
@@ -144,7 +145,7 @@ export class MoonsPlanetsAPI {
         gsap.set(up, {x : 300, y : 560})
 
         up.onpointerdown = function(e) {
-            self.fill(self.moonRows - 1, self.moonCols) 
+            self.fill(self.moonRows + 1, self.moonCols) 
         }
 
         var down = document.createElementNS(svgns,"use")
@@ -153,7 +154,7 @@ export class MoonsPlanetsAPI {
         gsap.set(down, {x : 300, y : 645}) 
 
         down.onpointerdown = function(e) {
-            self.fill(self.moonRows + 1, self.moonCols) 
+            self.fill(self.moonRows - 1, self.moonCols) 
         }
 
         var left = document.createElementNS(svgns,"use")
@@ -181,12 +182,13 @@ export class MoonsPlanetsAPI {
         var inputMoonCoords = this.gridCoords(100, 100, this.TOTAL_ROWS, this.TOTAL_COLS, 45)
 
         //create empty input moons
-        for(var i = 0; i < this.TOTAL_ROWS; i++) {
+        //for(var i = 0; i < this.TOTAL_ROWS; i++) {
+        for(var i = this.TOTAL_ROWS-1; i >= 0; i--) {
             this.inputMoons.push([])
             for(var j = 0; j < this.TOTAL_COLS; j++) {
                 var p = inputMoonCoords[i][j]
                 var moon = Object.assign(document.createElementNS(svgns,"use"), {
-                    row : i+1, 
+                    row : this.TOTAL_ROWS - i, 
                     col : j+1,
                     on : false, 
                 })
@@ -194,7 +196,7 @@ export class MoonsPlanetsAPI {
                 moon.setAttribute("href","#moon-outline")
                 gsap.set(moon, {x : p.x, y : p.y, scale : 1.4})
     
-                this.inputMoons[i].push(moon)
+                this.inputMoons[this.TOTAL_ROWS - 1 - i].push(moon)
             }
         }
 
@@ -215,10 +217,10 @@ export class MoonsPlanetsAPI {
 
         if (!this.canEdit) return
 
-        if (rows < 0) rows = 0
+        if (rows < 1) rows = 1
         else if (rows > this.TOTAL_ROWS) rows = this.TOTAL_ROWS
 
-        if (cols < 0) cols = 0
+        if (cols < 1) cols = 1
         else if (cols > this.TOTAL_COLS) cols = this.TOTAL_COLS
 
 
@@ -494,51 +496,86 @@ export class MoonsPlanetsAPI {
         // }
 
         //make groups of the targetMoonCoords
-        var moonGroups = []
-        var tempGroup;
-        var index = 0;
+        // var moonGroups = []
+        // var tempGroup;
+        // var index = 0;
 
-        for(var i = 0; i < this.p1Num; i++) {
-            tempGroup = []
-            for(var j = 0; j < this.p1Moons; j++) {
-                tempGroup.push(this.targetMoonCoords[index])
-                index++;
-            }
-            moonGroups.push(tempGroup)
-        }
+        // for(var i = 0; i < this.p1Num; i++) {
+        //     tempGroup = []
+        //     for(var j = 0; j < this.p1Moons; j++) {
+        //         tempGroup.push(this.targetMoonCoords[index])
+        //         index++;
+        //     }
+        //     moonGroups.push(tempGroup)
+        // }
 
-        for(var i = 0; i < this.p2Num; i++) {
-            tempGroup = []
-            for(var j = 0; j < this.p2Moons; j++) {
-                tempGroup.push(this.targetMoonCoords[index])
-                index++;
-            }
-            moonGroups.push(tempGroup)
-        }
+        // for(var i = 0; i < this.p2Num; i++) {
+        //     tempGroup = []
+        //     for(var j = 0; j < this.p2Moons; j++) {
+        //         tempGroup.push(this.targetMoonCoords[index])
+        //         index++;
+        //     }
+        //     moonGroups.push(tempGroup)
+        // }
         var unfilledPlanets = this.p1Num + this.p2Num
         var moonNum = -1
         var index = 0;
 
+        var moonGroups = []
+        for(var i = 0; i < this.p1Num; i++) moonGroups.push(this.p1Moons)
+        for(var i = 0; i < this.p2Num; i++) moonGroups.push(this.p2Moons)
+
         var newOrderMoons = Array(this.totalMoons)
+        var inc = 1;
+        var index = 0
+        var y = 0;
+
+        var moonNum = 0
+        
+
+
         for(var i = 0; i < this.totalMoons && i < goal; i++) {
-            if (i % unfilledPlanets == 0) {
-                moonNum++;
+
+            //console.log(i, index)
+            var pos = this.targetMoonCoords[index] //moonGroups[i % unfilledPlanets][moonNum]
+            self.tl.to(this.animationMoons[i], {x : pos.x, y : pos.y, scale : 1, duration : time})
+            self.tl.to(this.animationMoons[i], {duration : timeBetweenAnim})
+            newOrderMoons[index] = this.animationMoons[i]
+            
+
+            if ((i+inc) % moonGroups.length == 0 && i > 0) {
+                moonNum++; 
+
+                var sum = 0
+                var keep = []
+                for(var j = 0; j < moonGroups.length; j++) {
+                    sum += moonGroups[j]
+                    if (moonGroups[j] > moonNum) {
+                        keep.push(moonGroups[j])
+                    }
+                    else {
+                        inc -= 1
+                    }
+                }
+
+                sum -= moonGroups[moonGroups.length-1]
+
+                moonGroups = keep
+
+                index -= sum
+                index += 1
+
+                //console.log(moonGroups)
             }
-            try {
-                var pos = moonGroups[i % unfilledPlanets][moonNum]
-                self.tl.to(this.animationMoons[i], {x : pos.x, y : pos.y, scale : 1, duration : time})
-                self.tl.to(this.animationMoons[i], {duration : timeBetweenAnim})
-                newOrderMoons[(i % unfilledPlanets)*moonGroups.length + moonNum] = this.animationMoons[i]
-            } catch {
-                i--;
-                unfilledPlanets--;
-            }
+            else {
+                index += moonGroups[i % moonGroups.length]
+            }            
         }
 
         //change order of animation moons to match rotation 
 
         this.animationMoons = newOrderMoons
-        console.log(newOrderMoons)
+        //console.log(newOrderMoons)
 
 
     }
