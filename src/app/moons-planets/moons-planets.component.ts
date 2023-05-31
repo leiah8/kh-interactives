@@ -32,7 +32,7 @@ export class MoonsPlanetsComponent implements AfterViewInit {
       p1Num : 8,
       p2Num : 2,
       p1Moons : 10,
-      p2Moons : 0,
+      p2Moons : 5,
       attempts: 0, //must be initialized to 0
     } as Game
 
