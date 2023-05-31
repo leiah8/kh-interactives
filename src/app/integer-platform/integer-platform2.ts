@@ -61,8 +61,8 @@ export class IntegerPlatfromClass {
     inputNums : HTMLElement;
     inputBtns : HTMLElement;
     equation : HTMLElement;
-    balloonURL : string = "https://res.cloudinary.com/dxltpgop9/image/upload/v1683303439/integer-platform-balloon_wmfqfh.svg";
-    sandbagURL : string = "https://res.cloudinary.com/dxltpgop9/image/upload/v1683303439/integer-platform-sandbag_zdtxyg.svg";
+    balloonURL : string = "https://res.cloudinary.com/dxltpgop9/image/upload/v1683303439/minecart/integer-platform-balloon_wmfqfh.svg";
+    sandbagURL : string = "https://res.cloudinary.com/dxltpgop9/image/upload/v1683303439/minecart/integer-platform-sandbag_zdtxyg.svg";
     
     numbers : HTMLElement;
     plusBtn : HTMLElement;

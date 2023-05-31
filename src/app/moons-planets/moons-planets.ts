@@ -432,8 +432,6 @@ export class MoonsPlanetsAPI {
 
             //rotate all animation moons
             this.tl.to(this.animationMoons, {rotation : 360, duration : 4, ease : "linear"})
-            // this.tl.to(this.targetMoons, {scale : 0.8, duration : 0})
-
 
         }
         else if (this.totalMoons < goal){
@@ -466,7 +464,7 @@ export class MoonsPlanetsAPI {
             }
         }
 
-        self.tl.to(self.playBtn, {duration : timeBetweenStages})
+        //self.tl.to(self.playBtn, {duration : timeBetweenStages})
 
         //show retry and/or next button 
         if (this.game.attempts > 2) {
@@ -478,7 +476,7 @@ export class MoonsPlanetsAPI {
             
            //rotatating retry in middle
            gsap.set(self.retryBtn, {scale : 0, x : 610, y : 320, rotation : 0})
-           this.tl.to(self.retryBtn, {scale : 3})
+           this.tl.to(self.retryBtn, {scale : 3, duration : 1})
            this.tl.to(self.retryBtn, {repeat : -1, duration : 4, rotation : 360, ease: "bounce"}) 
         }
 
