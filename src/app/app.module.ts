@@ -9,6 +9,7 @@ import { HorizontalScrollbarComponent } from './horizontal-scrollbar/horizontal-
 import { IntegerPlatformComponent } from './integer-platform/integer-platform.component';
 import { MoonsPlanetsComponent } from './moons-planets/moons-planets.component';
 import { SlingshotInputComponent } from './slingshot-input/slingshot-input.component';
+import { MultiplyFlowersComponent } from './multiply-flowers/multiply-flowers.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { SlingshotInputComponent } from './slingshot-input/slingshot-input.compo
     IntegerPlatformComponent,
     MoonsPlanetsComponent,
     SlingshotInputComponent,
+    MultiplyFlowersComponent,
   ],
   imports: [
     BrowserModule,
