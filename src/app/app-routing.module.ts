@@ -6,6 +6,7 @@ import { IntegerPlatformComponent } from './integer-platform/integer-platform.co
 import { MoonsPlanetsComponent } from './moons-planets/moons-planets.component';
 import { SlingshotInputComponent } from './slingshot-input/slingshot-input.component';
 import { MultiplyFlowersComponent } from './multiply-flowers/multiply-flowers.component';
+import { MultiplicationTableComponent } from './multiplication-table/multiplication-table.component';
 
 
 
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'minecart/:addRemove/:useImgs', component: IntegerPlatformComponent },
   { path: 'minecart', component: IntegerPlatformComponent },
   { path: 'slingshot', component: SlingshotInputComponent },
+  { path: 'multtable', component: MultiplicationTableComponent },
   
 ]
 

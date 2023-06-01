@@ -10,6 +10,7 @@ import { IntegerPlatformComponent } from './integer-platform/integer-platform.co
 import { MoonsPlanetsComponent } from './moons-planets/moons-planets.component';
 import { SlingshotInputComponent } from './slingshot-input/slingshot-input.component';
 import { MultiplyFlowersComponent } from './multiply-flowers/multiply-flowers.component';
+import { MultiplicationTableComponent } from './multiplication-table/multiplication-table.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { MultiplyFlowersComponent } from './multiply-flowers/multiply-flowers.co
     MoonsPlanetsComponent,
     SlingshotInputComponent,
     MultiplyFlowersComponent,
+    MultiplicationTableComponent,
   ],
   imports: [
     BrowserModule,
