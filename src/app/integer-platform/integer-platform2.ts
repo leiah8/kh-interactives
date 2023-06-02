@@ -884,7 +884,7 @@ export class IntegerPlatfromClass {
           else {
             var n = document.createElement('li');
             var s = document.createElement('img')
-            s.src = "https://res.cloudinary.com/dxltpgop9/image/upload/v1684182170/delete-button_rtn4rv.svg"
+            s.src = "https://res.cloudinary.com/dxltpgop9/image/upload/v1684182170/minecart/delete-button_rtn4rv.svg"
             n.appendChild(s)
 
             n.setAttribute("style", self.DEFAULT_NODE_STYLE)

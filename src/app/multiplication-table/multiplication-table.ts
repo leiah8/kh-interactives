@@ -1,4 +1,5 @@
-
+//https://codepen.io/dannievinther/pen/PdvvQv
+//http://jsfiddle.net/v9f0ngu5/
 
 export class MultiplicationTableClass {
     table : HTMLElement;
