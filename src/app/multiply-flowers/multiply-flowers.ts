@@ -66,6 +66,9 @@ export class MoonsPlanetsAPI {
         this.arena = setup.arena
         this.controls = setup.controls
         this.groups = setup.groups
+        this.playBtn = setup.playBtn
+        this.nextBtn = setup.nextBtn
+        this.retryBtn = setup.retryBtn
         this.inputMoons = []
         this.totalMoons = 0
         
@@ -101,38 +104,41 @@ export class MoonsPlanetsAPI {
         this.setupPlanets()
 
         //buttons
-        var playBtn = document.createElementNS(svgns,"use")
-        this.controls.appendChild(playBtn)
-        playBtn.setAttribute("href","#play-btn")
-        gsap.set(playBtn, {x : 10, y : 10, transformOrigin : "35px 35px"})
+        // var playBtn = document.createElementNS(svgns,"use")
+        // this.controls.appendChild(playBtn)
+        // playBtn.setAttribute("href","#play-btn")
+        // gsap.set(playBtn, {x : 10, y : 10, transformOrigin : "35px 35px"})
 
-        playBtn.onpointerdown = function(e) {
+        this.playBtn.onpointerdown = function(e) {
             self.game.attempts++;
             self.canEdit = false
-            self.tl.to(playBtn, {duration : 0.2, scale : 0})
+            self.tl.to(self.playBtn, {duration : 0.2, scale : 0})
             self.playAnimation()
         }   
-        this.playBtn = playBtn
+        //this.playBtn = playBtn
 
-        var retryBtn = document.createElementNS(svgns,"use")
-        this.controls.appendChild(retryBtn)
-        retryBtn.setAttribute("href","#retry-btn")
-        gsap.set(retryBtn, {x : 10, y : 10, transformOrigin : "35px 35px", scale : 0})
+        // var retryBtn = document.createElementNS(svgns,"use")
+        // this.controls.appendChild(retryBtn)
+        // retryBtn.setAttribute("href","#retry-btn")
+        // gsap.set(retryBtn, {x : 10, y : 10, transformOrigin : "35px 35px", scale : 0})
+        gsap.set(this.retryBtn, {scale : 0})
 
-        retryBtn.onpointerdown = function(e) {
+        this.retryBtn.onpointerdown = function(e) {
             self.reset()
         }
-        this.retryBtn = retryBtn
+        // this.retryBtn = retryBtn
 
-        var nextBtn = document.createElementNS(svgns,"use")
-        this.controls.appendChild(nextBtn)
-        nextBtn.setAttribute("href","#next-btn")
-        gsap.set(nextBtn, {x : 1180, y : 640, transformOrigin : "35px 35px", scale : 0})
+        // var nextBtn = document.createElementNS(svgns,"use")
+        // this.controls.appendChild(nextBtn)
+        // nextBtn.setAttribute("href","#next-btn")
+        // gsap.set(nextBtn, {x : 1180, y : 640, transformOrigin : "35px 35px", scale : 0})
 
-        nextBtn.onpointerdown = function(e) {
+        gsap.set(this.nextBtn, {scale : 0})
+
+        this.nextBtn.onpointerdown = function(e) {
             self.nextGame()
         }
-        this.nextBtn = nextBtn
+        //this.nextBtn = nextBtn
 
     }
 
@@ -179,12 +185,12 @@ export class MoonsPlanetsAPI {
 
     setupInputMoons() {
         var self = this
-        var inputMoonCoords = this.gridCoords(250, 175, this.TOTAL_ROWS, this.TOTAL_COLS, 45)
+        var inputMoonCoords = this.gridCoords(250, 240, this.TOTAL_ROWS, this.TOTAL_COLS, 38)
 
         for(var j = 0; j < this.TOTAL_COLS; j++) {
             var rowOutline = document.createElementNS(svgns, "rect")
             this.arena.appendChild(rowOutline)
-            gsap.set(rowOutline, {x : inputMoonCoords[0][j].x - 5 + j*5, y : inputMoonCoords[0][j].y, height : this.TOTAL_COLS*53 + 5, width : 45, rx : 16, fill : "#4F311C"})
+            gsap.set(rowOutline, {x : inputMoonCoords[0][j].x - 7 + j*8, y : inputMoonCoords[0][j].y - 2.5, height : this.TOTAL_COLS*45 + 15, width : 40, rx : 16, fill : "#4F311C"})
 
         }
         //create empty input moons
@@ -204,7 +210,7 @@ export class MoonsPlanetsAPI {
                 })
                 this.arena.appendChild(moon)
                 moon.setAttribute("href","#moon-outline")
-                gsap.set(moon, {x : p.x + j*5, y : p.y + i*8, scale : 1.4})
+                gsap.set(moon, {x : p.x + j*8, y : p.y + i*8, scale : 1.2})
     
                 this.inputMoons[this.TOTAL_ROWS - 1 - i].push(moon)
             }
@@ -285,7 +291,7 @@ export class MoonsPlanetsAPI {
     setupPlanets() {
         var self = this
 
-        this.pCoords = self.rowCoords(130, 90, 10, 115)
+        this.pCoords = self.rowCoords(120, 150, 10, 115)
         
         //add all p1 planets
         var r = 60
@@ -296,7 +302,7 @@ export class MoonsPlanetsAPI {
             planet.setAttribute("href","#pot")
             
             var p = this.pCoords[planetIndex]
-            gsap.set(planet, {x : p.x, y : p.y, transformOrigin : "center"})
+            gsap.set(planet, {x : p.x + 11, y : p.y + 10, transformOrigin : "center"})
             planetIndex++;
 
             this.gameEls.push(planet)
@@ -308,12 +314,12 @@ export class MoonsPlanetsAPI {
             this.gameEls.push(sign)
 
             //add moons around planet
-            var coords = (this.rowCoords(p.x - 23, p.y -70, 5, 20).concat(this.rowCoords(p.x - 23, p.y -70+20, 5, 20)))
+            var coords = (this.rowCoords(p.x - 15.5, p.y -60, 5, 22).concat(this.rowCoords(p.x - 14, p.y -60+25, 5, 22)))
             coords.splice(this.p1Moons)
             for(var j = 0; j < this.p1Moons; j++) {
                 var moon = document.createElementNS(svgns,"use")
                 this.arena.appendChild(moon)
-                moon.setAttribute("href","#moon-outline")
+                moon.setAttribute("href","#flower-outline")
 
                 this.targetMoonCoords.push(coords[j])
                 this.gameEls.push(moon)
@@ -330,7 +336,7 @@ export class MoonsPlanetsAPI {
             planet.setAttribute("href","#pot")
             
             var p = this.pCoords[planetIndex]
-            gsap.set(planet, {x : p.x, y : p.y, transformOrigin : "center"})
+            gsap.set(planet, {x : p.x + 11, y : p.y + 10, transformOrigin : "center"})
             planetIndex++;
             this.gameEls.push(planet)
 
@@ -342,12 +348,12 @@ export class MoonsPlanetsAPI {
 
 
             //add moons around planet
-            var coords = (this.rowCoords(p.x - 23, p.y -70, 5, 20).concat(this.rowCoords(p.x - 23, p.y -70+20, 5, 20)))
+            var coords = (this.rowCoords(p.x - 15.5, p.y -60, 5, 22).concat(this.rowCoords(p.x - 14, p.y -60+25, 5, 22)))
             coords.splice(this.p2Moons)
             for(var j = 0; j < this.p2Moons; j++) {
                 var moon = document.createElementNS(svgns,"use")
                 this.arena.appendChild(moon)
-                moon.setAttribute("href","#moon-outline")
+                moon.setAttribute("href","#flower-outline")
 
                 this.targetMoonCoords.push(coords[j])
                 this.gameEls.push(moon)
@@ -382,26 +388,29 @@ export class MoonsPlanetsAPI {
 
                 this.arena.appendChild(moon)
                 moon.setAttribute("href","#moon")
-                gsap.set(moon, {x : gsap.getProperty(m, "x"), y : gsap.getProperty(m, "y"), scale : 1.4})
+                gsap.set(moon, {x : gsap.getProperty(m, "x"), y : gsap.getProperty(m, "y"), scale : 1.2})
                 this.animationMoons.push(moon)
                 index++;
             }
         }
 
         //grow animation
-        this.tl.to(this.animationMoons, { transformOrigin : "12.5px 38px", duration : 0})
+        this.tl.to(this.inputMoons, { transformOrigin : "10px 30px", duration : 0})
+
+        this.tl.to(this.animationMoons, { transformOrigin : "10px 30px", duration : 0})
         this.tl.to(this.animationMoons, {scale : 0, duration : 1, onComplete : function(e) {
             for(var i = 0; i < self.animationMoons.length;i++) {
                 self.animationMoons[i].setAttribute("href","#flower")
             }
         }})
-        this.tl.to(this.animationMoons, {scale : 1.4, duration : 2, ease : "elastic"})
+        this.tl.to(this.inputMoons, { scale : 0, duration : 1}, "<")
+        this.tl.to(this.animationMoons, {scale : 1.2, duration : 2, ease : "elastic"})
         this.tl.to(this.animationMoons, { transformOrigin : "0px 0px", duration : 0})
         
         //self.tl.to(self.playBtn, {duration : timeBetweenStages})
         
         //move moons to targets
-        if (this.groups)
+        if (this.groups) 
             this.moveMoonsToTargetsGroups(goal, timeBetweenAnim)
         else 
             this.moveMoonsToTargetsOnes(goal, timeBetweenAnim)
@@ -412,7 +421,41 @@ export class MoonsPlanetsAPI {
             this.game.attempts = 3
 
             //delete all targets 
-            this.tl.to(this.targetMoons, {scale : 0, duration : 0})
+            //this.tl.to(this.targetMoons, {scale : 0, duration : 0})
+
+            var coords = []
+            for(var i = 0; i < this.pCoords.length; i++) {
+                var p = this.pCoords[i]
+                if (i < this.p1Num)
+                    coords = coords.concat(this.bouquetCoords(p.x, p.y, this.p1Moons, 20))
+                else
+                coords = coords.concat(this.bouquetCoords(p.x, p.y, this.p2Moons, 20))
+            }
+
+            var switchPlanets = this.p1Num*this.p1Moons
+            var time = 0.5
+
+            //to do adjust position based on width of the bouquet 
+
+            //to do use function to do this (adjust to groups function )
+            for(var i = 0; i < this.totalMoons && i < goal; i++) {
+                //first moon to planet 2
+                if (i >= switchPlanets && (i - switchPlanets) % this.p2Moons == 0) {
+                    self.tl.to(this.animationMoons[i], {duration : timeBetweenAnim})
+                    self.tl.to(this.animationMoons[i], {x : coords[i].x, y : coords[i].y - 65,  duration : time})
+                }
+                //first moon to planet 1
+                else if (i < switchPlanets && i % this.p1Moons == 0) {
+                    self.tl.to(this.animationMoons[i], {duration : timeBetweenAnim})
+                    self.tl.to(this.animationMoons[i], {x : coords[i].x, y : coords[i].y - 65,  duration : time})
+                }
+                //other moons (follow the first)
+                else {
+                    self.tl.to(this.animationMoons[i], {x : coords[i].x, y : coords[i].y - 65, duration : time}, "<")
+                }
+            }
+
+
 
         }
         else if (this.totalMoons < goal){
@@ -445,7 +488,8 @@ export class MoonsPlanetsAPI {
             }
         }
 
-        self.tl.to(self.playBtn, {duration : timeBetweenStages})
+        if (this.totalMoons != 0)
+            self.tl.to(self.playBtn, {duration : timeBetweenStages})
 
         
 
@@ -577,6 +621,11 @@ export class MoonsPlanetsAPI {
             gsap.set(self.nextBtn, {scale : 0})
 
         this.canEdit = true
+
+        gsap.set(this.inputMoons, { scale : 1.2})
+
+        //this.setupPlanets()
+
         
         this.tl.clear()
     }
@@ -634,6 +683,41 @@ export class MoonsPlanetsAPI {
             coords.push({x : xVal + i * delta, y : yVal})
         }
         return coords
+    }
+
+    bouquetCoords(xVal, yVal, num, delta) {
+        if (num < 1) return []
+        else if (num == 1) {
+            return [{x : xVal, y : yVal}]
+        }
+        else if (num == 2) {
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}]
+        }
+        else if (num == 3) {
+            return [{x : xVal, y : yVal}, {x : xVal + delta/2, y : yVal + delta}, {x : xVal - delta/2, y : yVal+delta}]
+        }
+        else if (num == 4) {
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal + delta/2, y : yVal +delta}, {x : xVal + delta +delta/2, y : yVal +delta}]
+        }
+        else if (num == 5) {
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal - delta/2 , y : yVal+delta}, {x : xVal + delta/2, y : yVal+delta}, {x : xVal + delta + delta/2, y : yVal + delta}]
+        }
+        else if (num == 6){ //change maybe 
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal + delta*2, y : yVal}, {x : xVal + delta/2, y : yVal+delta}, {x : xVal + delta/2 + delta, y : yVal + delta}, {x : xVal + delta*2 + delta/2, y : yVal + delta}]
+        }
+        else if (num == 7) { 
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal - delta/2, y : yVal + delta}, {x : xVal + delta/2, y : yVal+delta}, {x : xVal + delta/2 + delta, y : yVal + delta}, {x : xVal, y : yVal + delta*2}, {x : xVal +delta, y : yVal + delta*2}]
+        }
+        else if (num == 8) { //change maybe
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal + delta*2, y : yVal}, {x : xVal + delta/2, y : yVal + delta}, {x : xVal + delta + delta/2, y : yVal + delta}, {x : xVal, y : yVal + delta*2}, {x : xVal + delta, y : yVal + delta*2}, {x : xVal + delta*2, y : yVal + delta*2}]
+        }
+        else if (num == 9) { 
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal + delta*2, y : yVal}, {x : xVal + delta/2, y : yVal + delta}, {x : xVal + delta + delta/2, y : yVal + delta},{x : xVal + delta*2 + delta/2, y : yVal + delta}, {x : xVal, y : yVal + delta*2}, {x : xVal + delta, y : yVal + delta*2}, {x : xVal + delta*2, y : yVal + delta*2}]
+        }
+        else if (num == 10) { 
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal + delta*2, y : yVal}, {x : xVal - delta/2, y : yVal + delta}, {x : xVal + delta/2, y : yVal + delta}, {x : xVal + delta + delta/2, y : yVal + delta},{x : xVal + delta*2 + delta/2, y : yVal + delta}, {x : xVal, y : yVal + delta*2}, {x : xVal + delta, y : yVal + delta*2}, {x : xVal + delta*2, y : yVal + delta*2}]
+        }
+        
     }
 
 }

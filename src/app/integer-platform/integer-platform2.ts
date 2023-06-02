@@ -407,6 +407,7 @@ export class IntegerPlatfromClass {
       this.levelEls.forEach(el => { self.arena.removeChild(el) }) 
       this.levelEls = []
 
+      this.closeInput()
 
       this.setLevels()
       this.resetGame()

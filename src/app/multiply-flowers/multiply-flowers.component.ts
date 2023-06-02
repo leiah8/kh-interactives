@@ -29,6 +29,10 @@ import {ActivatedRoute} from "@angular/router";
 export class MultiplyFlowersComponent implements AfterViewInit {
   @ViewChild("arena") public arena?: ElementRef<HTMLElement>;
   @ViewChild("controls") public controls?: ElementRef<HTMLElement>;
+  @ViewChild("retryBtn") public retryBtn?: ElementRef<HTMLElement>;
+  @ViewChild("playBtn") public playBtn?: ElementRef<HTMLElement>;
+  @ViewChild("nextBtn") public nextBtn?: ElementRef<HTMLElement>;
+
 
   groups : boolean
 
@@ -43,14 +47,17 @@ export class MultiplyFlowersComponent implements AfterViewInit {
     const setup = {
       arena : this.arena.nativeElement,
       controls : this.controls.nativeElement,
+      retryBtn : this.retryBtn.nativeElement,
+      nextBtn : this.nextBtn.nativeElement,
+      playBtn : this.playBtn.nativeElement,
       groups : this.groups
     }
 
     const game1 = {
-      p1Num : 8,
+      p1Num : 5,
       p2Num : 2,
       p1Moons : 10,
-      p2Moons : 5,
+      p2Moons : 2,
       attempts: 0, //must be initialized to 0
     } as Game
 
