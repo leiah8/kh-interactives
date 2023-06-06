@@ -32,7 +32,7 @@ export class HorizontalScrollClass {
     this.setupScrollbar(setup)
 
     //TO DO FIX
-    let diff = (setup.numbers.scrollWidth) / 590
+    let diff = (setup.numbers.scrollWidth) / 580
 
     //add scroll response
     setup.numbers.addEventListener("scroll", (e) => {
