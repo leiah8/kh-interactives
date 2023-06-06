@@ -54,10 +54,10 @@ export class MultiplyFlowersComponent implements AfterViewInit {
     }
 
     const game1 = {
-      p1Num : 5,
+      p1Num : 6,
       p2Num : 2,
-      p1Moons : 10,
-      p2Moons : 2,
+      p1Moons : 9,
+      p2Moons : 3,
       attempts: 0, //must be initialized to 0
     } as Game
 

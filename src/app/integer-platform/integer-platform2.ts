@@ -43,7 +43,13 @@ interface Term extends HTMLElement{
     img : HTMLElement,
 }
 
-export interface Game {
+export interface GameInput {
+  startBalloons : number;
+  startSandbags : number;
+  goal : number;
+}
+
+interface Game extends GameInput{
   startBalloons : number;
   startSandbags : number;
   goal : number;
@@ -133,10 +139,15 @@ export class IntegerPlatfromClass {
     BALLOON_DURATION : number = 1;
     SANDBAG_DURATION : number = 0.7;
 
-    constructor(setup, games) {
-        this.games = games
+    constructor(setup, gameInputs) {
+        this.games = []
+
+        for(var i = 0; i < gameInputs.length;i++) {
+          this.games.push(this.gameInToGame(gameInputs[i]))
+        }
+
         this.gameIndex = 0
-        this.game = games[0]
+        this.game = this.games[0]
         this.arena = setup.arena
         this.terms = setup.terms
         this.platform = setup.platform
@@ -185,6 +196,17 @@ export class IntegerPlatfromClass {
         
         this.setupEls()
 
+    }
+
+    gameInToGame(gIn : GameInput) {
+      var g = {
+        startBalloons : (gIn.startBalloons <= 8 && gIn.startBalloons > 0) ? gIn.startBalloons : 0,
+        startSandbags : (gIn.startSandbags <= 8 && gIn.startSandbags > 0) ? gIn.startSandbags : 0,
+        goal : gIn.goal,
+        start : 0,
+        attempts : 0
+      } as Game
+      return g
     }
 
     setLevels() {
@@ -463,8 +485,9 @@ export class IntegerPlatfromClass {
           var elements = []
 
           //add balloons or sandbags
+          //TO DO: format balloons and sandbags so more than 8 are allowed 
           if(term.positive) {
-            if (term.val > 0) {
+            if (term.val > 0 && this.balloons.length+term.val <= 8) {
               for(var i = 0; i < Math.abs(term.val); i++) {
                 var temp = document.createElementNS(svgns,"use")
                 self.platform.appendChild(temp)
@@ -478,7 +501,7 @@ export class IntegerPlatfromClass {
               }
               self.tl.to(elements, {y : self.ITEM_START_Y, visibility : "visible", duration : self.BALLOON_DURATION})
             }
-            else {
+            else if (term.val < 0 && this.sandbags.length + Math.abs(term.val) <= 8) {
               for(var i = 0; i < Math.abs(term.val); i++) {
                 var temp = document.createElementNS(svgns,"use")
                 self.platform.appendChild(temp)
@@ -491,6 +514,10 @@ export class IntegerPlatfromClass {
                 self.sandbags.push(temp)
               }
               self.tl.to(elements, {y : self.ITEM_START_Y + self.ADDITIONAL_SANDBAG_Y, ease : "linear", visibility : "visible", duration : self.SANDBAG_DURATION})
+            }
+            else {
+              self.tl.to(term, {background : "red"})
+              throw new Error("Break the loop.")
             }
 
             self.sum += term.val
@@ -559,7 +586,6 @@ export class IntegerPlatfromClass {
               time = ((1400 - self.gemPos) / 264)*0.8
               self.tl.to(self.cart, {x : 1400, duration : time, ease : "linear", 
                 onStart : function() {
-                  //TO DO: put gem in cart
                   gsap.set(self.gem, {y : "-="+75})
                 }, 
                 onUpdate : self.moveGemWithCart, onUpdateParams : [self]
@@ -623,7 +649,6 @@ export class IntegerPlatfromClass {
       const xVal = Math.round(gsap.getProperty(self.cart, "x"));
       gsap.set(self.gem, {x : xVal + 20})
     }
-    
 
     openInput() {
         var self = this
@@ -728,22 +753,23 @@ export class IntegerPlatfromClass {
           else {
             self.selectedNode = null
           }
-  
         }
 
         self.adjustSpacing(".term")
         this.adjustEquationWidth()
+
+        self.selectedTerm.scrollIntoView()
   
       }
 
     adjustEquationWidth() {
       var self = this
-      var w = (this.arena as any as HTMLElement).getBoundingClientRect().width 
       var h = (this.arena as any as HTMLElement).getBoundingClientRect().height 
-      var x = (this.addBtn as any as HTMLElement).getBoundingClientRect().x 
+      var w = h*(1280/720) //(this.arena as any as HTMLElement).getBoundingClientRect().width 
+      var x = w*(840/1280)  //(this.addBtn as any as HTMLElement).getBoundingClientRect().x 
       var btnW = w * (70 / 1280) //(addBtn as any as HTMLElement).getBoundingClientRect().width
 
-      var equationW = Math.max((0.18*h + 10), self.allTerms.length*(0.18*h + 10))
+      var equationW = Math.min(Math.max((0.18*h + 10), self.allTerms.length*(0.18*h + 10)), 5*(0.18*h + 10))
       gsap.set(this.equation, {width : equationW, x : x - equationW - btnW, y : "1.5vh"})
     }
 
@@ -824,8 +850,8 @@ export class IntegerPlatfromClass {
       if (self.useImgs) {
         str += Math.abs(self.selectedTerm.val).toString()
         
-        self.selectedTerm.txt[0] = document.createTextNode(str) //CHANGE
-        self.selectedTerm.appendChild(self.selectedTerm.txt[0]); //CHANGE
+        self.selectedTerm.txt[0] = document.createTextNode(str) 
+        self.selectedTerm.appendChild(self.selectedTerm.txt[0]); 
         
         var s = document.createElement('img')
         if (node.val > 0)  s.src = self.balloonURL
@@ -835,8 +861,8 @@ export class IntegerPlatfromClass {
       }
       else {
         str += "("
-        self.selectedTerm.txt = [document.createTextNode(str)] //CHECK
-        self.selectedTerm.appendChild(self.selectedTerm.txt[0]); //CHECK
+        self.selectedTerm.txt = [document.createTextNode(str)] 
+        self.selectedTerm.appendChild(self.selectedTerm.txt[0]); 
         
         var sign;
         if (self.selectedTerm.val > 0) sign = "+"
@@ -846,17 +872,13 @@ export class IntegerPlatfromClass {
         span.style.fontSize="16px"
         span.appendChild(document.createTextNode(sign))
         self.selectedTerm.appendChild(span);
-        self.selectedTerm.txt.push(span) //CHECK
+        self.selectedTerm.txt.push(span) 
 
         str = (Math.abs(self.selectedTerm.val)).toString()+")"
         
-        self.selectedTerm.txt.push(document.createTextNode(str)) //CHECK
+        self.selectedTerm.txt.push(document.createTextNode(str)) 
         self.selectedTerm.appendChild(self.selectedTerm.txt[2]);
   
-        // var span = document.createElement('span')
-        // span.style.fontSize="16px"
-        // span.appendChild(document.createTextNode("hi"))
-        // self.selectedTerm.appendChild(span);
       }
     }
 
@@ -919,9 +941,7 @@ export class IntegerPlatfromClass {
               self.selectedTerm.val = node.val
 
               self.removeText()
-              //self.selectedTerm.removeChild(self.selectedTerm.txt); //CHANGE
-              // if (self.selectedTerm.img != null)
-              //   self.selectedTerm.removeChild(self.selectedTerm.img);
+              
               
               self.addText(node)
             }
@@ -932,16 +952,12 @@ export class IntegerPlatfromClass {
               //remove all node info from term
               self.selectedNode = null
               self.selectedTerm.node = null
-              //self.selectedTerm.removeChild(self.selectedTerm.txt); //CHANGE
               self.removeText()
-              // if(self.selectedTerm.img != null)
-              //   self.selectedTerm.removeChild(self.selectedTerm.img);
-    
-              // self.selectedTerm.img = null
+             
               self.selectedTerm.val = 0
               
-              self.selectedTerm.txt[0] = document.createTextNode("") //CHANGE
-              self.selectedTerm.appendChild(self.selectedTerm.txt[0]); //CHANGE
+              self.selectedTerm.txt[0] = document.createTextNode("") 
+              self.selectedTerm.appendChild(self.selectedTerm.txt[0]); 
             }
           }
         }); 
@@ -950,7 +966,7 @@ export class IntegerPlatfromClass {
     onUpdateDrag(self) {
         const yVal = Math.round(gsap.getProperty(self.platform, "y"));
         gsap.set(self.spring, {scaleY : self.getScaleVal(yVal)})
-        if (self.cartOnPlatform)   //self.cartOnPlatform
+        if (self.cartOnPlatform)
           gsap.set(self.cart, {y : 300 + yVal})
     }
 
@@ -1002,6 +1018,7 @@ export class IntegerPlatfromClass {
         this.updatePlatformPos()
   
         //create start balloons and sandbags
+        //TO DO: fomat balloons and sandbags so more than 8 are allowed 
         for(var i = 0; i < self.game.startBalloons; i++) {
           var temp = document.createElementNS(svgns,"use")
           this.platform.appendChild(temp)

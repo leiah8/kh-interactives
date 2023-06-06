@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, ViewChild, Input, ElementRef } from '@angular/core';
-import { Game, InputSetup, IntegerPlatfromClass} from "./integer-platform2";
+import { GameInput, InputSetup, IntegerPlatfromClass} from "./integer-platform2";
 import {ActivatedRoute} from "@angular/router";
 
 
@@ -43,41 +43,36 @@ export class IntegerPlatformComponent implements AfterViewInit {
       startBalloons : 2,
       startSandbags : 3,
       goal : 1,
-      start : 0,
-      attempts : 0,
-    } as Game
+      
+    } as GameInput
 
     const game2 = {
       startBalloons : 2,
       startSandbags : 0,
       goal : -5,
-      start : 0,
-      attempts : 0,
-    } as Game
+      
+    } as GameInput
 
     const game3 = {
       startBalloons : 1,
       startSandbags : 2,
       goal : 2,
-      start : 0,
-      attempts : 0,
-    } as Game
+      
+    } as GameInput
 
     const game4 = {
       startBalloons : 0,
       startSandbags : 0,
       goal : 4,
-      start : 0,
-      attempts : 0,
-    } as Game
+      
+    } as GameInput
 
     const game5 = {
       startBalloons : 4,
       startSandbags : 1,
       goal : -3,
-      start : 0,
-      attempts : 0,
-    } as Game
+      
+    } as GameInput
     
     const setup = {
       arena : this.arena.nativeElement, 
