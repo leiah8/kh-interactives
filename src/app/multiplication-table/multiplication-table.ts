@@ -37,7 +37,7 @@ export class MultiplicationTableClass {
           });
 
         
-        //creat new rows
+        //create new rows
         
         // for (var i = 1; i <= n; i++) {
         //     var row = document.createElement('ul');
