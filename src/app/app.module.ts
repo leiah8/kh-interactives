@@ -11,6 +11,7 @@ import { MoonsPlanetsComponent } from './moons-planets/moons-planets.component';
 import { SlingshotInputComponent } from './slingshot-input/slingshot-input.component';
 import { MultiplyFlowersComponent } from './multiply-flowers/multiply-flowers.component';
 import { MultiplicationTableComponent } from './multiplication-table/multiplication-table.component';
+import { ZoomPlanetsComponent } from './zoom-planets/zoom-planets.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { MultiplicationTableComponent } from './multiplication-table/multiplicat
     SlingshotInputComponent,
     MultiplyFlowersComponent,
     MultiplicationTableComponent,
+    ZoomPlanetsComponent,
   ],
   imports: [
     BrowserModule,
