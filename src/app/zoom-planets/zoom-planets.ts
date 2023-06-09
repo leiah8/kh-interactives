@@ -8,18 +8,66 @@ interface Pos {
 
 export class ZoomAPI {
 
-    arena : any 
+    arena : HTMLElement;
+    svg : HTMLElement; 
+    plusBtn : HTMLElement; 
+    minusBtn : HTMLElement; 
+    inputBtns : HTMLElement;
+    width : number;
+    height : number;
+
+    zoomIn : boolean;
 
     constructor(setup) {
+        var self = this
         this.arena = setup.arena
+        this.svg = setup.svg
+        this.plusBtn = setup.plusBtn
+        this.minusBtn = setup.minusBtn
+        this.inputBtns = setup.inputBtns
+        this.height = 720
+        this.width = 1280
+
+        this.zoomIn = true
         this.setup()
+
+        var svgHeight = gsap.getProperty(self.svg, "height")
+        var svgWidth = gsap.getProperty(self.svg, "width")
+
+        this.svg.onpointerdown = function(e) {
+
+            if (self.zoomIn) {
+                self.width -= 50;
+                self.height -= 50;
+            }
+            else {
+                self.width += 50;
+                self.height += 50;
+            }
+
+            if (self.width < 0 || self.height < 0) return
+
+            var h = window.innerHeight 
+            var w = window.innerWidth
+
+            var x = 0 //self.width * (e.x / w)
+            var y = 0 //self.height * (e.y / h) 
+
+            var vb = x + " "+ y + " " + self.width + " " + self.height
+
+            console.log(vb)
+
+            gsap.set(self.svg, {attr:{viewBox: vb}})
+        }
     }
 
     setup() {
 
-        var n = 8
+        this.setupPlusMinus()
+
+        var n = 4
         var r = 275
-        var xVal = 500
+        var xVal = 600
         var yVal = 350
 
         var a = document.createElementNS(svgns,"use")
@@ -86,5 +134,39 @@ export class ZoomAPI {
         }
         return coords
 
+    }
+
+    setupPlusMinus() {
+        var self = this
+        //INITIALIZE TO POSITIVE
+        gsap.set(self.inputBtns, {scale : 0.7})
+        gsap.set(self.plusBtn, {stroke : "#fff"})
+        this.plusBtn.onpointerdown = function(e) {
+          if (self.zoomIn == false) 
+            self.setPlusBtn()
+        }
+  
+        this.minusBtn.onpointerdown = function(e) {
+          if (self.zoomIn) 
+            self.setMinusBtn()
+        }
+      }
+  
+    setPlusBtn() {
+        var self = this
+        gsap.set(self.plusBtn, {stroke : "#fff"})
+        gsap.set(self.minusBtn, {stroke : "#23a3ff"})
+
+        
+        self.zoomIn = true
+    }
+  
+    setMinusBtn() {
+        var self = this
+        gsap.set(self.minusBtn, {stroke : "#fff"})
+        gsap.set(self.plusBtn, {stroke : "#23a3ff"})        
+      
+        
+        self.zoomIn = false
     }
 }

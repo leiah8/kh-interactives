@@ -55,18 +55,17 @@ export class MultiplyFlowersComponent implements AfterViewInit {
 
     const game1 = {
       p1Num : 10,
-      p2Num : 0,
       p1Moons : 9,
-      p2Moons : 0,
-      attempts: 0, //must be initialized to 0
+      p2Moons : 1,
+      p2Num : 0
     } as Game
 
     const game2 = {
+      
       p1Num : 4,
-      p2Num : 0,
       p1Moons : 4,
       p2Moons : 0,
-      attempts: 0, //must be initialized to 0
+      p2Num : 0
     } as Game
 
     //max 10 moons per planet

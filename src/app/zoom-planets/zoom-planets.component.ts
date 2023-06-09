@@ -8,13 +8,21 @@ import { ZoomAPI } from './zoom-planets'
 })
 export class ZoomPlanetsComponent implements AfterViewInit {
   @ViewChild("arena") public arena?: ElementRef<HTMLElement>;
+  @ViewChild("thesvg") public thesvg?: ElementRef<HTMLElement>;
+  @ViewChild("plus") public plus?: ElementRef<HTMLElement>;
+  @ViewChild("minus") public minus?: ElementRef<HTMLElement>;
+  @ViewChild("inputBtns") public inputBtns?: ElementRef<HTMLElement>;
 
   constructor() { }
 
  ngAfterViewInit(): void {
 
   const setup = {
-    arena : this.arena.nativeElement
+    arena : this.arena.nativeElement,
+    svg : this.thesvg.nativeElement, 
+    plusBtn : this.plus.nativeElement, 
+    minusBtn : this.minus.nativeElement, 
+    inputBtns : this.inputBtns.nativeElement
   }
 
     var x = new ZoomAPI(setup)
