@@ -12,6 +12,7 @@ import { SlingshotInputComponent } from './slingshot-input/slingshot-input.compo
 import { MultiplyFlowersComponent } from './multiply-flowers/multiply-flowers.component';
 import { MultiplicationTableComponent } from './multiplication-table/multiplication-table.component';
 import { ZoomPlanetsComponent } from './zoom-planets/zoom-planets.component';
+import { MultiplyManyFlowersComponent } from './multiply-many-flowers/multiply-many-flowers.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { ZoomPlanetsComponent } from './zoom-planets/zoom-planets.component';
     MultiplyFlowersComponent,
     MultiplicationTableComponent,
     ZoomPlanetsComponent,
+    MultiplyManyFlowersComponent,
   ],
   imports: [
     BrowserModule,

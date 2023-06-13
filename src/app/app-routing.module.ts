@@ -8,6 +8,7 @@ import { SlingshotInputComponent } from './slingshot-input/slingshot-input.compo
 import { MultiplyFlowersComponent } from './multiply-flowers/multiply-flowers.component';
 import { MultiplicationTableComponent } from './multiplication-table/multiplication-table.component';
 import { ZoomPlanetsComponent } from './zoom-planets/zoom-planets.component';
+import { MultiplyManyFlowersComponent } from './multiply-many-flowers/multiply-many-flowers.component';
 
 
 ZoomPlanetsComponent
@@ -15,7 +16,8 @@ ZoomPlanetsComponent
 const routes: Routes = [
   { path: 'scrollbar', component: ContainerComponent },
   { path: 'moonsplanets', component: MoonsPlanetsComponent },
-  { path: 'flowers', component: MultiplyFlowersComponent },
+  { path: 'singleflowers', component: MultiplyFlowersComponent },
+  { path: 'flowers', component: MultiplyManyFlowersComponent },
   { path: 'moonsplanets/:groups', component: MoonsPlanetsComponent },
   { path: 'minecart/:addRemove/:useImgs', component: IntegerPlatformComponent },
   { path: 'minecart', component: IntegerPlatformComponent },

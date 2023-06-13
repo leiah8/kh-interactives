@@ -20,7 +20,7 @@ export class MultiplicationTableClass {
         var listStyle = "grid-column: 1 / -1; list-style: none; padding: 0; display: grid; grid-gap: 10px; overflow-x : auto; scroll-snap-type: x proximity;"
         listStyle += "grid-template-columns: " + cols + "; grid-template-rows: 2vw;"
         
-        var elStyle = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8px; font-size : 14px;font-family : 'Poppins'; height : 3vw"
+        var elStyle = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 0px; font-size : 14px;font-family : 'Poppins'; height : 3vw"
 
         //add to pre exisiting rows 
         var lists = document.querySelectorAll('.row'); 
