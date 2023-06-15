@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { ManyFlowersAPI } from './multiply-many-flowers';
+import { ManyFlowersAPI, GameInput } from './multiply-many-flowers';
 
 @Component({
   selector: 'app-multiply-many-flowers',
@@ -26,7 +26,13 @@ export class MultiplyManyFlowersComponent implements AfterViewInit {
 
     }
 
-    const interactive = new ManyFlowersAPI(setup)
+    const g1 = {
+      goal : [3, 5],
+      targets : 12
+
+    } as GameInput
+
+    const interactive = new ManyFlowersAPI(setup, [g1])
   }
 
 }
