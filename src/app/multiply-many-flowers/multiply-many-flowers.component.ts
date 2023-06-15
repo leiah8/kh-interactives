@@ -8,7 +8,9 @@ import { ManyFlowersAPI, GameInput } from './multiply-many-flowers';
 })
 export class MultiplyManyFlowersComponent implements AfterViewInit {
   @ViewChild("arena") public arena?: ElementRef<HTMLElement>;
-  @ViewChild("controls") public controls?: ElementRef<HTMLElement>;
+  @ViewChild("input") public input?: ElementRef<HTMLElement>;
+  @ViewChild("playBtn") public playBtn?: ElementRef<HTMLElement>;
+  @ViewChild("anim") public anim?: ElementRef<HTMLElement>;
   // @ViewChild("retryBtn") public retryBtn?: ElementRef<HTMLElement>;
   // @ViewChild("playBtn") public playBtn?: ElementRef<HTMLElement>;
   // @ViewChild("nextBtn") public nextBtn?: ElementRef<HTMLElement>;
@@ -19,7 +21,9 @@ export class MultiplyManyFlowersComponent implements AfterViewInit {
 
     const setup = {
       arena : this.arena.nativeElement,
-      controls : this.controls.nativeElement,
+      input : this.input.nativeElement,
+      playBtn : this.playBtn.nativeElement,
+      anim : this.anim.nativeElement,
       mode : "columns",
       columns : 10,
       rows : 10
@@ -27,8 +31,8 @@ export class MultiplyManyFlowersComponent implements AfterViewInit {
     }
 
     const g1 = {
-      goal : [3, 5],
-      targets : 12
+      goal : [3, 5, 0, 0],
+      targets : 10
 
     } as GameInput
 
