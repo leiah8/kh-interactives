@@ -162,6 +162,7 @@ export class ManyFlowersAPI {
                 goal : gIn[i].goal,
                 targets : gIn[i].targets,
                 attempts : 0,
+                mode : gIn[i].mode,
                 completed : false,
                 horizontalDiv : gIn[i].horizontalDiv, 
                 verticalDiv : gIn[i].verticalDiv
@@ -244,6 +245,8 @@ export class ManyFlowersAPI {
     }
 
     reset() {
+
+        this.tl.clear()
 
         gsap.set(this.inputElements, {scale : 1})
         this.setSelectedEl("")
@@ -881,12 +884,21 @@ export class ManyFlowersAPI {
 
         //show buttons
         if (completed || this.game.attempts >= 3) {
+            self.tl.to(self.retryBtn, {scale : 0, x : "1%", y : "2%", rotation : 0, duration : 0})
             self.tl.to([this.retryBtn, this.nextBtn], {scale : 1})
         }
         else {
-            self.tl.to(this.retryBtn, {scale : 1})
+            //self.tl.to(this.retryBtn, {scale : 1})
+
+            //show retry button in the middle
+            //rotatating retry in middle
+           gsap.set(self.retryBtn, {scale : 0, x : 500, y : 230, rotation : 0})
+           this.tl.to(self.retryBtn, {scale : 3, duration : 1})
+           this.tl.to(self.retryBtn, {repeat : -1, duration : 4, rotation : 360, ease: "bounce"}) 
 
         }
+
+        
         
 
 
