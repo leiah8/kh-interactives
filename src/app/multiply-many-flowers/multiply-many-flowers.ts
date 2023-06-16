@@ -11,14 +11,19 @@ export interface FlowersSetup {
 export interface GameInput {
     goal : number[]; // [1, 3] means you need 1 of type 1 and 3 of type 2 on each target
     targets : number
+    mode : string
+    horizontalDiv : boolean
+    verticalDiv : boolean
 }
 
 interface Game extends GameInput {
     goal : number[]; // [1, 3] means you need 1 of type 1 and 3 of type 2 on each target
     targets : number;
+    mode : string;
     attempts : number;
     completed : boolean 
-
+    horizontalDiv : boolean
+    verticalDiv : boolean
 }
 
 interface InputEl extends SVGUseElement{
@@ -30,11 +35,13 @@ interface InputEl extends SVGUseElement{
 interface AnimationEl extends SVGUseElement{
     row : number
     col : number
+    type : number
 }
 
-interface DividerEl extends SVGUseElement {
-    horizontal : boolean 
-    num : number
+interface DividerEl {
+    border : SVGElement;
+    group : SVGElement;
+    draggable : any // change
 }
 
 interface Pos {
@@ -64,7 +71,10 @@ export class ManyFlowersAPI {
     arena : HTMLElement
     input : HTMLElement
     anim : HTMLElement
+    rectangles : HTMLElement
     playBtn : HTMLElement
+    retryBtn : HTMLElement
+    nextBtn : HTMLElement
     showColumns : boolean 
 
     TOTAL_COLUMNS : number
@@ -85,17 +95,17 @@ export class ManyFlowersAPI {
 
     rects : SVGRectElement[]
     arrows : Arrows
-
-    draggables : any //CHANGE
-
     selectedEl : string;
-    borders : SVGRectElement[] //COMBINE WITH DIVIDERS??
-    dividers : any[] //CHANGE
+
+    horizontalDivEl : DividerEl | null
+    verticalDivEl : DividerEl | null
 
     targetScaleVal : number = 0.8
 
     targetPos : Pos[]
     targetEls : SVGUseElement[]
+    targetPots : SVGUseElement[]
+    animationEls : AnimationEl[][]
 
     tl : any
     
@@ -106,31 +116,27 @@ export class ManyFlowersAPI {
         this.gameIndex = 0
         this.targets = this.game.targets
         this.goal = this.game.goal
+
         this.arena = setup.arena
         this.input = setup.input
+        this.anim = setup.anim
         this.playBtn = setup.playBtn
-
-        if (setup.mode == "columns") {
-            this.showColumns = true 
-        }
-        else {
-            this.showColumns = false 
-        }
+        this.retryBtn = setup.retryBtn
+        this.nextBtn = setup.nextBtn
+        this.rectangles = setup.rectangles
 
         this.TOTAL_COLUMNS = setup.columns
         this.TOTAL_ROWS = setup.rows
-        this.anim = setup.anim
+        
         this.canEdit = true
-        this.verticalDivPos = 9
-        this.horizontalDivPos = 3
+        this.verticalDivPos = 0
+        this.horizontalDivPos = 0
 
         this.filledRows = 0
         this.filledColumns = 0
 
         this.rects = []
-        this.borders = []
-        this.dividers = []
-        this.draggables = []
+        
 
 
         this.inputElements = [] //Array(this.TOTAL_ROWS).fill(Array(this.TOTAL_COLUMNS))
@@ -139,6 +145,8 @@ export class ManyFlowersAPI {
 
         this.targetPos = []
         this.targetEls = []
+        this.targetPots = []
+        this.animationEls = []
 
         this.init()
     }
@@ -147,17 +155,16 @@ export class ManyFlowersAPI {
 
         var games  = []
 
-        if (gIn.length > 0)
-            var num = gIn[0].goal.length
-        else 
-            return []
+        // var num = 4
 
         for(var i = 0; i < gIn.length; i++) {
             var g = {
-                goal : gIn[i].goal.slice(0, num),
+                goal : gIn[i].goal,
                 targets : gIn[i].targets,
                 attempts : 0,
-                completed : false 
+                completed : false,
+                horizontalDiv : gIn[i].horizontalDiv, 
+                verticalDiv : gIn[i].verticalDiv
             } as Game
 
             games.push(g)
@@ -170,15 +177,19 @@ export class ManyFlowersAPI {
         if (!this.canEdit) return
         if (s == "flowers") {
             this.selectedEl = "flowers"
-            gsap.set(this.borders, {opacity : 0})
+            if (this.horizontalDivEl != null) gsap.set(this.horizontalDivEl.border, {opacity : 0})
+            if (this.verticalDivEl != null) gsap.set(this.verticalDivEl.border, {opacity : 0})
+
             gsap.set(this.arrows.back, {visibility : "visible"})
             gsap.set([this.arrows.up, this.arrows.down, this.arrows.left, this.arrows.right], {visibility : "visible"})
             this.arrows.center.setAttribute("href", "#el-center")
         }
         else if (s == "horizontal-div") {
             this.selectedEl = "horizontal-div"
-            gsap.set(this.borders[0], {opacity : 0})
-            gsap.set(this.borders[1], {opacity: 0.5})
+            
+            if (this.horizontalDivEl != null) gsap.set(this.horizontalDivEl.border, {opacity : 0.5})
+            if (this.verticalDivEl != null) gsap.set(this.verticalDivEl.border, {opacity : 0})
+
             gsap.set(this.arrows.back, {visibility : "visible"})
             gsap.set([this.arrows.up, this.arrows.down], {visibility : "visible"})
             gsap.set([this.arrows.left, this.arrows.right], {visibility : "hidden"})
@@ -186,8 +197,10 @@ export class ManyFlowersAPI {
         }
         else if (s == "vertical-div") {
             this.selectedEl = "vertical-div"
-            gsap.set(this.borders[1], {opacity : 0})
-            gsap.set(this.borders[0], {opacity: 0.5})
+            
+            if (this.horizontalDivEl != null) gsap.set(this.horizontalDivEl.border, {opacity : 0})
+            if (this.verticalDivEl != null) gsap.set(this.verticalDivEl.border, {opacity : 0.5})
+
             gsap.set(this.arrows.back, {visibility : "visible"})
             gsap.set([this.arrows.left, this.arrows.right], {visibility : "visible"})
             gsap.set([this.arrows.up, this.arrows.down], {visibility : "hidden"})
@@ -195,7 +208,9 @@ export class ManyFlowersAPI {
         }
         else {
             this.selectedEl = ""
-            gsap.set(this.borders, {opacity : 0})
+            if (this.horizontalDivEl != null) gsap.set(this.horizontalDivEl.border, {opacity : 0})
+            if (this.verticalDivEl != null) gsap.set(this.verticalDivEl.border, {opacity : 0})
+
             gsap.set([this.arrows.back, this.arrows.up, this.arrows.down, this.arrows.left, this.arrows.right], {visibility : "hidden"})
             this.arrows.center.setAttribute("href", "")
         }
@@ -203,6 +218,13 @@ export class ManyFlowersAPI {
 
 
     init() {
+        if (this.game.mode == "columns") {
+            this.showColumns = true 
+        }
+        else {
+            this.showColumns = false 
+        }
+
         this.setupRects()
         this.setupInputFlowers()
         this.setupDividers()
@@ -221,16 +243,125 @@ export class ManyFlowersAPI {
 
     }
 
+    reset() {
+
+        gsap.set(this.inputElements, {scale : 1})
+        this.setSelectedEl("")
+        this.canEdit = true
+        
+        if (this.game.horizontalDiv)
+            this.setHorizontalDiv(0)
+        if (this.game.verticalDiv)
+            this.setVerticalDiv(0)
+        //this.horizontalDivPos = 0
+
+        this.fill(0,0)
+
+        this.animationEls.forEach(l => {
+            l.forEach(el => {                
+                this.anim.removeChild(el)
+            })
+            
+        });
+        this.animationEls = [] // remove all elements 
+
+        gsap.set(this.retryBtn, {scale : 0})
+        gsap.set(this.playBtn, {scale : 1})
+
+        if (this.game.completed || this.game.attempts >= 3) {
+            gsap.set(this.nextBtn, {scale : 1})
+        }
+        else 
+        gsap.set(this.nextBtn, {scale : 0})
+
+    }
+
+    nextGame() {
+        this.reset()
+
+        this.gameIndex = (this.gameIndex+1) %this.games.length;
+        this.game = this.games[this.gameIndex]
+        this.targets = this.game.targets
+        this.goal = this.game.goal
+
+        if (this.game.completed || this.game.attempts >= 3) {
+            gsap.set(this.nextBtn, {scale : 1})
+        }
+        else 
+        gsap.set(this.nextBtn, {scale : 0})
+
+
+        console.log(this.game)
+
+        this.targetPos = []
+
+        this.targetEls.forEach(el => {
+            this.arena.removeChild(el)
+        });
+        this.targetEls = []
+
+        
+
+        this.targetPots.forEach(el => {
+            this.arena.removeChild(el)
+        });
+        this.targetPots = []
+
+        this.rects.forEach(el => {
+            this.rectangles.removeChild(el)
+        });
+        this.rects = []
+
+        this.setupTargets()
+
+        if (this.horizontalDivEl != null) {
+            this.input.removeChild(this.horizontalDivEl.group)
+            this.horizontalDivEl = null
+        }
+        if (this.verticalDivEl != null) {
+            this.input.removeChild(this.verticalDivEl.group)
+            this.verticalDivEl = null
+        }
+
+        this.setupDividers()
+
+        if (this.game.mode == "columns") {
+            this.showColumns = true 
+        }
+        else {
+            this.showColumns = false 
+        }
+
+        this.setupRects()
+
+    }
+
     setupButtons() {
         var self = this
         this.playBtn.onpointerdown = function() {
             self.setSelectedEl("")
             self.canEdit = false
-            self.draggables[0][0].disable()
-            self.draggables[1][0].disable()
+
+            if (self.horizontalDivEl != null) self.horizontalDivEl.draggable[0].disable()
+            if (self.verticalDivEl != null) self.verticalDivEl.draggable[0].disable()
 
             self.playAnimation()
         }
+
+        this.retryBtn.onpointerdown = function() {
+            self.reset()
+
+            if (self.horizontalDivEl != null) self.horizontalDivEl.draggable[0].enable()
+            if (self.verticalDivEl != null) self.verticalDivEl.draggable[0].enable()
+        }
+
+        gsap.set(this.retryBtn, {scale : 0})
+
+        this.nextBtn.onpointerdown = function() {
+            console.log("next")
+            self.nextGame()
+        }
+        gsap.set(this.nextBtn, {scale : 0})
     }
 
     setupArrows() {
@@ -324,12 +455,25 @@ export class ManyFlowersAPI {
             for(var i = 0; i < this.TOTAL_COLUMNS; i++) {
                 var rect = document.createElementNS(svgns, "rect")
 
-                this.input.appendChild(rect)
+                this.rectangles.appendChild(rect)
                 gsap.set(rect, {x : this.INPUT_X + this.FLOWER_DELTA*i, y : this.INPUT_Y, 
                     height : this.FLOWER_DELTA * this.TOTAL_COLUMNS, width : this.FLOWER_DELTA - 5, rx : 16, fill : "#4F311C"})
 
                 this.rects.push(rect)
             }
+        }
+        //show rows
+        else {
+            for(var i = 0; i < this.TOTAL_ROWS; i++) {
+                var rect = document.createElementNS(svgns, "rect")
+
+                this.rectangles.appendChild(rect)
+                gsap.set(rect, {x : this.INPUT_X, y : this.INPUT_Y + this.FLOWER_DELTA*i + 4, 
+                    width : this.FLOWER_DELTA * this.TOTAL_COLUMNS, height : this.FLOWER_DELTA - 5, rx : 16, fill : "#4F311C"})
+
+                this.rects.push(rect)
+            }
+
         }
     }
 
@@ -426,111 +570,127 @@ export class ManyFlowersAPI {
         gsap.registerPlugin(Draggable)
         var self = this
 
-        //vertical divider
-        var div1 = Object.assign(document.createElementNS(svgns,"g"), {
+        if (this.game.verticalDiv) {
+            //vertical divider
+            var div1 = Object.assign(document.createElementNS(svgns,"g"), {
+                    horizontal : false, 
+                    num : 0,
+                    pos : self.verticalDivPos
+                })
+                this.input.appendChild(div1)
+                //div1.setAttribute("href","#vertical-divider")
+            
+            var rect1 = document.createElementNS(svgns,"use")
+            rect1.setAttribute("href","#vertical-divider")
+            div1.appendChild(rect1)
+
+            var border1 = document.createElementNS(svgns, "rect")
+            gsap.set(border1, {height : this.FLOWER_DELTA * this.TOTAL_COLUMNS + 20, width : 20, rx : 16, fill : "#915d27", opacity : 0})
+            div1.appendChild(border1)
+            // this.borders.push(border1)
+            // this.dividers.push(div1)
+
+            gsap.set(div1, {x : this.INPUT_X + self.verticalDivPos * this.FLOWER_DELTA - 5, y : this.INPUT_Y})
+            gsap.set(border1, {y :  "-= 10", x : "-= 6"})
+
+            div1.onpointerdown = function() {
+                //gsap.set(border1, {opacity: 0.5})
+                self.setSelectedEl("vertical-div")
+            }
+
+            
+            //add draggable
+            var d1 = Draggable.create(div1, {type : "x", bounds : {left : this.INPUT_X - this.FLOWER_DELTA*2 - 1, width : this.FLOWER_DELTA*this.TOTAL_COLUMNS + 21},
+                // onDragStart : function() {
+                //     gsap.set(border1, {opacity: 0.5})
+                // },
+                onDragEnd : function() {
+                    var endVal = this.x
+                    var e = Math.round((endVal - (self.INPUT_X - 5)) / self.FLOWER_DELTA)
+
+                    self.setVerticalDiv(e)
+
+                    // self.verticalDivPos = e
+
+                    // var cols = self.filledColumns
+                    // var rows = self.filledRows
+                    // self.fill(0, 0)
+                    // self.fill(rows, cols)
+
+                    // gsap.set(div1, {x : e * self.FLOWER_DELTA + (self.INPUT_X - 5)})
+                }
+            })
+
+            this.verticalDivEl = {
+                border : border1, 
+                group : div1, 
+                draggable : d1
+            }
+        }
+        else this.verticalDivEl = null
+
+        
+        if (this.game.horizontalDiv) {
+            //horizontal divider
+            var div2 = Object.assign(document.createElementNS(svgns,"g"), {
                 horizontal : false, 
                 num : 0,
                 pos : self.verticalDivPos
             })
-            this.input.appendChild(div1)
+            this.input.appendChild(div2)
             //div1.setAttribute("href","#vertical-divider")
         
-        var rect1 = document.createElementNS(svgns,"use")
-        rect1.setAttribute("href","#vertical-divider")
-        div1.appendChild(rect1)
+            var rect2 = document.createElementNS(svgns,"use")
+            rect2.setAttribute("href","#horizontal-divider")
+            div2.appendChild(rect2)
 
-        var border1 = document.createElementNS(svgns, "rect")
-        gsap.set(border1, {height : this.FLOWER_DELTA * this.TOTAL_COLUMNS + 20, width : 20, rx : 16, fill : "#915d27", opacity : 0})
-        div1.appendChild(border1)
-        this.borders.push(border1)
-        this.dividers.push(div1)
+            var border2 = document.createElementNS(svgns, "rect")
+            gsap.set(border2, {height : 20, width : this.FLOWER_DELTA * this.TOTAL_ROWS + 20, rx : 16, fill : "#915d27", opacity : 0})
+            div2.appendChild(border2)
+            // this.borders.push(border2)
+            // this.dividers.push(div2)
 
-        gsap.set(div1, {x : this.INPUT_X + self.verticalDivPos * this.FLOWER_DELTA - 5, y : this.INPUT_Y})
-        gsap.set(border1, {y :  "-= 10", x : "-= 6"})
+            gsap.set(div2, {x : this.INPUT_X, y : this.INPUT_Y + self.TOTAL_ROWS * this.FLOWER_DELTA - self.horizontalDivPos * this.FLOWER_DELTA - 2})
+            gsap.set(border2, {x :  "-= 10", y : "-= 6"})
 
-        div1.onpointerdown = function() {
-            //gsap.set(border1, {opacity: 0.5})
-            self.setSelectedEl("vertical-div")
+
+            div2.onpointerdown = function() {
+                //gsap.set(border2, {opacity: 0.5})
+                self.setSelectedEl("horizontal-div")
+            }
+            
+            //add draggable
+            // bounds : self.rects, 
+            var d2 = Draggable.create(div2, {type : "y", bounds : {minY : self.INPUT_Y, maxY : self.INPUT_Y + self.TOTAL_ROWS * self.FLOWER_DELTA},
+                // onDragStart : function() {
+                //     gsap.set(border2, {opacity: 0.5})
+                // },
+                onDragEnd : function() {
+                    var endVal = this.y
+                    var e = Math.round((endVal - self.INPUT_Y) / self.FLOWER_DELTA)
+
+                    self.setHorizontalDiv(self.TOTAL_ROWS - e)
+
+                    // self.horizontalDivPos = self.TOTAL_ROWS - e
+
+                    // var cols = self.filledColumns
+                    // var rows = self.filledRows
+                    // self.fill(0, 0)
+                    // self.fill(rows, cols)
+
+                    // gsap.set(div2, {y : e * self.FLOWER_DELTA + (self.INPUT_Y)})
+                    // gsap.set(border2, {opacity: 0})
+                }
+            })
+
+            this.horizontalDivEl = {
+                border : border2, 
+                group : div2, 
+                draggable : d2
+            }
         }
 
-        
-        //add draggable
-        var d1 = Draggable.create(div1, {type : "x", bounds : {left : this.INPUT_X - this.FLOWER_DELTA*2 - 1, width : this.FLOWER_DELTA*this.TOTAL_COLUMNS + 21},
-            // onDragStart : function() {
-            //     gsap.set(border1, {opacity: 0.5})
-            // },
-            onDragEnd : function() {
-                var endVal = this.x
-                var e = Math.round((endVal - (self.INPUT_X - 5)) / self.FLOWER_DELTA)
-
-                self.setVerticalDiv(e)
-
-                // self.verticalDivPos = e
-
-                // var cols = self.filledColumns
-                // var rows = self.filledRows
-                // self.fill(0, 0)
-                // self.fill(rows, cols)
-
-                // gsap.set(div1, {x : e * self.FLOWER_DELTA + (self.INPUT_X - 5)})
-            }
-        })
-
-        
-
-        //horizontal divider
-        var div2 = Object.assign(document.createElementNS(svgns,"g"), {
-            horizontal : false, 
-            num : 0,
-            pos : self.verticalDivPos
-        })
-        this.input.appendChild(div2)
-        //div1.setAttribute("href","#vertical-divider")
-    
-        var rect2 = document.createElementNS(svgns,"use")
-        rect2.setAttribute("href","#horizontal-divider")
-        div2.appendChild(rect2)
-
-        var border2 = document.createElementNS(svgns, "rect")
-        gsap.set(border2, {height : 20, width : this.FLOWER_DELTA * this.TOTAL_ROWS + 20, rx : 16, fill : "#915d27", opacity : 0})
-        div2.appendChild(border2)
-        this.borders.push(border2)
-        this.dividers.push(div2)
-
-        gsap.set(div2, {x : this.INPUT_X, y : this.INPUT_Y + self.TOTAL_ROWS * this.FLOWER_DELTA - self.horizontalDivPos * this.FLOWER_DELTA - 2})
-        gsap.set(border2, {x :  "-= 10", y : "-= 6"})
-
-
-        div2.onpointerdown = function() {
-            //gsap.set(border2, {opacity: 0.5})
-            self.setSelectedEl("horizontal-div")
-        }
-        
-        //add draggable
-        // bounds : self.rects, 
-        var d2 = Draggable.create(div2, {type : "y", bounds : {minY : self.INPUT_Y, maxY : self.INPUT_Y + self.TOTAL_ROWS * self.FLOWER_DELTA},
-            // onDragStart : function() {
-            //     gsap.set(border2, {opacity: 0.5})
-            // },
-            onDragEnd : function() {
-                var endVal = this.y
-                var e = Math.round((endVal - self.INPUT_Y) / self.FLOWER_DELTA)
-
-                self.setHorizontalDiv(self.TOTAL_ROWS - e)
-
-                // self.horizontalDivPos = self.TOTAL_ROWS - e
-
-                // var cols = self.filledColumns
-                // var rows = self.filledRows
-                // self.fill(0, 0)
-                // self.fill(rows, cols)
-
-                // gsap.set(div2, {y : e * self.FLOWER_DELTA + (self.INPUT_Y)})
-                // gsap.set(border2, {opacity: 0})
-            }
-        })
-
-        this.draggables = [d1, d2]
+        //this.draggables = [d1, d2]
     }
 
     setHorizontalDiv(e) {
@@ -544,7 +704,8 @@ export class ManyFlowersAPI {
         self.fill(0, 0)
         self.fill(rows, cols)
 
-        gsap.set(this.dividers[1], {y : (self.TOTAL_ROWS - e) * self.FLOWER_DELTA + (self.INPUT_Y)})
+        //gsap.set(this.dividers[1], {y : (self.TOTAL_ROWS - e) * self.FLOWER_DELTA + (self.INPUT_Y)})
+        gsap.set(this.horizontalDivEl.group, {y : (self.TOTAL_ROWS - e) * self.FLOWER_DELTA + (self.INPUT_Y)})
     }
 
     setVerticalDiv(e) {
@@ -558,7 +719,8 @@ export class ManyFlowersAPI {
         self.fill(0, 0)
         self.fill(rows, cols)
 
-        gsap.set(this.dividers[0], {x : e * self.FLOWER_DELTA + (self.INPUT_X - 5)})
+        //gsap.set(this.dividers[0], {x : e * self.FLOWER_DELTA + (self.INPUT_X - 5)})
+        gsap.set(this.verticalDivEl.group, {x : e * self.FLOWER_DELTA + (self.INPUT_X - 5)})
     }
 
     setupTargets() {
@@ -574,6 +736,7 @@ export class ManyFlowersAPI {
             var target = document.createElementNS(svgns,"use")
             target.setAttribute("href","#target")
             this.arena.appendChild(target)
+            this.targetPots.push(target)
 
             var xVal = x + delta*(i%4)
             var yVal = y + delta*(i - i%4)/4
@@ -618,11 +781,13 @@ export class ManyFlowersAPI {
     playAnimation() {
         var self = this
 
+        this.game.attempts++;
+        self.tl.to(this.playBtn, {scale : 0})
+
         //replace input elements with animation elements
-        var animationEls = []
         var count = Array(this.goal.length).fill(0)
         for (var i = 0; i < this.filledRows; i++) {
-            animationEls.push([])
+            this.animationEls.push([])
             for (var j = 0; j < this.filledColumns; j++) {
                 var inputEl = this.inputElements[i][j]
                 inputEl.setAttribute("href", "#empty-input")
@@ -641,14 +806,14 @@ export class ManyFlowersAPI {
                 
                 gsap.set(el, {x : this.INPUT_X + j*this.FLOWER_DELTA +10 , y : this.INPUT_Y + (this.TOTAL_ROWS - inputEl.row)*this.FLOWER_DELTA + 10})
     
-                animationEls[i].push(el)
+                this.animationEls[i].push(el)
             }
         }
 
         console.log(count, this.goal)
 
         //grouping animation
-        animationEls.reverse()
+        this.animationEls.reverse()
 
         var growTime = 1
 
@@ -660,13 +825,13 @@ export class ManyFlowersAPI {
         // });
         gsap.set(this.inputElements, {transformOrigin : "bottom center"})
         self.tl.to(this.inputElements, {scale : 0, duration : growTime}, "<")
-        gsap.set(animationEls, {transformOrigin : "bottom center"})
-        self.tl.to(animationEls, {scale : 0, duration : growTime}, "<")
+        gsap.set(this.animationEls, {transformOrigin : "bottom center"})
+        self.tl.to(this.animationEls, {scale : 0, duration : growTime}, "<")
 
         
         //grow animation
         self.tl.to(this.playBtn, {duration : growTime*2})
-        animationEls.forEach(l => {
+        this.animationEls.forEach(l => {
             l.forEach(el => {                
                 self.tl.to(el, {scale : 1, duration : growTime, ease : "elastic",
                     onStart : function() {
@@ -683,12 +848,12 @@ export class ManyFlowersAPI {
         //animate over by rows 
         var index = 0
 
-        self.tl.to(animationEls, {transformOrigin : "top left", duration : 0})
+        self.tl.to(this.animationEls, {transformOrigin : "top left", duration : 0})
 
-        for(var i = 0; i < animationEls.length; i++) {
+        for(var i = 0; i < this.animationEls.length; i++) {
             self.tl.to(self.playBtn, {duration : 1})
-            for(var j = 0; j < animationEls[i].length; j++) {
-                el = animationEls[i][j]
+            for(var j = 0; j < this.animationEls[i].length; j++) {
+                el = this.animationEls[i][j]
                 self.tl.to(el, {scale : self.targetScaleVal, duration : 1, x : self.targetPos[index].x, y : self.targetPos[index].y}, "<")
                 index++;
                 if (index >= self.targetPos.length) break; //set too many flowers 
@@ -702,11 +867,25 @@ export class ManyFlowersAPI {
         for(var i = 0; i < count.length; i++) {
             if (count[i] != this.goal[i]*this.targets) completed = false //set too little flowers or wrong type 
         }
-            
 
         if (completed) {
             //success animation
             console.log("yay")
+            this.game.completed = true
+        }
+
+        else {
+            //feedback animation
+        }
+
+
+        //show buttons
+        if (completed || this.game.attempts >= 3) {
+            self.tl.to([this.retryBtn, this.nextBtn], {scale : 1})
+        }
+        else {
+            self.tl.to(this.retryBtn, {scale : 1})
+
         }
         
 

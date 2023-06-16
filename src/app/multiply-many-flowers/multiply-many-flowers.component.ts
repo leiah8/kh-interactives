@@ -10,7 +10,10 @@ export class MultiplyManyFlowersComponent implements AfterViewInit {
   @ViewChild("arena") public arena?: ElementRef<HTMLElement>;
   @ViewChild("input") public input?: ElementRef<HTMLElement>;
   @ViewChild("playBtn") public playBtn?: ElementRef<HTMLElement>;
+  @ViewChild("retryBtn") public retryBtn?: ElementRef<HTMLElement>;
+  @ViewChild("nextBtn") public nextBtn?: ElementRef<HTMLElement>;
   @ViewChild("anim") public anim?: ElementRef<HTMLElement>;
+  @ViewChild("rectangles") public rectangles?: ElementRef<HTMLElement>;
   // @ViewChild("retryBtn") public retryBtn?: ElementRef<HTMLElement>;
   // @ViewChild("playBtn") public playBtn?: ElementRef<HTMLElement>;
   // @ViewChild("nextBtn") public nextBtn?: ElementRef<HTMLElement>;
@@ -23,20 +26,38 @@ export class MultiplyManyFlowersComponent implements AfterViewInit {
       arena : this.arena.nativeElement,
       input : this.input.nativeElement,
       playBtn : this.playBtn.nativeElement,
+      retryBtn : this.retryBtn.nativeElement,
+      nextBtn : this.nextBtn.nativeElement,
       anim : this.anim.nativeElement,
-      mode : "columns",
+      rectangles : this.rectangles.nativeElement,
+      
       columns : 10,
       rows : 10
 
     }
 
+    // const config = {
+    // }
+
     const g1 = {
-      goal : [3, 5, 0, 0],
-      targets : 10
+      goal : [4, 3, 0, 0],
+      targets : 8,
+      mode : "rows",
+      horizontalDiv : false,
+      verticalDiv : true,
 
     } as GameInput
 
-    const interactive = new ManyFlowersAPI(setup, [g1])
+    const g2 = {
+      goal : [0, 0, 0, 5],
+      targets : 10,
+      mode : "columns",
+      horizontalDiv : true,
+      verticalDiv : false,
+
+    } as GameInput
+
+    const interactive = new ManyFlowersAPI(setup, [g1, g2])
   }
 
 }
