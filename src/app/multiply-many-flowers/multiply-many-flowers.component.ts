@@ -40,25 +40,25 @@ export class MultiplyManyFlowersComponent implements AfterViewInit {
     // }
 
     const g0 = {
-      goal : [4, 3, 0, 0],
+      goal : [0, 7, 0, 0],
       targets : 8,
       mode : "rows",
       horizontalDiv : false,
-      verticalDiv : true,
+      verticalDiv : false,
 
     } as GameInput
 
     const g2 = {
-      goal : [0, 0, 0, 4],
+      goal : [0, 4, 0, 0],
       targets : 5,
       mode : "rows",
-      horizontalDiv : true,
+      horizontalDiv : false,
       verticalDiv : false,
 
     } as GameInput
 
     const g1 = {
-      goal : [0, 6, 0, ],
+      goal : [0, 6, 0, 0],
       targets : 2,
       mode : "rows",
       horizontalDiv : false,
