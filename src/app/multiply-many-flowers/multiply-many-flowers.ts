@@ -102,9 +102,10 @@ export class ManyFlowersAPI {
 
     targetScaleVal : number = 0.8
 
-    targetPos : Pos[]
+    targetPos : Pos[][]
     targetEls : SVGUseElement[]
     targetPots : SVGUseElement[]
+    targetPotsPos : Pos[]
     animationEls : AnimationEl[][]
 
     tl : any
@@ -143,9 +144,16 @@ export class ManyFlowersAPI {
 
         this.tl = gsap.timeline()
 
-        this.targetPos = []
+        
         this.targetEls = []
         this.targetPots = []
+        this.targetPotsPos = this.gridCoords(650, 100, 3, 4, 150)
+        this.targetPos = []
+
+        for(var i = 0; i < 12; i++) {
+            this.targetPos.push(this.gridCoords(this.targetPotsPos[i].x + 8, this.targetPotsPos[i].y + 15, 2, 5 , 20))
+        }
+        //this.targetPos.push({x : coords[count].x + 8, y : coords[count].y + (Math.floor(count/5))*10 + 15})
         this.animationEls = []
 
         this.init()
@@ -294,9 +302,8 @@ export class ManyFlowersAPI {
         gsap.set(this.nextBtn, {scale : 0})
 
 
-        console.log(this.game)
 
-        this.targetPos = []
+        //this.targetPos = []
 
         this.targetEls.forEach(el => {
             this.arena.removeChild(el)
@@ -304,7 +311,6 @@ export class ManyFlowersAPI {
         this.targetEls = []
 
         
-
         this.targetPots.forEach(el => {
             this.arena.removeChild(el)
         });
@@ -361,7 +367,6 @@ export class ManyFlowersAPI {
         gsap.set(this.retryBtn, {scale : 0})
 
         this.nextBtn.onpointerdown = function() {
-            console.log("next")
             self.nextGame()
         }
         gsap.set(this.nextBtn, {scale : 0})
@@ -369,7 +374,7 @@ export class ManyFlowersAPI {
 
     setupArrows() {
         var self = this
-        var x = 1000
+        var x = 695
         var y = 550
 
         var back = document.createElementNS(svgns,"g")
@@ -548,7 +553,6 @@ export class ManyFlowersAPI {
 
     //determine set el type function based on this.dividers
     setElType(el : InputEl | AnimationEl) {
-        //im not sure yet how to do 6 sections or smth like that 
         if (el.row > this.horizontalDivPos && el.col > this.verticalDivPos) {
             el.setAttribute("href", "#input-2")
             return 2
@@ -729,10 +733,7 @@ export class ManyFlowersAPI {
     setupTargets() {
         var self = this
 
-        var x = 650
-        var y = 100
-
-        var delta = 150
+        
 
         for(var i = 0; i < this.targets; i++) {
 
@@ -741,13 +742,13 @@ export class ManyFlowersAPI {
             this.arena.appendChild(target)
             this.targetPots.push(target)
 
-            var xVal = x + delta*(i%4)
-            var yVal = y + delta*(i - i%4)/4
+            var xVal = this.targetPotsPos[i].x
+            var yVal = this.targetPotsPos[i].y
 
             gsap.set(target, {x : xVal, y : yVal})
 
 
-            var coords = this.gridCoords(xVal, yVal, 2, 5, 20)
+            //var coords = this.gridCoords(xVal, yVal, 2, 5, 20)
             var count = 0
             for(var j = 0; j < this.goal.length; j++) {
                 var str = "#output-" + (j+1).toString()
@@ -758,8 +759,9 @@ export class ManyFlowersAPI {
                     this.arena.appendChild(flower)
 
                     //gsap.set(flower, {x : xVal + k*23 + 2, y : yVal + j*30 + 10})
-                    this.targetPos.push({x : coords[count].x + 8, y : coords[count].y + (Math.floor(count/5))*10 + 15})
-                    gsap.set(flower, {scale : self.targetScaleVal, x : coords[count].x + 8, y : coords[count].y + (Math.floor(count/5))*10 + 15})
+                    //this.targetPos.push({x : coords[count].x + 8, y : coords[count].y + (Math.floor(count/5))*10 + 15})
+                    //gsap.set(flower, {scale : self.targetScaleVal, x : coords[count].x + 8, y : coords[count].y + (Math.floor(count/5))*10 + 15})
+                    gsap.set(flower, {scale : self.targetScaleVal, x : self.targetPos[i][count].x, y : self.targetPos[i][count].y}) 
                     this.targetEls.push(flower)
                     
                     count++;
@@ -813,7 +815,6 @@ export class ManyFlowersAPI {
             }
         }
 
-        console.log(count, this.goal)
 
         //grouping animation
         this.animationEls.reverse()
@@ -848,33 +849,125 @@ export class ManyFlowersAPI {
         //change targets 
         self.tl.to(this.targetEls, {opacity : 0.2})
 
-        //animate over by rows 
-        var index = 0
+
+
+        //CHECK IF CORRECT OR DETERMINE ANIMATION 
 
         self.tl.to(this.animationEls, {transformOrigin : "top left", duration : 0})
 
-        for(var i = 0; i < this.animationEls.length; i++) {
-            self.tl.to(self.playBtn, {duration : 1})
-            for(var j = 0; j < this.animationEls[i].length; j++) {
-                el = this.animationEls[i][j]
-                self.tl.to(el, {scale : self.targetScaleVal, duration : 1, x : self.targetPos[index].x, y : self.targetPos[index].y}, "<")
-                index++;
-                if (index >= self.targetPos.length) break; //set too many flowers 
-            }
-            if (index >= self.targetPos.length) break; //set too many flowers 
-        }
+        var totalPerTarget = 0
+        this.goal.forEach(num => {
+            totalPerTarget += num
+        });
 
         var completed = true 
-        //assuming count and goal have the same length
 
-        for(var i = 0; i < count.length; i++) {
-            if (count[i] != this.goal[i]*this.targets) completed = false //set too little flowers or wrong type 
+        // for(var i = 0; i < count.length; i++) {
+        //     if (count[i] != this.goal[i]*this.targets) completed = false 
+        // }
+
+        if (this.filledRows*this.filledColumns != this.targets*totalPerTarget) {
+            completed = false
         }
 
+        //FEEDBACK ANIM (FOR 1 TYPE RN)
+        if (completed) {
+            this.game.completed = true
+
+            if (this.filledRows == this.targets) {
+                //ANIMATE OVER BY ROWS 
+                var index = 0
+
+                for(var i = 0; i < this.animationEls.length; i++) {
+                    self.tl.to(self.playBtn, {duration : 1})
+                    for(var j = 0; j < this.animationEls[i].length; j++) {
+                        el = this.animationEls[i][j]
+                        //self.tl.to(el, {scale : self.targetScaleVal, duration : 1, x : self.targetPos[index].x, y : self.targetPos[index].y}, "<")
+                        //FIX
+                        self.tl.to(el, {scale : self.targetScaleVal, duration : 1, x : self.targetPos[i][j].x, y : self.targetPos[i][j].y}, "<")
+                        index++;
+                        
+                    }
+                    
+                }
+            }
+            else { //this.columns == this.targets
+                //deal cards anim (go by column)
+
+                var index = 0
+                
+                for(var j = 0; j < totalPerTarget; j++) {
+                    for(var i = 0; i < this.targets; i++) {
+                        el = this.animationEls[Math.floor(index / this.filledColumns)][index % this.filledColumns]
+                        self.tl.to(el, {scale : self.targetScaleVal, duration : 0.5, x : self.targetPos[i][j].x, y : self.targetPos[i][j].y})
+                        
+                        index++;
+                    }
+                    
+                }
+                
+
+
+            }
+        }
+        else if (this.filledRows < this.targets && this.filledColumns <= totalPerTarget){
+            //leave targets empty 
+
+            for(var i = 0; i < this.filledRows; i++) {
+                self.tl.to(self.playBtn, {duration : 1})
+                for(var j = 0; j < this.filledColumns; j++) {
+                    el = this.animationEls[i][j]
+                    self.tl.to(el, {scale : self.targetScaleVal, duration : 0.5, x : self.targetPos[i][j].x, y : self.targetPos[i][j].y}, "<")
+                }
+            }
+        }
+        else if (this.filledRows <= this.targets && this.filledColumns > totalPerTarget) {
+            //add extras to the bottom corner 
+            for(var i = 0; i < this.filledRows; i++) {
+                self.tl.to(self.playBtn, {duration : 1})
+                var extraPos = {x : this.targetPotsPos[i].x, y : this.targetPotsPos[i].y}
+                for(var j = 0; j < this.filledColumns; j++) {
+                    el = this.animationEls[i][j]
+                    if (j < totalPerTarget)
+                        self.tl.to(el, {scale : self.targetScaleVal, duration : 0.5, x : self.targetPos[i][j].x, y : self.targetPos[i][j].y}, "<")
+                    else
+                        self.tl.to(el, {scale : self.targetScaleVal, duration : 0.5, x : extraPos.x + 100 - (j-totalPerTarget) * 7, y : extraPos.y + 60}, "<")
+                }
+            }
+        }
+        else if (this.filledRows > this.targets && this.filledColumns <= totalPerTarget) {
+            //add extra rows 
+            for(var i = 0; i < this.filledRows; i++) {
+                self.tl.to(self.playBtn, {duration : 1})
+                for(var j = 0; j < this.filledColumns; j++) {
+                    el = this.animationEls[i][j]
+                    self.tl.to(el, {scale : self.targetScaleVal, duration : 0.5, x : self.targetPos[i][j].x, y : self.targetPos[i][j].y}, "<")
+                }
+            }
+
+        }
+        else if (this.filledRows > this.targets && this.filledColumns > totalPerTarget) {
+            //add extra rows and extras to the bottom corner
+            for(var i = 0; i < this.filledRows; i++) {
+                self.tl.to(self.playBtn, {duration : 1})
+                var extraPos = {x : this.targetPotsPos[i].x, y : this.targetPotsPos[i].y}
+                for(var j = 0; j < this.filledColumns; j++) {
+                    el = this.animationEls[i][j]
+                    if (j < totalPerTarget || i >= this.targets)
+                        self.tl.to(el, {scale : self.targetScaleVal, duration : 0.5, x : self.targetPos[i][j].x, y : self.targetPos[i][j].y}, "<")
+                    else
+                        self.tl.to(el, {scale : self.targetScaleVal, duration : 0.5, x : extraPos.x + 100 - (j-totalPerTarget) * 7, y : extraPos.y + 60}, "<")
+                }
+            }
+        }
+
+        
+        
+
+        //feedback animation
         if (completed) {
             //success animation
-            console.log("yay")
-            this.game.completed = true
+            
         }
 
         else {
@@ -884,7 +977,7 @@ export class ManyFlowersAPI {
 
         //show buttons
         if (completed || this.game.attempts >= 3) {
-            self.tl.to(self.retryBtn, {scale : 0, x : "1%", y : "2%", rotation : 0, duration : 0})
+            self.tl.to(self.retryBtn, {scale : 0, x : "2vh", y : "2vh", rotation : 0, duration : 0})
             self.tl.to([this.retryBtn, this.nextBtn], {scale : 1})
         }
         else {
@@ -892,7 +985,8 @@ export class ManyFlowersAPI {
 
             //show retry button in the middle
             //rotatating retry in middle
-           gsap.set(self.retryBtn, {scale : 0, x : 500, y : 230, rotation : 0})
+           //gsap.set(self.retryBtn, {scale : 0, x : 500, y : 230, rotation : 0})
+           gsap.set(self.retryBtn, {scale : 0, x : "90vh", y : "40vh", rotation : 0}) 
            this.tl.to(self.retryBtn, {scale : 3, duration : 1})
            this.tl.to(self.retryBtn, {repeat : -1, duration : 4, rotation : 360, ease: "bounce"}) 
 

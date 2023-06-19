@@ -27,7 +27,8 @@ export interface InputSetup {
 
   addRemove : boolean,
   useImgs : boolean,
-  scrollbarRange : number,
+  scrollbarRangeMax : number,
+  scrollbarRangeMin : number,
 }
 
 interface Node extends HTMLElement{
@@ -55,6 +56,7 @@ interface Game extends GameInput{
   goal : number;
   start : number;
   attempts : number;
+  completed : boolean;
 }
 
 export class IntegerPlatfromClass {
@@ -125,7 +127,8 @@ export class IntegerPlatfromClass {
 
     addRemove : boolean;
     useImgs : boolean;
-    scrollbarRange : number;
+    scrollbarRangeMax : number;
+    scrollbarRangeMin : number;
 
     balloons : SVGUseElement[]
     balloonVal : number = 1;
@@ -189,7 +192,8 @@ export class IntegerPlatfromClass {
 
         this.addRemove = setup.addRemove
         this.useImgs = setup.useImgs
-        this.scrollbarRange = setup.scrollbarRange
+        this.scrollbarRangeMax = setup.scrollbarRangeMax
+        this.scrollbarRangeMin = setup.scrollbarRangeMin
 
         gsap.registerPlugin(CustomEase);
         this.sandbagBounce = CustomEase.create("sandbagBounce", "M0,0 C0,0 0.014,0.001 0.022,0.003 0.031,0.006 0.037,0.01 0.045,0.015 0.054,0.021 0.06,0.027 0.068,0.035 0.077,0.044 0.083,0.05 0.09,0.061 0.108,0.089 0.12,0.107 0.135,0.137 0.155,0.179 0.165,0.205 0.181,0.249 0.201,0.305 0.211,0.336 0.228,0.394 0.247,0.46 0.256,0.497 0.273,0.565 0.292,0.644 0.301,0.686 0.318,0.766 0.337,0.858 0.359,0.98 0.363,0.998 0.367,0.989 0.39,0.949 0.411,0.907 0.426,0.877 0.438,0.859 0.456,0.831 0.464,0.82 0.47,0.813 0.48,0.804 0.487,0.796 0.492,0.792 0.501,0.786 0.509,0.781 0.515,0.778 0.524,0.775 0.531,0.772 0.538,0.771 0.546,0.772 0.554,0.772 0.561,0.773 0.569,0.776 0.578,0.779 0.584,0.783 0.592,0.788 0.601,0.794 0.606,0.799 0.614,0.807 0.623,0.817 0.629,0.824 0.637,0.836 0.655,0.864 0.667,0.882 0.682,0.914 0.701,0.953 0.72,0.982 0.726,0.998 0.73,0.994 0.743,0.979 0.754,0.968 0.761,0.961 0.766,0.957 0.774,0.952 0.782,0.947 0.788,0.943 0.796,0.941 0.804,0.938 0.811,0.937 0.819,0.937 0.827,0.937 0.833,0.938 0.841,0.941 0.85,0.944 0.855,0.947 0.863,0.952 0.872,0.958 0.877,0.963 0.885,0.971 0.894,0.981 0.902,0.992 0.908,0.998 0.914,0.996 1,1 1,1 ")
@@ -204,7 +208,8 @@ export class IntegerPlatfromClass {
         startSandbags : (gIn.startSandbags <= 8 && gIn.startSandbags > 0) ? gIn.startSandbags : 0,
         goal : gIn.goal,
         start : 0,
-        attempts : 0
+        attempts : 0,
+        completed : false
       } as Game
       return g
     }
@@ -214,7 +219,7 @@ export class IntegerPlatfromClass {
 
       //next btn
       gsap.set(self.retryBtn, {scale: 0})
-      if (self.game.attempts > 2) 
+      if (self.game.attempts > 2 || self.game.completed) 
         self.tl.to(self.nextBtn,{duration: 1,scale: 1,ease: "elastic"})
       else 
         gsap.set(self.nextBtn,{scale: 0})
@@ -571,7 +576,7 @@ export class IntegerPlatfromClass {
 
         //feedback animation
         if(self.sum == self.game.goal) { //cart rolls off 
-          self.game.attempts = 3
+          self.game.completed = true
           self.tl.to(self.cart, {x : 830, duration : 0.8, ease : "linear"})
           self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (830 - self.cartXPos) / self.wheelCircumference * 360, duration : 0.8, ease: "linear", 
             onComplete : function() {
@@ -627,7 +632,7 @@ export class IntegerPlatfromClass {
         self.finished = true;
 
         //next and retry buttons
-        if (self.game.attempts > 2) {
+        if (self.game.attempts > 2 || self.game.completed) {
           gsap.set(self.retryBtn, {transformOrigin : "35px 35px"})
           gsap.set(self.retryBtn, {x : 10, y : 10, scale : 0, rotation : 0})
           self.tl.to([self.nextBtn, self.retryBtn],{duration: 1, scale: 1, ease: "elastic"})
@@ -884,7 +889,7 @@ export class IntegerPlatfromClass {
 
     setupInputScrollbar() {
         var self = this
-        for(var i = this.scrollbarRange; i >= -this.scrollbarRange; i--) {
+        for(var i = this.scrollbarRangeMax; i >= this.scrollbarRangeMin; i--) {
           if (i != 0) {
             var n = document.createElement('li');
             if (self.useImgs) {

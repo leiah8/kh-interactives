@@ -95,7 +95,8 @@ export class IntegerPlatformComponent implements AfterViewInit {
 
       addRemove : this.addRemove,
       useImgs : this.useImgs,
-      scrollbarRange : 5,
+      scrollbarRangeMax : 5,
+      scrollbarRangeMin : -5,
 
     } as InputSetup
 
