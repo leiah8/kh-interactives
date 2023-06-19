@@ -51,7 +51,7 @@ export class MultiplyManyFlowersComponent implements AfterViewInit {
     const g2 = {
       goal : [0, 0, 0, 4],
       targets : 5,
-      mode : "columns",
+      mode : "rows",
       horizontalDiv : true,
       verticalDiv : false,
 
@@ -60,7 +60,7 @@ export class MultiplyManyFlowersComponent implements AfterViewInit {
     const g1 = {
       goal : [0, 6, 0, ],
       targets : 2,
-      mode : "columns",
+      mode : "rows",
       horizontalDiv : false,
       verticalDiv : false,
 

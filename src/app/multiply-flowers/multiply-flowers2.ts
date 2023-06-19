@@ -14,8 +14,8 @@ interface InputEl extends SVGUseElement {
 
 
 interface AnimationEl extends SVGUseElement {
-    xVal : number, 
-    yVal : number,
+    xVal : number | null, 
+    yVal : number | null,
     type : number,
 }
 
@@ -65,7 +65,7 @@ export class MoonsPlanetsAPI {
     targetMoonCoords2 : Pos[]
     targetMoons : SVGUseElement[]
 
-    signs = []
+    signs : SVGUseElement[]
 
     animationMoons : AnimationEl[]
     animationMoons2 : AnimationEl[]
@@ -373,7 +373,7 @@ export class MoonsPlanetsAPI {
             gsap.set(sign, {x : p.x - 32, y : p.y - 90 })
             //150 - 75
             this.gameEls.push(sign)
-            this.signs.push(sign)
+            this.signs.push(sign) //HERE
 
             //add flowers to the sign
             var coords = (this.rowCoords(p.x - 20, p.y -75, 5, 23).concat(this.rowCoords(p.x - 20, p.y -75+25, 5, 23)))
@@ -445,7 +445,7 @@ export class MoonsPlanetsAPI {
         var timeBetweenAnim = 0.2
         var timeBetweenStages = 0.5
 
-        var stems = []
+        var stems : SVGUseElement[] = []
         if (this.totalMoons == goal) {
             var numOfStems = self.p1Num + self.p2Num;
             //if (self.p1Moons > 0) numOfStems += self.p1Num
@@ -542,13 +542,14 @@ export class MoonsPlanetsAPI {
             //delete all targets 
             this.tl.to(this.targetMoons, {scale : 0, duration : 0})
 
-            var coords = []
+            var coords : Pos[] = []
             var w  = 75 //gsap.getProperty(this.pot)
             for(var i = 0; i < this.pCoords.length; i++) {
                 var p = this.pCoords[i]
                 
                 var width = this.bouquetWidth(this.p1Moons + this.p2Moons, 20)
-                coords = coords.concat(this.bouquetCoords(p.x + w/2 - width/2, p.y, this.p1Moons + this.p2Moons, 20))
+                var bArr = self.bouquetCoords(p.x + w/2 - width/2, p.y, this.p1Moons + this.p2Moons, 20)
+                coords = coords.concat(bArr)
                 
                 
             }
@@ -630,14 +631,15 @@ export class MoonsPlanetsAPI {
 
         //show retry and/or next button 
         if (self.game.attempts > 2) {
-            self.tl.to(self.retryBtn, {scale : 0, x : 10, y : 10, rotation : 0, duration : 0})
+            self.tl.to(self.retryBtn, {scale : 0, x : "2vh", y : "2vh", rotation : 0, duration : 0})
             self.tl.to([self.retryBtn, self.nextBtn], {scale : 1, rotation : 0})
         }
         else {
            gsap.set(self.nextBtn,{duration: 0, scale: 0})
             
            //rotatating retry in middle
-           gsap.set(self.retryBtn, {scale : 0, x : 610, y : 320, rotation : 0})
+           // gsap.set(self.retryBtn, {scale : 0, x : 610, y : 320, rotation : 0})
+           gsap.set(self.retryBtn, {scale : 0, x : "90vh", y : "40vh", rotation : 0}) 
            this.tl.to(self.retryBtn, {scale : 3, duration : 1})
            this.tl.to(self.retryBtn, {repeat : -1, duration : 4, rotation : 360, ease: "bounce"}) 
         }
@@ -658,7 +660,7 @@ export class MoonsPlanetsAPI {
         var moonNum = -1
         var index = 0;
 
-        var moonGroups = []
+        var moonGroups : number[] = []
         for(var i = 0; i < this.p1Num; i++) moonGroups.push(this.p1Moons)
         for(var i = 0; i < this.p2Num; i++) moonGroups.push(this.p2Moons)
 
@@ -681,7 +683,7 @@ export class MoonsPlanetsAPI {
                 moonNum++; 
 
                 var sum = 0
-                var keep = []
+                var keep : number[] = []
                 for(var j = 0; j < moonGroups.length; j++) {
                     sum += moonGroups[j]
                     if (moonGroups[j] > moonNum) {
@@ -892,6 +894,7 @@ export class MoonsPlanetsAPI {
         else if (num == 10) { 
             return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal + delta*2, y : yVal}, {x : xVal - delta/2, y : yVal + delta}, {x : xVal + delta/2, y : yVal + delta}, {x : xVal + delta + delta/2, y : yVal + delta},{x : xVal + delta*2 + delta/2, y : yVal + delta}, {x : xVal, y : yVal + delta*2}, {x : xVal + delta, y : yVal + delta*2}, {x : xVal + delta*2, y : yVal + delta*2}]
         }
+        else return []
         
     }
 
