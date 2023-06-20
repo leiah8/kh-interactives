@@ -9,9 +9,8 @@ import { MultiplyFlowersComponent } from './multiply-flowers/multiply-flowers.co
 import { MultiplicationTableComponent } from './multiplication-table/multiplication-table.component';
 import { ZoomPlanetsComponent } from './zoom-planets/zoom-planets.component';
 import { MultiplyManyFlowersComponent } from './multiply-many-flowers/multiply-many-flowers.component';
+import { TextureSwapComponent } from './texture-swap/texture-swap.component';
 
-
-ZoomPlanetsComponent
 
 const routes: Routes = [
   { path: 'scrollbar', component: ContainerComponent },
@@ -24,6 +23,7 @@ const routes: Routes = [
   { path: 'slingshot', component: SlingshotInputComponent },
   { path: 'multtable', component: MultiplicationTableComponent },
   { path: 'zoomplanets', component: ZoomPlanetsComponent },
+  { path: 'textureswap', component: TextureSwapComponent },
   
 ]
 
