@@ -56,7 +56,6 @@ interface Arrows {
     down: SVGUseElement
     left: SVGUseElement
     right: SVGUseElement
-
 }
 
 
@@ -138,8 +137,6 @@ export class ManyFlowersAPI {
 
         this.rects = []
 
-
-
         this.inputElements = [] //Array(this.TOTAL_ROWS).fill(Array(this.TOTAL_COLUMNS))
 
         this.tl = gsap.timeline()
@@ -162,9 +159,6 @@ export class ManyFlowersAPI {
     createGames(gIn) {
 
         var games = []
-
-        // var num = 4
-
         for (var i = 0; i < gIn.length; i++) {
             var g = {
                 goal: gIn[i].goal,
@@ -227,13 +221,9 @@ export class ManyFlowersAPI {
 
 
     init() {
-        if (this.game.mode == "columns") {
-            this.showColumns = true
-        }
-        else {
-            this.showColumns = false
-        }
-
+        if (this.game.mode == "columns")  this.showColumns = true 
+        else this.showColumns = false
+        
         this.setupRects()
         this.setupInputFlowers()
         this.setupDividers()
@@ -264,7 +254,6 @@ export class ManyFlowersAPI {
             this.setHorizontalDiv(0)
         if (this.game.verticalDiv)
             this.setVerticalDiv(0)
-        //this.horizontalDivPos = 0
 
         this.fill(0, 0)
 
@@ -272,7 +261,6 @@ export class ManyFlowersAPI {
             l.forEach(el => {
                 this.anim.removeChild(el)
             })
-
         });
         this.animationEls = [] // remove all elements 
 
@@ -285,9 +273,8 @@ export class ManyFlowersAPI {
         gsap.set(this.retryBtn, { scale: 0 })
         gsap.set(this.playBtn, { scale: 1 })
 
-        if (this.game.completed || this.game.attempts >= 3) {
+        if (this.game.completed || this.game.attempts >= 3) 
             gsap.set(this.nextBtn, { scale: 1 })
-        }
         else
             gsap.set(this.nextBtn, { scale: 0 })
 
@@ -301,15 +288,10 @@ export class ManyFlowersAPI {
         this.targets = this.game.targets
         this.goal = this.game.goal
 
-        if (this.game.completed || this.game.attempts >= 3) {
+        if (this.game.completed || this.game.attempts >= 3) 
             gsap.set(this.nextBtn, { scale: 1 })
-        }
         else
             gsap.set(this.nextBtn, { scale: 0 })
-
-
-
-        //this.targetPos = []
 
         this.targetEls.forEach(el => {
             this.arena.removeChild(el)
@@ -324,10 +306,12 @@ export class ManyFlowersAPI {
         });
         this.targetPots = [[], []]
 
+
         this.rects.forEach(el => {
             this.rectangles.removeChild(el)
         });
         this.rects = []
+
 
         this.setupTargets()
 
@@ -340,14 +324,13 @@ export class ManyFlowersAPI {
             this.verticalDivEl = null
         }
 
+
         this.setupDividers()
 
-        if (this.game.mode == "columns") {
+        if (this.game.mode == "columns") 
             this.showColumns = true
-        }
-        else {
+        else 
             this.showColumns = false
-        }
 
         this.setupRects()
 
@@ -395,9 +378,7 @@ export class ManyFlowersAPI {
         back.appendChild(center)
         center.setAttribute("href", "#el-center")
         gsap.set(center, { x: x + 87 - 20, y: y + 75 - 20 })
-        //width = height = 30px
-
-
+        //width = height = 40px
 
         var up = document.createElementNS(svgns, "use")
         this.input.appendChild(up)
@@ -499,7 +480,6 @@ export class ManyFlowersAPI {
 
     setupInputFlowers() {
         var self = this
-        // for(var i = 0; i < this.TOTAL_ROWS; i++) {
         for (var i = this.TOTAL_ROWS - 1; i >= 0; i--) {
             this.inputElements.push([])
             for (var j = 0; j < this.TOTAL_COLUMNS; j++) {
@@ -513,8 +493,6 @@ export class ManyFlowersAPI {
                 el.setAttribute("href", "#empty-input")
                 gsap.set(el, { x: this.INPUT_X + j * this.FLOWER_DELTA + 10, y: this.INPUT_Y + i * this.FLOWER_DELTA + 10 })
 
-                //this.inputElements[i][j] = el
-                // this.inputElements[i].push(el)
                 this.inputElements[this.TOTAL_ROWS - 1 - i].push(el)
             }
         }
@@ -542,9 +520,7 @@ export class ManyFlowersAPI {
             for (var j = 0; j < this.TOTAL_COLUMNS; j++) {
                 var el = this.inputElements[i][j]
                 if (i < rows && j < cols) {
-                    //fill it in 
                     if (!el.on) {
-                        // el.setAttribute("href", "#input-1")
                         this.setElType(el)
                         el.on = true
                     }
@@ -597,7 +573,6 @@ export class ManyFlowersAPI {
                 pos: self.verticalDivPos
             })
             this.input.appendChild(div1)
-            //div1.setAttribute("href","#vertical-divider")
 
             var rect1 = document.createElementNS(svgns, "use")
             rect1.setAttribute("href", "#vertical-divider")
@@ -606,14 +581,11 @@ export class ManyFlowersAPI {
             var border1 = document.createElementNS(svgns, "rect")
             gsap.set(border1, { height: this.FLOWER_DELTA * this.TOTAL_COLUMNS + 20, width: 20, rx: 16, fill: "#915d27", opacity: 0 })
             div1.appendChild(border1)
-            // this.borders.push(border1)
-            // this.dividers.push(div1)
-
+           
             gsap.set(div1, { x: this.INPUT_X + self.verticalDivPos * this.FLOWER_DELTA - 5, y: this.INPUT_Y })
             gsap.set(border1, { y: "-= 10", x: "-= 6" })
 
             div1.onpointerdown = function () {
-                //gsap.set(border1, {opacity: 0.5})
                 self.setSelectedEl("vertical-div")
             }
 
@@ -621,9 +593,6 @@ export class ManyFlowersAPI {
             //add draggable
             var d1 = Draggable.create(div1, {
                 type: "x", bounds: { left: this.INPUT_X - this.FLOWER_DELTA * 2 - 1, width: this.FLOWER_DELTA * this.TOTAL_COLUMNS + 21 },
-                // onDragStart : function() {
-                //     gsap.set(border1, {opacity: 0.5})
-                // },
                 onDragEnd: function () {
                     var endVal = this.x
                     var e = Math.round((endVal - (self.INPUT_X - 5)) / self.FLOWER_DELTA)
@@ -658,7 +627,6 @@ export class ManyFlowersAPI {
                 pos: self.verticalDivPos
             })
             this.input.appendChild(div2)
-            //div1.setAttribute("href","#vertical-divider")
 
             var rect2 = document.createElementNS(svgns, "use")
             rect2.setAttribute("href", "#horizontal-divider")
@@ -667,25 +635,18 @@ export class ManyFlowersAPI {
             var border2 = document.createElementNS(svgns, "rect")
             gsap.set(border2, { height: 20, width: this.FLOWER_DELTA * this.TOTAL_ROWS + 20, rx: 16, fill: "#915d27", opacity: 0 })
             div2.appendChild(border2)
-            // this.borders.push(border2)
-            // this.dividers.push(div2)
 
             gsap.set(div2, { x: this.INPUT_X, y: this.INPUT_Y + self.TOTAL_ROWS * this.FLOWER_DELTA - self.horizontalDivPos * this.FLOWER_DELTA - 2 })
             gsap.set(border2, { x: "-= 10", y: "-= 6" })
 
 
             div2.onpointerdown = function () {
-                //gsap.set(border2, {opacity: 0.5})
                 self.setSelectedEl("horizontal-div")
             }
 
             //add draggable
-            // bounds : self.rects, 
             var d2 = Draggable.create(div2, {
                 type: "y", bounds: { minY: self.INPUT_Y, maxY: self.INPUT_Y + self.TOTAL_ROWS * self.FLOWER_DELTA },
-                // onDragStart : function() {
-                //     gsap.set(border2, {opacity: 0.5})
-                // },
                 onDragEnd: function () {
                     var endVal = this.y
                     var e = Math.round((endVal - self.INPUT_Y) / self.FLOWER_DELTA)
@@ -710,8 +671,6 @@ export class ManyFlowersAPI {
                 draggable: d2
             }
         }
-
-        //this.draggables = [d1, d2]
     }
 
     setHorizontalDiv(e) {
@@ -725,7 +684,6 @@ export class ManyFlowersAPI {
         self.fill(0, 0)
         self.fill(rows, cols)
 
-        //gsap.set(this.dividers[1], {y : (self.TOTAL_ROWS - e) * self.FLOWER_DELTA + (self.INPUT_Y)})
         gsap.set(this.horizontalDivEl.group, { y: (self.TOTAL_ROWS - e) * self.FLOWER_DELTA + (self.INPUT_Y) })
     }
 
@@ -740,7 +698,6 @@ export class ManyFlowersAPI {
         self.fill(0, 0)
         self.fill(rows, cols)
 
-        //gsap.set(this.dividers[0], {x : e * self.FLOWER_DELTA + (self.INPUT_X - 5)})
         gsap.set(this.verticalDivEl.group, { x: e * self.FLOWER_DELTA + (self.INPUT_X - 5) })
     }
 
@@ -765,8 +722,6 @@ export class ManyFlowersAPI {
             gsap.set(targetTop, { x: xVal, y: yVal })
             gsap.set(targetBottom, { x: xVal + 21, y: yVal + 84})
 
-
-            //var coords = this.gridCoords(xVal, yVal, 2, 5, 20)
             var count = 0
             for (var j = 0; j < this.goal.length; j++) {
                 var str = "#output-" + (j + 1).toString()
@@ -776,19 +731,13 @@ export class ManyFlowersAPI {
                     flower.setAttribute("href", str)
                     this.arena.appendChild(flower)
 
-                    //gsap.set(flower, {x : xVal + k*23 + 2, y : yVal + j*30 + 10})
-                    //this.targetPos.push({x : coords[count].x + 8, y : coords[count].y + (Math.floor(count/5))*10 + 15})
-                    //gsap.set(flower, {scale : self.targetScaleVal, x : coords[count].x + 8, y : coords[count].y + (Math.floor(count/5))*10 + 15})
                     gsap.set(flower, { scale: self.targetScaleVal, x: self.targetPos[i][count].x, y: self.targetPos[i][count].y })
                     this.targetEls.push(flower)
 
                     count++;
                 }
-
             }
-
         }
-
     }
 
     gridCoords(xVal, yVal, rows, cols, delta) {
@@ -841,10 +790,7 @@ export class ManyFlowersAPI {
 
         //shrink animation
         self.tl.to(this.playBtn, { duration: growTime })
-        // this.inputElements.forEach(els => {
-        //     gsap.set(els, {transformOrigin : "bottom center"})
-        //     self.tl.to(els, {scale : 0, duration : growTime}, "<")
-        // });
+        
         gsap.set(this.inputElements, { transformOrigin: "bottom center" })
         self.tl.to(this.inputElements, { scale: 0, duration: growTime }, "<")
         gsap.set(this.animationEls, { transformOrigin: "bottom center" })
@@ -869,8 +815,7 @@ export class ManyFlowersAPI {
         self.tl.to(this.targetEls, { opacity: 0.2 })
 
 
-
-        //CHECK IF CORRECT OR DETERMINE ANIMATION 
+        //CHECK IF CORRECT and DETERMINE ANIMATION 
 
         self.tl.to(this.animationEls, { transformOrigin: "top left", duration: 0 })
 
@@ -889,6 +834,7 @@ export class ManyFlowersAPI {
             completed = false
         }
 
+
         //FEEDBACK ANIM (FOR 1 TYPE RN)
         if (completed) {
             this.game.completed = true
@@ -901,8 +847,6 @@ export class ManyFlowersAPI {
                     self.tl.to(self.playBtn, { duration: 1 })
                     for (var j = 0; j < this.animationEls[i].length; j++) {
                         el = this.animationEls[i][j]
-                        //self.tl.to(el, {scale : self.targetScaleVal, duration : 1, x : self.targetPos[index].x, y : self.targetPos[index].y}, "<")
-                        //FIX
                         self.tl.to(el, { scale: self.targetScaleVal, duration: 1, x: self.targetPos[i][j].x, y: self.targetPos[i][j].y }, "<")
                         index++;
 
@@ -912,7 +856,6 @@ export class ManyFlowersAPI {
             }
             else { //this.columns == this.targets
                 //deal cards anim (go by column)
-
                 var index = 0
 
                 for (var j = 0; j < totalPerTarget; j++) {
@@ -922,10 +865,18 @@ export class ManyFlowersAPI {
 
                         index++;
                     }
-
                 }
 
-
+                //regroup animation elements by column (transform matrix)
+                var temp = []
+                for(var j = 0; j < this.animationEls[0].length; j++) {
+                    temp.push([])
+                    for(var i = 0; i < this.animationEls.length; i++) {
+                        temp[j].push(this.animationEls[i][j])
+                    }
+                }
+                console.log(temp)
+                this.animationEls = temp
 
             }
         }
@@ -980,18 +931,16 @@ export class ManyFlowersAPI {
             }
         }
 
-
-
-
         //feedback animation
+        
         //success animation
+        //TO DO: error message is in here ?? 
         if (completed) {
             //remove targets 
             this.tl.to(this.targetEls, {visibility : "hidden", duration : 0})
 
             gsap.set(this.targetPots[0], {transformOrigin : "bottom center"})
             this.tl.to(this.targetPots[0], {scale : 0, duration : 1, onComplete : function() {
-                console.log("hello", self.targets)
                 for(var i = 0; i < self.targets; i++) {
                     self.targetPots[0][i].setAttribute("href", "#stem")
                 }
@@ -1008,9 +957,6 @@ export class ManyFlowersAPI {
                     self.tl.to(this.animationEls[i][j], {x : coords[j].x + 70 - w/2 + moveX, y : coords[j].y + 25 + moveY}, "<")
                 }
             }
-
-            
-
         }
 
         else {
@@ -1024,17 +970,16 @@ export class ManyFlowersAPI {
             self.tl.to([this.retryBtn, this.nextBtn], { scale: 1 })
         }
         else {
-            //self.tl.to(this.retryBtn, {scale : 1})
 
-            //show retry button in the middle
-            //rotatating retry in middle
-            //gsap.set(self.retryBtn, {scale : 0, x : 500, y : 230, rotation : 0})
+            //show rotating retry button in the middle
             gsap.set(self.retryBtn, { scale: 0, x: "90vh", y: "40vh", rotation: 0 })
             this.tl.to(self.retryBtn, { scale: 3, duration: 1 })
             this.tl.to(self.retryBtn, { repeat: -1, duration: 4, rotation: 360, ease: "bounce" })
 
         }
     }
+
+
     bouquetWidth(num, delta) {
         if (num < 1) return 0
         else if (num == 1) {
