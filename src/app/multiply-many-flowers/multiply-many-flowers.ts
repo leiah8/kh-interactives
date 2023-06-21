@@ -104,7 +104,7 @@ export class ManyFlowersAPI {
 
     targetPos: Pos[][]
     targetEls: SVGUseElement[]
-    targetPots: SVGUseElement[]
+    targetPots: SVGUseElement[][]
     targetPotsPos: Pos[]
     animationEls: AnimationEl[][]
 
@@ -146,7 +146,7 @@ export class ManyFlowersAPI {
 
 
         this.targetEls = []
-        this.targetPots = []
+        this.targetPots = [[], []]
         this.targetPotsPos = this.gridCoords(650, 100, 3, 4, 150)
         this.targetPos = []
 
@@ -276,6 +276,12 @@ export class ManyFlowersAPI {
         });
         this.animationEls = [] // remove all elements 
 
+        gsap.set(this.targetEls, {visibility : "visible"})
+        
+        this.targetPots[0].forEach(el => {
+            el.setAttribute("href", "#pot-sign")
+        });
+
         gsap.set(this.retryBtn, { scale: 0 })
         gsap.set(this.playBtn, { scale: 1 })
 
@@ -311,10 +317,12 @@ export class ManyFlowersAPI {
         this.targetEls = []
 
 
-        this.targetPots.forEach(el => {
-            this.arena.removeChild(el)
+        this.targetPots.forEach(l => {
+            l.forEach(el => {
+                this.arena.removeChild(el)
+            });
         });
-        this.targetPots = []
+        this.targetPots = [[], []]
 
         this.rects.forEach(el => {
             this.rectangles.removeChild(el)
@@ -739,19 +747,23 @@ export class ManyFlowersAPI {
     setupTargets() {
         var self = this
 
-
-
         for (var i = 0; i < this.targets; i++) {
 
-            var target = document.createElementNS(svgns, "use")
-            target.setAttribute("href", "#target")
-            this.arena.appendChild(target)
-            this.targetPots.push(target)
+            var targetBottom = document.createElementNS(svgns, "use")
+            targetBottom.setAttribute("href", "#pot")
+            this.arena.appendChild(targetBottom)
+            this.targetPots[1].push(targetBottom)
+
+            var targetTop = document.createElementNS(svgns, "use")
+            targetTop.setAttribute("href", "#pot-sign")
+            this.arena.appendChild(targetTop)
+            this.targetPots[0].push(targetTop)
 
             var xVal = this.targetPotsPos[i].x
             var yVal = this.targetPotsPos[i].y
 
-            gsap.set(target, { x: xVal, y: yVal })
+            gsap.set(targetTop, { x: xVal, y: yVal })
+            gsap.set(targetBottom, { x: xVal + 21, y: yVal + 84})
 
 
             //var coords = this.gridCoords(xVal, yVal, 2, 5, 20)
@@ -917,7 +929,7 @@ export class ManyFlowersAPI {
 
             }
         }
-        else if (this.filledRows < this.targets && this.filledColumns <= totalPerTarget) {
+        else if (this.filledRows <= this.targets && this.filledColumns <= totalPerTarget) {
             //leave targets empty 
 
             for (var i = 0; i < this.filledRows; i++) {
@@ -972,8 +984,32 @@ export class ManyFlowersAPI {
 
 
         //feedback animation
+        //success animation
         if (completed) {
-            //success animation
+            //remove targets 
+            this.tl.to(this.targetEls, {visibility : "hidden", duration : 0})
+
+            gsap.set(this.targetPots[0], {transformOrigin : "bottom center"})
+            this.tl.to(this.targetPots[0], {scale : 0, duration : 1, onComplete : function() {
+                console.log("hello", self.targets)
+                for(var i = 0; i < self.targets; i++) {
+                    self.targetPots[0][i].setAttribute("href", "#stem")
+                }
+            }})
+
+            this.tl.to(this.targetPots[0], {scale : 1, duration : 0.5})
+
+            for(var i = 0; i < this.targets; i++) {
+                var coords = this.bouquetCoords(this.targetPotsPos[i].x, this.targetPotsPos[i].y, this.animationEls[i].length, 17)
+                var w = this.bouquetWidth(this.animationEls[i].length, 17)
+                for(var j = 0; j < this.animationEls[i].length;j++) {
+                    var moveX = Math.random() * (Math.round(Math.random()) == 0 ? 1 : -1)
+                    var moveY = Math.random() * (Math.round(Math.random()) == 0 ? 1 : -1)
+                    self.tl.to(this.animationEls[i][j], {x : coords[j].x + 70 - w/2 + moveX, y : coords[j].y + 25 + moveY}, "<")
+                }
+            }
+
+            
 
         }
 
@@ -998,5 +1034,74 @@ export class ManyFlowersAPI {
             this.tl.to(self.retryBtn, { repeat: -1, duration: 4, rotation: 360, ease: "bounce" })
 
         }
+    }
+    bouquetWidth(num, delta) {
+        if (num < 1) return 0
+        else if (num == 1) {
+            return delta
+        }
+        else if (num == 2) {
+            return delta*2
+        }
+        else if (num == 3) {
+            return delta*2
+        }
+        else if (num == 4) {
+            return delta*2.5
+        }
+        else if (num == 5) {
+            return delta*3
+        }
+        else if (num == 6){ //change maybe 
+            return delta*4
+        }
+        else if (num == 7) { 
+            return delta*3
+        }
+        else if (num == 8) { //change maybe
+            return 3
+        }
+        else if (num == 9) { //change maybe
+            return delta*3.5
+        }
+        else if (num == 10) { 
+            return delta*4
+        }
+    }
+
+    bouquetCoords(xVal, yVal, num, delta) {
+        if (num < 1) return []
+        else if (num == 1) {
+            return [{x : xVal, y : yVal}]
+        }
+        else if (num == 2) {
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}]
+        }
+        else if (num == 3) {
+            return [{x : xVal, y : yVal+delta}, {x : xVal + delta, y : yVal + delta}, {x : xVal + delta/2, y : yVal}]
+        }
+        else if (num == 4) {
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal + delta/2, y : yVal +delta}, {x : xVal + delta +delta/2, y : yVal +delta}]
+        }
+        else if (num == 5) {
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal - delta/2 , y : yVal+delta}, {x : xVal + delta/2, y : yVal+delta}, {x : xVal + delta + delta/2, y : yVal + delta}]
+        }
+        else if (num == 6){ //change maybe 
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal + delta*2, y : yVal}, {x : xVal + delta/2, y : yVal+delta}, {x : xVal + delta/2 + delta, y : yVal + delta}, {x : xVal + delta*2 + delta/2, y : yVal + delta}]
+        }
+        else if (num == 7) { 
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal - delta/2, y : yVal + delta}, {x : xVal + delta/2, y : yVal+delta}, {x : xVal + delta/2 + delta, y : yVal + delta}, {x : xVal, y : yVal + delta*2}, {x : xVal +delta, y : yVal + delta*2}]
+        }
+        else if (num == 8) { //change maybe
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal + delta*2, y : yVal}, {x : xVal + delta/2, y : yVal + delta}, {x : xVal + delta + delta/2, y : yVal + delta}, {x : xVal, y : yVal + delta*2}, {x : xVal + delta, y : yVal + delta*2}, {x : xVal + delta*2, y : yVal + delta*2}]
+        }
+        else if (num == 9) { //change maybe
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal + delta*2, y : yVal}, {x : xVal + delta/2, y : yVal + delta}, {x : xVal + delta + delta/2, y : yVal + delta},{x : xVal + delta*2 + delta/2, y : yVal + delta}, {x : xVal, y : yVal + delta*2}, {x : xVal + delta, y : yVal + delta*2}, {x : xVal + delta*2, y : yVal + delta*2}]
+        }
+        else if (num == 10) { 
+            return [{x : xVal, y : yVal}, {x : xVal + delta, y : yVal}, {x : xVal + delta*2, y : yVal}, {x : xVal - delta/2, y : yVal + delta}, {x : xVal + delta/2, y : yVal + delta}, {x : xVal + delta + delta/2, y : yVal + delta},{x : xVal + delta*2 + delta/2, y : yVal + delta}, {x : xVal, y : yVal + delta*2}, {x : xVal + delta, y : yVal + delta*2}, {x : xVal + delta*2, y : yVal + delta*2}]
+        }
+        else return []
+        
     }
 }

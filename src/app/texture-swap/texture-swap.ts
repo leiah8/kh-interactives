@@ -92,7 +92,7 @@ export class TextureSwapAPI {
             el.setAttribute("href", hrefStr)
         }})
         tl.to(el, {scale : 1.2, ease : "linear", duration : 0.2})
-        tl.to(el, {scale : 1, ease : "linear", duration : 0.1})
+        tl.to(el, {scale : 1, ease : "linear", duration : 0.1 })
 
         tl.to(el, {transformOrigin : "top left", duration : 0})
 
