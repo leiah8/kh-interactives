@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SlingshotInputComponent } from './slingshot-input.component';
+import { MsgsComponent } from './msgs.component';
 
-describe('SlingshotInputComponent', () => {
-  let component: SlingshotInputComponent;
-  let fixture: ComponentFixture<SlingshotInputComponent>;
+describe('MsgsComponent', () => {
+  let component: MsgsComponent;
+  let fixture: ComponentFixture<MsgsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SlingshotInputComponent ]
+      declarations: [ MsgsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SlingshotInputComponent);
+    fixture = TestBed.createComponent(MsgsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

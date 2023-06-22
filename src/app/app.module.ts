@@ -8,12 +8,12 @@ import { ContainerComponent } from './container/container.component';
 import { HorizontalScrollbarComponent } from './horizontal-scrollbar/horizontal-scrollbar.component';
 import { IntegerPlatformComponent } from './integer-platform/integer-platform.component';
 import { MoonsPlanetsComponent } from './moons-planets/moons-planets.component';
-import { SlingshotInputComponent } from './slingshot-input/slingshot-input.component';
 import { MultiplyFlowersComponent } from './multiply-flowers/multiply-flowers.component';
 import { MultiplicationTableComponent } from './multiplication-table/multiplication-table.component';
 import { ZoomPlanetsComponent } from './zoom-planets/zoom-planets.component';
 import { MultiplyManyFlowersComponent } from './multiply-many-flowers/multiply-many-flowers.component';
 import { TextureSwapComponent } from './texture-swap/texture-swap.component';
+import { MsgsComponent } from './msgs/msgs.component';
 
 @NgModule({
   declarations: [
@@ -23,12 +23,12 @@ import { TextureSwapComponent } from './texture-swap/texture-swap.component';
     HorizontalScrollbarComponent,
     IntegerPlatformComponent,
     MoonsPlanetsComponent,
-    SlingshotInputComponent,
     MultiplyFlowersComponent,
     MultiplicationTableComponent,
     ZoomPlanetsComponent,
     MultiplyManyFlowersComponent,
     TextureSwapComponent,
+    MsgsComponent,
   ],
   imports: [
     BrowserModule,
