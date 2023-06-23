@@ -14,6 +14,7 @@ import { ZoomPlanetsComponent } from './zoom-planets/zoom-planets.component';
 import { MultiplyManyFlowersComponent } from './multiply-many-flowers/multiply-many-flowers.component';
 import { TextureSwapComponent } from './texture-swap/texture-swap.component';
 import { MsgsComponent } from './msgs/msgs.component';
+import { MaterialBridgeComponent } from './material-bridge/material-bridge.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { MsgsComponent } from './msgs/msgs.component';
     MultiplyManyFlowersComponent,
     TextureSwapComponent,
     MsgsComponent,
+    MaterialBridgeComponent,
   ],
   imports: [
     BrowserModule,

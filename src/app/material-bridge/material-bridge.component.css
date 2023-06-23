@@ -1,0 +1,24 @@
+
+.input {
+    background-color: #dddddd;
+    border-radius : 8px;
+    border-width : 10px;
+
+    width : 400px;
+    height : 100px;
+    
+    align-items : center;
+
+}
+
+.input-info {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 3fr 3fr 3fr;
+    font : "Poppins"
+}
+
+.btn {
+    width : 50px;
+    height : 20px;
+}

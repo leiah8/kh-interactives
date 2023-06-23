@@ -9,6 +9,7 @@ import { MultiplicationTableComponent } from './multiplication-table/multiplicat
 import { ZoomPlanetsComponent } from './zoom-planets/zoom-planets.component';
 import { MultiplyManyFlowersComponent } from './multiply-many-flowers/multiply-many-flowers.component';
 import { TextureSwapComponent } from './texture-swap/texture-swap.component';
+import { MaterialBridgeComponent } from './material-bridge/material-bridge.component';
 
 
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'multtable', component: MultiplicationTableComponent },
   { path: 'zoomplanets', component: ZoomPlanetsComponent },
   { path: 'textureswap', component: TextureSwapComponent },
+  { path: 'materialbridge', component: MaterialBridgeComponent },
   
 ]
 

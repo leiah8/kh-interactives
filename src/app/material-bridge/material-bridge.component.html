@@ -1,0 +1,61 @@
+<body>
+<div #input class="input">
+    
+    <div class="input-img">
+        <svg #inputImg
+        version="1.1"
+        viewBox="0 0 400 50"
+        id="svg26910"
+        sodipodi:docname="Untitled drawing (5).svg"
+        width="400"
+        height="50"
+        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:svg="http://www.w3.org/2000/svg">
+       <defs
+          id="defs26914">
+          <image
+                id="one"
+                width="400"
+                href="https://res.cloudinary.com/dxltpgop9/image/upload/v1687543909/material%20bridge/one_i0d2sp.svg"
+            ></image> 
+            <image
+                id="half"
+                width="400"
+                href="https://res.cloudinary.com/dxltpgop9/image/upload/v1687543309/material%20bridge/half_vmakgb.svg"
+            ></image> 
+            <image
+                id="third"
+                width="400"
+                href="https://res.cloudinary.com/dxltpgop9/image/upload/v1687543310/material%20bridge/third_zhpa5y.svg"
+            ></image> 
+            <image
+                id="fourth"
+                width="400"
+                href="https://res.cloudinary.com/dxltpgop9/image/upload/v1687543309/material%20bridge/fourth_ovqzfa.svg"
+            ></image> 
+        </defs>
+     </svg>
+    </div>
+
+    <div class="input-info"> 
+        <div>
+            <label for="Pieces">Pieces: </label> 
+            <input type="number" id="numbers" name="numbers" min="0" max="20">
+        </div>
+        
+        <div>
+            <label for="Size">Size: </label> 
+            <select #inputSize name="Size" id="sizes"> 
+                <option value="1">1</option> 
+                <option value="1/2">1/2</option> 
+                <option value="1/3">1/3</option> 
+                <option value="1/4">1/4</option> 
+                
+            </select>
+        </div>
+
+        <button class="btn">Order</button>
+    </div>
+</div>
+</body>

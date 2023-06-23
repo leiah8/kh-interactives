@@ -144,7 +144,7 @@ export class ManyFlowersAPI {
 
         this.targetEls = []
         this.targetPots = [[], []]
-        this.targetPotsPos = this.gridCoords(650, 100, 3, 4, 150)
+        this.targetPotsPos = this.gridCoords(650, 100, 3, 4, 160)
         this.targetPos = []
 
         for (var i = 0; i < 12; i++) {
@@ -720,7 +720,7 @@ export class ManyFlowersAPI {
             var yVal = this.targetPotsPos[i].y
 
             gsap.set(targetTop, { x: xVal, y: yVal })
-            gsap.set(targetBottom, { x: xVal + 21, y: yVal + 84})
+            gsap.set(targetBottom, { x: xVal + 23, y: yVal + 86})
 
             var count = 0
             for (var j = 0; j < this.goal.length; j++) {
@@ -954,7 +954,7 @@ export class ManyFlowersAPI {
                 for(var j = 0; j < this.animationEls[i].length;j++) {
                     var moveX = Math.random() * (Math.round(Math.random()) == 0 ? 1 : -1)
                     var moveY = Math.random() * (Math.round(Math.random()) == 0 ? 1 : -1)
-                    self.tl.to(this.animationEls[i][j], {x : coords[j].x + 70 - w/2 + moveX, y : coords[j].y + 25 + moveY}, "<")
+                    self.tl.to(this.animationEls[i][j], {x : coords[j].x + 68 - w/2 + moveX, y : coords[j].y + 25 + moveY}, "<")
                 }
             }
         }
