@@ -19,6 +19,8 @@ export class MaterialBridgeAPI {
         this.inputImg = setup.inputImg
         this.inputSize = setup.inputSize
 
+        gsap.set(this.input, {x : 190, y : 550})
+
         this.currentImg = document.createElementNS(svgns, "use")
         this.inputImg.appendChild(this.currentImg)
         this.currentImg.setAttribute("href", "#one")

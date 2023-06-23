@@ -43,8 +43,8 @@ export class MultiplyManyFlowersComponent implements AfterViewInit {
       goal : [0, 7, 0, 0],
       targets : 8,
       mode : "rows",
-      horizontalDiv : false,
-      verticalDiv : false,
+      horizontalDiv : true,
+      verticalDiv : true,
 
     } as GameInput
 
