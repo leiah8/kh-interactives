@@ -2,7 +2,7 @@
 
 <body>
     
-<svg
+<svg class="main"
 width="1280"
 height="780"
 viewBox="0 0 1280 780"
@@ -26,6 +26,8 @@ xmlns:svg="http://www.w3.org/2000/svg">
     x="0"
     y="0"
     ry="0" />
+    <g #arena id="arena"></g>
+    <g #boat id="boat"></g>
 </g>
 </svg>
 
@@ -34,11 +36,11 @@ xmlns:svg="http://www.w3.org/2000/svg">
     <div class="input-img">
         <svg #inputImg
         version="1.1"
-        viewBox="0 0 900 120"
+        viewBox="0 0 100vh 14vh"
         id="svg26910"
         sodipodi:docname="Untitled drawing (5).svg"
-        width="900"
-        height="120"
+        width="100vh"
+        height="14vh"
         xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:svg="http://www.w3.org/2000/svg">
@@ -46,23 +48,28 @@ xmlns:svg="http://www.w3.org/2000/svg">
           id="defs26914">
           <image
                 id="one"
-                width="900"
+                width="100vh"
                 href="https://res.cloudinary.com/dxltpgop9/image/upload/v1687543909/material%20bridge/one_i0d2sp.svg"
             ></image> 
             <image
                 id="half"
-                width="900"
+                width="100vh"
                 href="https://res.cloudinary.com/dxltpgop9/image/upload/v1687543309/material%20bridge/half_vmakgb.svg"
             ></image> 
             <image
                 id="third"
-                width="900"
+                width="100vh"
                 href="https://res.cloudinary.com/dxltpgop9/image/upload/v1687543310/material%20bridge/third_zhpa5y.svg"
             ></image> 
             <image
                 id="fourth"
-                width="900"
+                width="100vh"
                 href="https://res.cloudinary.com/dxltpgop9/image/upload/v1687543309/material%20bridge/fourth_ovqzfa.svg"
+            ></image> 
+            <image
+                id="order-btn"
+                width="30"
+                href="https://res.cloudinary.com/dxltpgop9/image/upload/v1687803976/material%20bridge/menu-btn_m56vux.svg"
             ></image> 
         </defs>
      </svg>
@@ -72,7 +79,7 @@ xmlns:svg="http://www.w3.org/2000/svg">
         <div></div>
         <div>
             <label for="Pieces">Pieces: </label> 
-            <input type="number" id="numbers" class = "nums" name="numbers" min="0" max="20">
+            <input #inputPieces type="number" id="numbers" class = "nums" name="numbers" min="0" max="20">
         </div>
         
         <div>
@@ -86,7 +93,11 @@ xmlns:svg="http://www.w3.org/2000/svg">
             </select>
         </div>
 
-        <button class="btn">Order</button>
+        <button #orderBtn class="btn">Order</button>
     </div>
 </div>
 </body>
+
+<div #playBtn class="playBtn"></div>
+<div #nextBtn class="nextBtn"></div>
+<div #retryBtn class="retryBtn"></div>
