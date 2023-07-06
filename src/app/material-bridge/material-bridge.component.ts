@@ -8,6 +8,7 @@ import { MaterialBridgeAPI, GameInput } from './material-bridge';
   styleUrls: ['./material-bridge.component.css']
 })
 export class MaterialBridgeComponent implements AfterViewInit {
+  @ViewChild("svg") public svg?: ElementRef<HTMLElement>;
   @ViewChild("arena") public arena?: ElementRef<HTMLElement>;
   @ViewChild("input") public input?: ElementRef<HTMLElement>;
   @ViewChild("inputImg") public inputImg?: ElementRef<HTMLElement>;
@@ -22,6 +23,7 @@ export class MaterialBridgeComponent implements AfterViewInit {
   ngAfterViewInit(): void {
 
     const setup = {
+      svg : this.svg.nativeElement,
       arena : this.arena.nativeElement,
       input : this.input.nativeElement,
       inputImg : this.inputImg.nativeElement,
@@ -34,7 +36,7 @@ export class MaterialBridgeComponent implements AfterViewInit {
     }
 
     const g0 = {
-      bridgeArr : [[0,1,1,0], [0]]
+      bridgeArr : [[1,0,0,1], [1, 0]]
 
     } as GameInput
 
