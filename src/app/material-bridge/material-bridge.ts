@@ -42,7 +42,7 @@ interface Block extends SVGRectElement {
     size : number;
 }
 
-interface Space {
+interface Space { //extends SVGRectElement{
     num : number;
     size : number; //0 - 1
     board : number;
@@ -65,7 +65,8 @@ export class MaterialBridgeAPI {
     currentImg : SVGUseElement
     inputSize : HTMLSelectElement;
     inputPieces : HTMLInputElement;
-    playBtn : HTMLElement;
+    retryBtn : HTMLElement;
+    nextBtn : HTMLElement;
     boat : HTMLElement;
 
     wholeSize : number = 1000; 
@@ -77,6 +78,7 @@ export class MaterialBridgeAPI {
     targets : any[] //change 
 
     spaces : Space[]
+    originalSpaces : Space[]
     blocks : Block[]
 
     tl : any
@@ -95,7 +97,8 @@ export class MaterialBridgeAPI {
         this.boat = setup.boat
 
         this.targets = []
-        this.playBtn = setup.playBtn
+        this.retryBtn = setup.retryBtn
+        this.nextBtn = setup.nextBtn
         this.animationEls = []
 
         this.spaces = []
@@ -110,7 +113,7 @@ export class MaterialBridgeAPI {
     init() {
         this.setupInput()
         this.setupTargets()
-        // this.setupButtons()
+        this.setupButtons()
     }
 
     createGames(gIns) {
@@ -128,6 +131,76 @@ export class MaterialBridgeAPI {
             gs.push(g)
         });
         return gs
+    }
+
+    setupSpaces() {
+
+        this.spaces = []
+        var self = this
+        var xVal = 140
+        var yVal = 100
+
+        var height = this.height
+        var delta = 150
+
+        var count = 0
+
+        //rotate between the different bridges
+        for(var i = 0; i < this.game.bridgeArr.length; i++) {
+            //rotate between the different spaces 
+            
+            var l = this.game.bridgeArr[i].length
+            for(var j = 0; j < this.game.bridgeArr[i].length; j++) {
+
+                
+                if (this.game.bridgeArr[i][j] <= 0) {
+                    //space 
+                    // gsap.set(smallRect, {fill : "#ffffff", fillOpacity : 0.01})
+
+                    // var temp = Object.assign(smallRect, {
+                    //     num : count,
+                    //     size : 1/l,
+                    //     board : i,
+                    //     xVal : xVal + (self.wholeSize/l)*j,
+                    //     yVal : yVal + i*delta,
+
+                    // }) as Space
+                    
+                    var temp = {
+                        num : count,
+                        size : 1/l,
+                        board : i,
+                        xVal : xVal + (self.wholeSize/l)*j,
+                        yVal : yVal + i*delta,
+
+                    }  
+                    this.spaces.push(temp)
+                }
+
+                count++;
+
+            }
+        }
+
+
+        //combine the spaces
+        if (this.spaces.length > 0) {
+            var spacesTemp = [this.spaces[0]]
+            var index = 0
+            for(var i = 1; i < this.spaces.length;i++) {
+                if (this.spaces[i].num - 1 == this.spaces[i-1].num && this.spaces[i].board == this.spaces[i-1].board) {
+                    spacesTemp[index].num += 1
+                    spacesTemp[index].size += this.spaces[i].size
+                }
+                else {
+                    spacesTemp.push(this.spaces[i])
+                    index++;
+                }
+            }
+        }
+
+        this.spaces = spacesTemp
+
     }
 
     setupTargets() {
@@ -163,6 +236,15 @@ export class MaterialBridgeAPI {
                 else {
                     //space 
                     gsap.set(smallRect, {fill : "#ffffff", fillOpacity : 0.01})
+
+                    // var temp = Object.assign(smallRect, {
+                    //     num : count,
+                    //     size : 1/l,
+                    //     board : i,
+                    //     xVal : xVal + (self.wholeSize/l)*j,
+                    //     yVal : yVal + i*delta,
+
+                    // }) as Space
                     var temp = {
                         num : count,
                         size : 1/l,
@@ -170,7 +252,7 @@ export class MaterialBridgeAPI {
                         xVal : xVal + (self.wholeSize/l)*j,
                         yVal : yVal + i*delta,
 
-                    } as Space 
+                    }
                     this.spaces.push(temp)
                 }
 
@@ -178,6 +260,7 @@ export class MaterialBridgeAPI {
 
             }
         }
+
 
         //combine the spaces
         if (this.spaces.length > 0) {
@@ -196,6 +279,7 @@ export class MaterialBridgeAPI {
         }
 
         this.spaces = spacesTemp
+        // this.originalSpaces = this.deepCopy(this.spaces)
     }
 
 
@@ -221,14 +305,7 @@ export class MaterialBridgeAPI {
 
         }
 
-        // var menu = document.createElementNS(svgns, "use")
-        // this.inputImg.appendChild(menu)
-        // menu.setAttribute("href", "#order-btn")
-        // gsap.set(menu, { x: "95vh", y: "0.5vh" })
-
-        // menu.onpointerdown = function(e) {
-        //     //to do:some kind of pop up
-        // }
+        
 
         this.orderBtn.onpointerdown = function(e) {
             //var num = self.orders.length
@@ -240,6 +317,8 @@ export class MaterialBridgeAPI {
     }
 
     playAnimation() {
+        var self = this
+
         this.game.attempts++;
 
         gsap.set(this.input, {visibility : "hidden"})
@@ -247,7 +326,7 @@ export class MaterialBridgeAPI {
         var size = this.order.size
         var num = this.order.pieces 
 
-        var ogX = 140
+        var ogX = 140 //140
         var xVal = ogX
         var yVal = 650
 
@@ -272,10 +351,16 @@ export class MaterialBridgeAPI {
             xVal += this.wholeSize*size
         }
 
+        gsap.set(this.boat, {x : "+="+ (1300)})
+        this.tl.to(this.boat, {x : "-="+ 1300, duration : 2})
+        this.tl.to(this.boat, {duration : 1})
+
+
         //put in from left to right 
 
         if (this.spaces.length > 0) {
-            var finalBlock = 0
+
+            var finalBlock = blocks.length-1
             var complete = false
             var space = this.spaces[0]
             var spaceIndex = 0;
@@ -305,11 +390,13 @@ export class MaterialBridgeAPI {
                     if (spaceIndex < this.spaces.length)
                         space = this.spaces[spaceIndex]
                     else {
+                        complete = true
+                        finalBlock = i
                         break;
                     }
                 }
 
-                else {
+                else if (space.size > 0) {
                     complete = false
                     //space is smaller than the block
                     //move block and let it fall 
@@ -321,17 +408,29 @@ export class MaterialBridgeAPI {
                 
             }
 
-            console.log(blocks, this.spaces)
+            this.tl.to(this.boat, {duration : 1})
+
 
             //check if all blocks have been used 
             //check if all spaces have been filled (spaceIndex == this.spaces.length)
-            if(complete && finalBlock == 0) {
+
+            var check = true
+            blocks.forEach(element => {
+                if (element.used == false) check = false
+            });
+            if (check && spaceIndex == this.spaces.length) {
                 console.log("yay")
                 this.game.complete = true
+                this.showEndGameButtons()
             }
-
-            else {
+            // if(complete && finalBlock == 0 || spaceIndex == this.spaces.length && finalBlock == 0) {
+            //     console.log("yay")
+            //     this.game.complete = true
+            //     this.showEndGameButtons()
+            // }
+            else if (spaceIndex < this.spaces.length) {
                 //zoom in on gaps and have them flash red
+                console.log("boo")
 
                 var minX = this.spaces[spaceIndex].xVal
                 var minY = this.spaces[spaceIndex].yVal
@@ -339,19 +438,19 @@ export class MaterialBridgeAPI {
                 var maxY = minY + this.height
 
                 for(var i = spaceIndex+1; i < this.spaces.length; i++) {
-                    if (this.spaces[i].xVal < minX) {
+                    if (this.spaces[i].xVal < minX)
                         minX = this.spaces[i].xVal
-                    }
-                    else if (this.spaces[i].xVal + this.spaces[i].size*this.wholeSize > maxX) {
+                    
+                    if (this.spaces[i].xVal + this.spaces[i].size*this.wholeSize > maxX) 
                         maxX = this.spaces[i].xVal + this.spaces[i].size*this.wholeSize
-                    }
+                    
 
-                    if (this.spaces[i].yVal < minY) {
+                    if (this.spaces[i].yVal < minY) 
                         minY = this.spaces[i].yVal
-                    }
-                    else if (this.spaces[i].yVal + this.height > maxY) {
+                    
+                    if (this.spaces[i].yVal + this.height > maxY) 
                         maxY = this.spaces[i].yVal + this.height
-                    }
+                    
 
                 }
                 //find the smallest x, smallest y 
@@ -360,14 +459,99 @@ export class MaterialBridgeAPI {
 
                 var vb = (minX - 10).toString() + " " + (minY - 10).toString() + " " +(maxX - minX + 20).toString() + " " + (maxY-minY + 20).toString()
 
-                this.tl.to(this.svg, {attr:{viewBox: vb}})
-                //TO DO flash red
+                var highlights = []
+                this.tl.to(this.svg, {attr:{viewBox: vb}, duration : 1, onComplete : function() {
+                    //draw new rectangles to highlight
 
-                this.tl.to(this.svg, {attr:{viewBox: "0 0 1280 720"}})
+                    for(var i = spaceIndex; i < self.spaces.length; i++) {
+                        
+                        var space = self.spaces[i]
+                        var highlightRect = document.createElementNS(svgns, 'rect')
+                        self.boat.appendChild(highlightRect)
+                        self.animationEls.push(highlightRect)
+                        gsap.set(highlightRect, {x : space.xVal, y : space.yVal, height : self.height, width : self.wholeSize*space.size, rx : 2, stroke : "#000000", fillOpacity : 0.01, strokeWidth : 4})
+                        
+                        highlights.push(highlightRect)
+
+                    }
+
+                    // this.tl.to(this.svg, {duration : 2})
+                    self.tl.to(highlights, {stroke : "red",  duration : 1})
+                    self.tl.to(highlights, {stroke : "black",  duration : 1})
+                    self.tl.to(self.svg, {attr:{viewBox: "0 0 1280 720"}, duration : 1 })
+
+                    self.showEndGameButtons()
+                }})
+
+                
                 
             }
+            else {
+                this.showEndGameButtons()
+            }
+        }
+        else {
+            this.showEndGameButtons()
+        }
+
+        
+    }
+
+    showEndGameButtons() {
+        //show buttons
+        if (this.game.complete || this.game.attempts >= 3) {
+            this.tl.to(this.retryBtn, { scale: 0, x: "1vh", y: "1vh", rotation: 0, duration: 0 })
+            this.tl.to([this.retryBtn, this.nextBtn], { scale: 1 })
+        }
+        else {
+            //show rotating retry button in the middle
+            gsap.set(this.retryBtn, { scale: 0, x: "80vh", y: "50vh", rotation: 0 })
+            this.tl.to(this.retryBtn, { scale: 3, duration: 1 })
+            this.tl.to(this.retryBtn, { repeat: -1, duration: 4, rotation: 360, ease: "bounce" })
         }
     }
+
+    setupButtons() {
+        var self = this
+        gsap.set(this.retryBtn, {scale : 0})
+
+        this.retryBtn.onpointerdown = function() {
+            self.reset()
+        }
+        gsap.set(this.nextBtn, {scale : 0})
+        this.nextBtn.onpointerdown = function() {
+            self.nextGame()
+        }
+    }
+
+    reset() {
+        this.tl.clear()
+        // this.spaces = this.deepCopy(this.originalSpaces)
+        gsap.set(this.input, {visibility : "visible"})
+
+
+        this.animationEls.forEach(el => {
+            this.boat.removeChild(el)
+        });
+        this.animationEls = [] // remove all elements 
+
+        gsap.set(this.retryBtn, { scale: 0 })
+
+        if (this.game.complete || this.game.attempts >= 3) 
+            gsap.set(this.nextBtn, { scale: 1 })
+        else
+            gsap.set(this.nextBtn, { scale: 0 })
+
+        this.setupSpaces();
+
+    }
+
+    nextGame() {
+
+        //TO DO 
+
+    }
+
 
     
 

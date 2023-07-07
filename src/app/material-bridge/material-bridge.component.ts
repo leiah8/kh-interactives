@@ -15,7 +15,8 @@ export class MaterialBridgeComponent implements AfterViewInit {
   @ViewChild("inputSize") public inputSize?: ElementRef<HTMLElement>;
   @ViewChild("inputPieces") public inputPieces?: ElementRef<HTMLElement>;
   @ViewChild("orderBtn") public orderBtn?: ElementRef<HTMLElement>;
-  @ViewChild("playBtn") public playBtn?: ElementRef<HTMLElement>;
+  @ViewChild("retryBtn") public retryBtn?: ElementRef<HTMLElement>;
+  @ViewChild("nextBtn") public nextBtn?: ElementRef<HTMLElement>;
   @ViewChild("boat") public boat?: ElementRef<HTMLElement>;
   
   constructor() { }
@@ -30,7 +31,8 @@ export class MaterialBridgeComponent implements AfterViewInit {
       inputSize : this.inputSize.nativeElement,
       inputPieces : this.inputPieces.nativeElement,
       orderBtn : this.orderBtn.nativeElement,
-      playBtn : this.playBtn.nativeElement,
+      retryBtn : this.retryBtn.nativeElement,
+      nextBtn : this.nextBtn.nativeElement,
       boat : this.boat.nativeElement
 
     }
