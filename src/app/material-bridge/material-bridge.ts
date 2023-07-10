@@ -458,13 +458,13 @@ export class MaterialBridgeAPI {
                 // find farthest x and farthest y 
 
                 var vb = (minX - 10).toString() + " " + (minY - 10).toString() + " " +(maxX - minX + 20).toString() + " " + (maxY-minY + 20).toString()
-
+                //to do : change so that ratio of x to y is the same as 1280 : 720
                 var highlights = []
                 this.tl.to(this.svg, {attr:{viewBox: vb}, duration : 1, onComplete : function() {
                     //draw new rectangles to highlight
 
                     for(var i = spaceIndex; i < self.spaces.length; i++) {
-                        
+                
                         var space = self.spaces[i]
                         var highlightRect = document.createElementNS(svgns, 'rect')
                         self.boat.appendChild(highlightRect)
@@ -478,7 +478,7 @@ export class MaterialBridgeAPI {
                     // this.tl.to(this.svg, {duration : 2})
                     self.tl.to(highlights, {stroke : "red",  duration : 1})
                     self.tl.to(highlights, {stroke : "black",  duration : 1})
-                    self.tl.to(self.svg, {attr:{viewBox: "0 0 1280 720"}, duration : 1 })
+                    self.tl.to(self.svg, {attr:{viewBox: "0 0 1280 720"}, duration : 1})
 
                     self.showEndGameButtons()
                 }})
@@ -547,8 +547,21 @@ export class MaterialBridgeAPI {
     }
 
     nextGame() {
+        var self = this
+        this.gameIndex = (this.gameIndex + 1) % this.games.length
+        this.game = this.games[this.gameIndex]
 
-        //TO DO 
+        this.targets.forEach(element => {
+            self.arena.removeChild(element)
+        });
+        this.targets = []
+
+        this.setupTargets()
+
+        this.reset()
+
+
+        
 
     }
 
