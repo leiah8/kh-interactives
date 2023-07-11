@@ -69,6 +69,8 @@ export class MaterialBridgeAPI {
     nextBtn : HTMLElement;
     boat : HTMLElement;
 
+    boatImg : SVGUseElement;
+
     background : SVGUseElement;
 
     wholeSize : number = 1270; 
@@ -120,6 +122,12 @@ export class MaterialBridgeAPI {
         this.background = document.createElementNS(svgns, "use")
         this.arena.appendChild(this.background)
         gsap.set(this.currentImg, { x: 0, y: 0 })
+
+        //create boat
+        this.boatImg = document.createElementNS(svgns, "use")
+        this.arena.appendChild(this.boatImg)
+        this.boatImg.setAttribute("href", "#boat")
+        gsap.set(this.boatImg, { x: 140 - 1300, y: 420 })
 
         this.setBackground()
 
@@ -350,37 +358,40 @@ export class MaterialBridgeAPI {
         var size = this.order.size
         var num = this.order.pieces 
 
-        var ogX = this.xVal
+        var ogX = 380 //this.xVal
         var xVal = ogX
-        var yVal = 650
+        var yVal = 602
+
+        var startScale = 0.5
+        var endScale = 1
 
         var blocks = []
 
         for (var i = 0; i < num; i++) {
             //make the block
 
-            if (xVal + this.wholeSize*size > ogX + this.wholeSize + 1) {
+            if (xVal + this.wholeSize*size*startScale > ogX + this.wholeSize*startScale + 1) {
                 xVal = ogX 
-                yVal -= this.height
+                yVal -= this.height*startScale
                 //ceneter the past row (TO DO)
             }
 
             var rect = document.createElementNS(svgns, "rect")
             this.boat.appendChild(rect)
-            gsap.set(rect, {x : xVal, y : yVal, height : this.height, width : this.wholeSize*size, rx : 2, fill : "#fe4818ff", stroke : "#f71e00ff", strokeWidth : 4})
+            gsap.set(rect, {x : xVal, y : yVal, height : this.height, width : this.wholeSize*size, rx : 2, fill : "#fe4818ff", stroke : "#f71e00ff", strokeWidth : 4, scale : startScale})
             this.animationEls.push(rect)
 
             blocks.push({el : rect, size : size, used : false})
 
-            xVal += this.wholeSize*size
+            xVal += this.wholeSize*size*startScale
         }
 
-        gsap.set(this.boat, {x : "+="+ (1300)})
-        this.tl.to(this.boat, {x : "-="+ 1300, duration : 2})
+        gsap.set(this.boat, {x : "-="+ (1300)})
+        this.tl.to([this.boat, this.boatImg], {x : "+="+ 1300, duration : 2})
         this.tl.to(this.boat, {duration : 1})
 
 
-        //put in from left to right 
+        //put in from left to right (TO DO)
 
         if (this.spaces.length > 0) {
 
@@ -394,7 +405,7 @@ export class MaterialBridgeAPI {
             for(var i = blocks.length-1; i >= 0; i--) {
                 if (space.size > blocks[i].size && Math.abs(space.size - blocks[i].size) > 0.001) {
                     //move to 
-                    this.tl.to(blocks[i].el, {x : space.xVal, y : space.yVal, duration : moveSpeed})
+                    this.tl.to(blocks[i].el, {x : space.xVal, y : space.yVal, duration : moveSpeed, scale : endScale})
                     //update the size 
                     space.size -= blocks[i].size
                     space.xVal += this.wholeSize*blocks[i].size
@@ -408,7 +419,7 @@ export class MaterialBridgeAPI {
                     //equal 
 
                     //fill and move on to next space
-                    this.tl.to(blocks[i].el, {x : space.xVal, y : space.yVal, duration : moveSpeed})
+                    this.tl.to(blocks[i].el, {x : space.xVal, y : space.yVal, duration : moveSpeed, scale : endScale})
                     blocks[i].used = true
                     spaceIndex++;
                     if (spaceIndex < this.spaces.length)
@@ -424,7 +435,7 @@ export class MaterialBridgeAPI {
                     complete = false
                     //space is smaller than the block
                     //move block and let it fall 
-                    this.tl.to(blocks[i].el, {x : space.xVal, y : space.yVal, duration : moveSpeed})
+                    this.tl.to(blocks[i].el, {x : space.xVal, y : space.yVal, duration : moveSpeed, scale : endScale})
                     this.tl.to(blocks[i].el, {rotation : 30, ease : "linear"})
                     this.tl.to(blocks[i].el, {rotation : 50, y : 900, ease : "linear"})
 
@@ -445,6 +456,7 @@ export class MaterialBridgeAPI {
             if (check && spaceIndex == this.spaces.length) {
                 console.log("yay")
                 this.game.complete = true
+                //TO DO: cars driving accross for success animation
                 this.showEndGameButtons()
             }
             // if(complete && finalBlock == 0 || spaceIndex == this.spaces.length && finalBlock == 0) {
@@ -551,6 +563,8 @@ export class MaterialBridgeAPI {
         this.tl.clear()
         // this.spaces = this.deepCopy(this.originalSpaces)
         gsap.set(this.input, {visibility : "visible"})
+
+        gsap.set(this.boatImg, { x: 140 - 1300, y: 420 })
 
 
         this.animationEls.forEach(el => {
