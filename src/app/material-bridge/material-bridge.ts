@@ -69,8 +69,13 @@ export class MaterialBridgeAPI {
     nextBtn : HTMLElement;
     boat : HTMLElement;
 
-    wholeSize : number = 1000; 
-    height : number = 100;
+    background : SVGUseElement;
+
+    wholeSize : number = 1270; 
+    height : number = 50;
+    xVal : number = 5
+    yVal : number //= 209
+    delta : number = 143
 
     animationEls : any[] //change
 
@@ -111,9 +116,28 @@ export class MaterialBridgeAPI {
         
     }
     init() {
+
+        this.background = document.createElementNS(svgns, "use")
+        this.arena.appendChild(this.background)
+        gsap.set(this.currentImg, { x: 0, y: 0 })
+
+        this.setBackground()
+
         this.setupInput()
         this.setupTargets()
         this.setupButtons()
+    }
+
+    setBackground() {
+        if (this.game.bridgeArr.length == 1) {
+            this.background.setAttribute("href", "#back1")
+            this.yVal = 258
+        }
+        else if (this.game.bridgeArr.length == 2) {
+            this.background.setAttribute("href", "#back2")
+            this.yVal = 209
+        }
+
     }
 
     createGames(gIns) {
@@ -137,11 +161,11 @@ export class MaterialBridgeAPI {
 
         this.spaces = []
         var self = this
-        var xVal = 140
-        var yVal = 100
+        var xVal = this.xVal
+        var yVal = this.yVal
 
         var height = this.height
-        var delta = 150
+        var delta = this.delta
 
         var count = 0
 
@@ -205,11 +229,11 @@ export class MaterialBridgeAPI {
 
     setupTargets() {
         var self = this
-        var xVal = 140
-        var yVal = 100
+        var xVal = this.xVal
+        var yVal = this.yVal
 
         var height = this.height
-        var delta = 150
+        var delta = this.delta
 
         var count = 0
 
@@ -218,7 +242,7 @@ export class MaterialBridgeAPI {
             //rotate between the different spaces 
             var rect = document.createElementNS(svgns, "rect")
             this.arena.appendChild(rect)
-            gsap.set(rect, {x : xVal, y : yVal + i*delta, height : height, width : this.wholeSize, rx : 2, fill : "#ffffff", fillOpacity : 0.01, stroke : "#000000", strokeWidth : 4})
+            gsap.set(rect, {x : xVal, y : yVal + i*delta, height : height, width : this.wholeSize, rx : 2, fill : "#ffffff", fillOpacity : 0.01, stroke : "#f71e00ff", strokeWidth : 4})
 
             this.targets.push(rect)
 
@@ -226,7 +250,7 @@ export class MaterialBridgeAPI {
             for(var j = 0; j < this.game.bridgeArr[i].length; j++) {
                 var smallRect = document.createElementNS(svgns, "rect")
                 this.arena.appendChild(smallRect)
-                gsap.set(smallRect, {x : xVal + (this.wholeSize/l)*j, y : yVal + i*delta, height : height, width : this.wholeSize / l, rx : 2, stroke : "#000000", strokeWidth : 4})
+                gsap.set(smallRect, {x : xVal + (this.wholeSize/l)*j, y : yVal + i*delta, height : height, width : this.wholeSize / l, rx : 2, stroke : "#f71e00ff", strokeWidth : 4})
                 
                 this.targets.push(smallRect)
                 
@@ -326,7 +350,7 @@ export class MaterialBridgeAPI {
         var size = this.order.size
         var num = this.order.pieces 
 
-        var ogX = 140 //140
+        var ogX = this.xVal
         var xVal = ogX
         var yVal = 650
 
@@ -343,7 +367,7 @@ export class MaterialBridgeAPI {
 
             var rect = document.createElementNS(svgns, "rect")
             this.boat.appendChild(rect)
-            gsap.set(rect, {x : xVal, y : yVal, height : this.height, width : this.wholeSize*size, rx : 2, fill : "#fe4818ff", stroke : "#000000", strokeWidth : 4})
+            gsap.set(rect, {x : xVal, y : yVal, height : this.height, width : this.wholeSize*size, rx : 2, fill : "#fe4818ff", stroke : "#f71e00ff", strokeWidth : 4})
             this.animationEls.push(rect)
 
             blocks.push({el : rect, size : size, used : false})
@@ -457,8 +481,7 @@ export class MaterialBridgeAPI {
 
                 // find farthest x and farthest y 
 
-                var vb = (minX - 10).toString() + " " + (minY - 10).toString() + " " +(maxX - minX + 20).toString() + " " + (maxY-minY + 20).toString()
-                //to do : change so that ratio of x to y is the same as 1280 : 720
+                var vb = (minX - 10).toString() + " " + (minY - 10).toString() + " " +(maxX - minX + 20).toString() + " " + ((maxY-minY + 20)).toString()
                 var highlights = []
                 this.tl.to(this.svg, {attr:{viewBox: vb}, duration : 1, onComplete : function() {
                     //draw new rectangles to highlight
@@ -469,15 +492,15 @@ export class MaterialBridgeAPI {
                         var highlightRect = document.createElementNS(svgns, 'rect')
                         self.boat.appendChild(highlightRect)
                         self.animationEls.push(highlightRect)
-                        gsap.set(highlightRect, {x : space.xVal, y : space.yVal, height : self.height, width : self.wholeSize*space.size, rx : 2, stroke : "#000000", fillOpacity : 0.01, strokeWidth : 4})
+                        gsap.set(highlightRect, {x : space.xVal, y : space.yVal, height : self.height, width : self.wholeSize*space.size, rx : 2, stroke : "#f71e00ff", fillOpacity : 0.01, strokeWidth : 4})
                         
                         highlights.push(highlightRect)
 
                     }
 
                     // this.tl.to(this.svg, {duration : 2})
-                    self.tl.to(highlights, {stroke : "red",  duration : 1})
-                    self.tl.to(highlights, {stroke : "black",  duration : 1})
+                    self.tl.to(highlights, {stroke : "#c70808",  duration : 1}) //to do: change red color
+                    self.tl.to(highlights, {stroke : "#f71e00ff",  duration : 1})
                     self.tl.to(self.svg, {attr:{viewBox: "0 0 1280 720"}, duration : 1})
 
                     self.showEndGameButtons()
@@ -500,7 +523,7 @@ export class MaterialBridgeAPI {
     showEndGameButtons() {
         //show buttons
         if (this.game.complete || this.game.attempts >= 3) {
-            this.tl.to(this.retryBtn, { scale: 0, x: "1vh", y: "1vh", rotation: 0, duration: 0 })
+            this.tl.to(this.retryBtn, { scale: 0, x: "0vh", y: "0vh", rotation: 0, duration: 0 })
             this.tl.to([this.retryBtn, this.nextBtn], { scale: 1 })
         }
         else {
@@ -555,6 +578,8 @@ export class MaterialBridgeAPI {
             self.arena.removeChild(element)
         });
         this.targets = []
+
+        this.setBackground()
 
         this.setupTargets()
 
