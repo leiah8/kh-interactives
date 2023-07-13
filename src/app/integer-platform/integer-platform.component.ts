@@ -29,50 +29,94 @@ export class IntegerPlatformComponent implements AfterViewInit {
   addRemove : boolean;
   useImgs : boolean;
 
+  g : GameInput;
+
+  game1 : GameInput = {
+    startBalloons : 2,
+    startSandbags : 3,
+    goal : 1,
+    
+  } as GameInput
+
+  game2 : GameInput = {
+    startBalloons : 2,
+    startSandbags : 0,
+    goal : -5,
+    
+  } as GameInput
+
+  game3 : GameInput  = {
+    startBalloons : 1,
+    startSandbags : 2,
+    goal : 2,
+    
+  } as GameInput
+
+  game4 : GameInput = {
+    startBalloons : 0,
+    startSandbags : 0,
+    goal : 4,
+    
+  } as GameInput
+
+  game5 : GameInput = {
+    startBalloons : 4,
+    startSandbags : 1,
+    goal : -3,
+    
+  } as GameInput
+
   constructor(private route: ActivatedRoute) {
     var p;
     this.route.params.subscribe( params => p = params);
 
     this.addRemove = (p.addRemove == "addRemove") ? true : false
     this.useImgs = (p.useImgs == "imgs" || p.useImgs ==  null) ? true : false
+
+    if(p.gameNum == "g1") this.g = this.game1
+    else if(p.gameNum == "g2") this.g = this.game2
+    else if(p.gameNum == "g3") this.g = this.game3
+    else if(p.gameNum == "g4") this.g = this.game4
+    else if(p.gameNum == "g5") this.g = this.game5
+    else this.g = null
   }
 
   ngAfterViewInit(): void {
     
-    const game1 = {
-      startBalloons : 2,
-      startSandbags : 3,
-      goal : 1,
+    // const game1 = {
+    //   startBalloons : 2,
+    //   startSandbags : 3,
+    //   goal : 1,
       
-    } as GameInput
+    // } as GameInput
 
-    const game2 = {
-      startBalloons : 2,
-      startSandbags : 0,
-      goal : -5,
+    // const game2 = {
+    //   startBalloons : 2,
+    //   startSandbags : 0,
+    //   goal : -5,
       
-    } as GameInput
+    // } as GameInput
 
-    const game3 = {
-      startBalloons : 1,
-      startSandbags : 2,
-      goal : 2,
+    // const game3 = {
+    //   startBalloons : 1,
+    //   startSandbags : 2,
+    //   goal : 2,
       
-    } as GameInput
+    // } as GameInput
 
-    const game4 = {
-      startBalloons : 0,
-      startSandbags : 0,
-      goal : 4,
+    // const game4 = {
+    //   startBalloons : 0,
+    //   startSandbags : 0,
+    //   goal : 4,
       
-    } as GameInput
+    // } as GameInput
 
-    const game5 = {
-      startBalloons : 4,
-      startSandbags : 1,
-      goal : -3,
+    // const game5 = {
+    //   startBalloons : 4,
+    //   startSandbags : 1,
+    //   goal : -3,
       
-    } as GameInput
+    // } as GameInput
     
     const setup = {
       arena : this.arena.nativeElement, 
@@ -100,7 +144,12 @@ export class IntegerPlatformComponent implements AfterViewInit {
 
     } as InputSetup
 
-    const interactive = new IntegerPlatfromClass(setup, [game1, game2, game3, game4, game5])
+    var gs;
+    
+    if (this.g == null) gs = [this.game1, this.game2, this.game3, this.game4, this.game5]
+    else gs = [this.g]
+
+    const interactive = new IntegerPlatfromClass(setup, gs)
   }
 
 }

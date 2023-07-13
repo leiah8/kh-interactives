@@ -1,5 +1,5 @@
 import { svgns } from "../api"
-import { gsap, Draggable } from "gsap/all";
+import { gsap } from "gsap/all";
 
 
 export interface GameInput {
@@ -69,15 +69,16 @@ export class MaterialBridgeAPI {
     nextBtn : HTMLElement;
     boat : HTMLElement;
 
-    boatImg : SVGUseElement;
+    bigBoat : SVGUseElement;
 
     background : SVGUseElement;
+    bridge : SVGUseElement
 
-    wholeSize : number = 1270; 
-    height : number = 50;
-    xVal : number = 5
+    wholeSize : number = 1030; 
+    height : number = 42;
+    xVal : number = 125
     yVal : number //= 209
-    delta : number = 143
+    delta : number = 117
 
     animationEls : any[] //change
 
@@ -121,29 +122,37 @@ export class MaterialBridgeAPI {
 
         this.background = document.createElementNS(svgns, "use")
         this.arena.appendChild(this.background)
-        gsap.set(this.currentImg, { x: 0, y: 0 })
+        gsap.set(this.background, { x: 0, y: 0 })
+
+        this.bridge = document.createElementNS(svgns, "use")
+        this.arena.appendChild(this.bridge)
+        gsap.set(this.bridge, { x: 0, y: 0 })
 
         //create boat
-        this.boatImg = document.createElementNS(svgns, "use")
-        this.arena.appendChild(this.boatImg)
-        this.boatImg.setAttribute("href", "#boat")
-        gsap.set(this.boatImg, { x: 140 - 1300, y: 420 })
+        this.bigBoat = document.createElementNS(svgns, "use")
+        this.arena.appendChild(this.bigBoat)
+        this.bigBoat.setAttribute("href", "#boat")
+        gsap.set(this.bigBoat, { x: 140 - 1300, y: 420 })
 
         this.setBackground()
-
+        this.setBridge()
         this.setupInput()
         this.setupTargets()
         this.setupButtons()
     }
 
     setBackground() {
+        this.background.setAttribute("href", "#backNight")
+    }
+
+    setBridge() {
         if (this.game.bridgeArr.length == 1) {
-            this.background.setAttribute("href", "#back1")
-            this.yVal = 258
+            this.bridge.setAttribute("href", "#bridge1")
+            this.yVal = 264
         }
         else if (this.game.bridgeArr.length == 2) {
-            this.background.setAttribute("href", "#back2")
-            this.yVal = 209
+            this.bridge.setAttribute("href", "#bridge2")
+            this.yVal = 250
         }
 
     }
@@ -325,14 +334,15 @@ export class MaterialBridgeAPI {
         gsap.set(this.currentImg, { x: 0, y: "1vh" })
         
         this.inputSize.onchange = function(e) {
-            var val = self.inputSize.value
-            if (val == "1")
+            var val = Number(self.inputSize.value)
+            console.log(val)
+            if (val == 1)
                 self.currentImg.setAttribute("href", "#one")
-            else if (val == "1/2")
+            else if (val == 0.5)
                 self.currentImg.setAttribute("href", "#half")
-            else if (val == "1/3")
+            else if (val == 0.333)
                 self.currentImg.setAttribute("href", "#third")
-            else if (val == "1/4")
+            else if (val == 0.25)
                 self.currentImg.setAttribute("href", "#fourth")
 
         }
@@ -362,7 +372,7 @@ export class MaterialBridgeAPI {
         var xVal = ogX
         var yVal = 602
 
-        var startScale = 0.5
+        var startScale = 1 //0.5
         var endScale = 1
 
         var blocks = []
@@ -387,7 +397,7 @@ export class MaterialBridgeAPI {
         }
 
         gsap.set(this.boat, {x : "-="+ (1300)})
-        this.tl.to([this.boat, this.boatImg], {x : "+="+ 1300, duration : 2})
+        this.tl.to([this.boat, this.bigBoat], {x : "+="+ 1300, duration : 2})
         this.tl.to(this.boat, {duration : 1})
 
 
@@ -401,6 +411,8 @@ export class MaterialBridgeAPI {
             var spaceIndex = 0;
 
             var moveSpeed = 1
+
+            //to do: add attachements at the end of the block after each block is added
 
             for(var i = blocks.length-1; i >= 0; i--) {
                 if (space.size > blocks[i].size && Math.abs(space.size - blocks[i].size) > 0.001) {
@@ -564,7 +576,7 @@ export class MaterialBridgeAPI {
         // this.spaces = this.deepCopy(this.originalSpaces)
         gsap.set(this.input, {visibility : "visible"})
 
-        gsap.set(this.boatImg, { x: 140 - 1300, y: 420 })
+        gsap.set(this.bigBoat, { x: 140 - 1300, y: 420 })
 
 
         this.animationEls.forEach(el => {
@@ -593,7 +605,7 @@ export class MaterialBridgeAPI {
         });
         this.targets = []
 
-        this.setBackground()
+        this.setBridge()
 
         this.setupTargets()
 
