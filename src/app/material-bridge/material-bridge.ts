@@ -614,8 +614,8 @@ export class MaterialBridgeAPI {
 
         var index = this.tl2.length - 1
 
-        this.tl2[index].to(b, {y : "+="+35, ease : "linear", duration : 0.6})
-        this.tl2[index].to(b, {y : "-="+35, ease : "linear", duration : 0.6})
+        this.tl2[index].to(b, {y : "+="+35, ease : "linear", duration : 0.8})
+        this.tl2[index].to(b, {y : "-="+35, ease : "linear", duration : 0.8})
 
         this.tl2[index].repeat(-1)
 
