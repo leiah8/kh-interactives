@@ -18,6 +18,7 @@ export class MaterialBridgeComponent implements AfterViewInit {
   @ViewChild("retryBtn") public retryBtn?: ElementRef<HTMLElement>;
   @ViewChild("nextBtn") public nextBtn?: ElementRef<HTMLElement>;
   @ViewChild("boat") public boat?: ElementRef<HTMLElement>;
+  @ViewChild("frontWater") public frontWater?: ElementRef<HTMLElement>;
   
   constructor() { }
 
@@ -33,7 +34,8 @@ export class MaterialBridgeComponent implements AfterViewInit {
       orderBtn : this.orderBtn.nativeElement,
       retryBtn : this.retryBtn.nativeElement,
       nextBtn : this.nextBtn.nativeElement,
-      boat : this.boat.nativeElement
+      boat : this.boat.nativeElement,
+      frontWater : this.frontWater.nativeElement
 
     }
 

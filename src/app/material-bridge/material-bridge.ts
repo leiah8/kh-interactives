@@ -1,5 +1,5 @@
 import { svgns } from "../api"
-import { gsap } from "gsap/all";
+import { gsap, Back } from "gsap/all";
 
 
 export interface GameInput {
@@ -69,16 +69,20 @@ export class MaterialBridgeAPI {
     nextBtn : HTMLElement;
     boat : HTMLElement;
 
+    frontWater : HTMLElement;
+
     bigBoat : SVGUseElement;
+    smallBoat : SVGUseElement;
 
     background : SVGUseElement;
     bridge : SVGUseElement
+    boatY : number = 390;
 
     wholeSize : number = 1030; 
     height : number = 42;
     xVal : number = 125
     yVal : number //= 209
-    delta : number = 117
+    delta : number = 112
 
     animationEls : any[] //change
 
@@ -90,6 +94,7 @@ export class MaterialBridgeAPI {
     blocks : Block[]
 
     tl : any
+    tl2 : any
 
     constructor(setup, games) {
         this.arena = setup.arena
@@ -103,6 +108,7 @@ export class MaterialBridgeAPI {
         this.inputPieces = setup.inputPieces
         this.orderBtn = setup.orderBtn
         this.boat = setup.boat
+        this.frontWater  = setup.frontWater
 
         this.targets = []
         this.retryBtn = setup.retryBtn
@@ -113,6 +119,8 @@ export class MaterialBridgeAPI {
         this.blocks = []
 
         this.tl = gsap.timeline()
+        this.tl2 = []
+        
 
         this.init()
 
@@ -126,19 +134,32 @@ export class MaterialBridgeAPI {
 
         this.bridge = document.createElementNS(svgns, "use")
         this.arena.appendChild(this.bridge)
-        gsap.set(this.bridge, { x: 0, y: 0 })
+
+        //small boat 
+        this.smallBoat = document.createElementNS(svgns, "use")
+        this.smallBoat.setAttribute("href", "#smallBoat")
+        this.arena.appendChild(this.smallBoat)
+        gsap.set(this.smallBoat, { x: -300, y: this.boatY + 120 })
 
         //create boat
         this.bigBoat = document.createElementNS(svgns, "use")
         this.arena.appendChild(this.bigBoat)
         this.bigBoat.setAttribute("href", "#boat")
-        gsap.set(this.bigBoat, { x: 140 - 1300, y: 420 })
+        gsap.set(this.bigBoat, { x: 10 - 1300, y: this.boatY })
+
+        //add water 
+        var water = document.createElementNS(svgns, "use")
+        this.frontWater.appendChild(water)
+        water.setAttribute("href", "#waterNight")
+        gsap.set(water, { x: -5, y: 683 })
 
         this.setBackground()
         this.setBridge()
         this.setupInput()
         this.setupTargets()
         this.setupButtons()
+
+        this.startAnimation();
     }
 
     setBackground() {
@@ -146,13 +167,17 @@ export class MaterialBridgeAPI {
     }
 
     setBridge() {
+        // gsap.set(this.bridge, {opacity :})
+        //to do : light up bridge as small boat comes in
         if (this.game.bridgeArr.length == 1) {
             this.bridge.setAttribute("href", "#bridge1")
-            this.yVal = 264
+            gsap.set(this.bridge, { x: 0, y: 100 })
+            this.yVal = 249
         }
         else if (this.game.bridgeArr.length == 2) {
             this.bridge.setAttribute("href", "#bridge2")
-            this.yVal = 250
+            gsap.set(this.bridge, { x: 0, y: 50 })
+            this.yVal = 200
         }
 
     }
@@ -272,7 +297,7 @@ export class MaterialBridgeAPI {
                 this.targets.push(smallRect)
                 
                 if (this.game.bridgeArr[i][j] > 0) {
-                    gsap.set(smallRect, {fill : "#fe4818ff", fillOpacity : 1})
+                    gsap.set(smallRect, {fill : "#f75c00ff", fillOpacity : 1})
                 }
                 else {
                     //space 
@@ -344,6 +369,15 @@ export class MaterialBridgeAPI {
                 self.currentImg.setAttribute("href", "#third")
             else if (val == 0.25)
                 self.currentImg.setAttribute("href", "#fourth")
+            else if (val == 0.2)
+                self.currentImg.setAttribute("href", "#fifth")
+            else if (val == 0.1666)
+                self.currentImg.setAttribute("href", "#sixth")
+            else if (val == 0.14286)
+                self.currentImg.setAttribute("href", "#seventh")
+            else if (val == 0.125)
+                self.currentImg.setAttribute("href", "#eighth")
+            
 
         }
 
@@ -368,9 +402,10 @@ export class MaterialBridgeAPI {
         var size = this.order.size
         var num = this.order.pieces 
 
-        var ogX = 380 //this.xVal
+        var ogX = 150 //this.xVal
         var xVal = ogX
-        var yVal = 602
+        var yVal = this.boatY + 220
+
 
         var startScale = 1 //0.5
         var endScale = 1
@@ -388,13 +423,23 @@ export class MaterialBridgeAPI {
 
             var rect = document.createElementNS(svgns, "rect")
             this.boat.appendChild(rect)
-            gsap.set(rect, {x : xVal, y : yVal, height : this.height, width : this.wholeSize*size, rx : 2, fill : "#fe4818ff", stroke : "#f71e00ff", strokeWidth : 4, scale : startScale})
+            gsap.set(rect, {x : xVal, y : yVal, height : this.height, width : this.wholeSize*size, rx : 2, fill : "#f75c00ff", stroke : "#f71e00ff", strokeWidth : 4, scale : startScale})
             this.animationEls.push(rect)
 
             blocks.push({el : rect, size : size, used : false})
 
             xVal += this.wholeSize*size*startScale
         }
+
+        //add front of boat
+        var front = document.createElementNS(svgns, "use")
+        front.setAttribute("href", "#front")
+        this.boat.appendChild(front)
+        // gsap.set(front, {x : 10 - 1300, y : this.boatY})
+        gsap.set(front, {x : 0, y : this.boatY})
+        this.animationEls.push(front)
+        
+
 
         gsap.set(this.boat, {x : "-="+ (1300)})
         this.tl.to([this.boat, this.bigBoat], {x : "+="+ 1300, duration : 2})
@@ -412,7 +457,7 @@ export class MaterialBridgeAPI {
 
             var moveSpeed = 1
 
-            //to do: add attachements at the end of the block after each block is added
+            var fallenX = 0
 
             for(var i = blocks.length-1; i >= 0; i--) {
                 if (space.size > blocks[i].size && Math.abs(space.size - blocks[i].size) > 0.001) {
@@ -447,9 +492,21 @@ export class MaterialBridgeAPI {
                     complete = false
                     //space is smaller than the block
                     //move block and let it fall 
+
                     this.tl.to(blocks[i].el, {x : space.xVal, y : space.yVal, duration : moveSpeed, scale : endScale})
                     this.tl.to(blocks[i].el, {rotation : 30, ease : "linear"})
-                    this.tl.to(blocks[i].el, {rotation : 50, y : 900, ease : "linear"})
+                    this.tl.to(blocks[i].el, {rotation : 90, x :"+=" +fallenX, y : 700, ease : "linear"})
+
+                    fallenX += this.height*1.6
+
+                    this.tl.to(blocks[i].el, {y : "-=" +100, duration : 1, ease : Back.easeOut.config(1.7), onComplete : function() {
+                        //bob up and down by 50 on tl2
+                        //to do: here 
+                        // self.bobBlock(blocks[i].el)
+                        self.bobBlock(this.targets()[0])
+                    }})
+                    
+        
 
                 }
                 
@@ -465,11 +522,19 @@ export class MaterialBridgeAPI {
             blocks.forEach(element => {
                 if (element.used == false) check = false
             });
+
+
             if (check && spaceIndex == this.spaces.length) {
                 console.log("yay")
                 this.game.complete = true
                 //TO DO: cars driving accross for success animation
-                this.showEndGameButtons()
+                this.tl.to(this.boat, {duration : 0, onComplete : function() {
+                    self.boat.removeChild(front)
+                    self.animationEls.splice(self.animationEls.length-1, 1)
+                    self.successAnimation()
+                    self.showEndGameButtons()
+                }})
+
             }
             // if(complete && finalBlock == 0 || spaceIndex == this.spaces.length && finalBlock == 0) {
             //     console.log("yay")
@@ -544,6 +609,66 @@ export class MaterialBridgeAPI {
         
     }
 
+    bobBlock(b) {
+        this.tl2.push(gsap.timeline())
+
+        var index = this.tl2.length - 1
+
+        this.tl2[index].to(b, {y : "+="+35, ease : "linear", duration : 0.6})
+        this.tl2[index].to(b, {y : "-="+35, ease : "linear", duration : 0.6})
+
+        this.tl2[index].repeat(-1)
+
+    }
+
+    successAnimation() {
+
+        //create 6 cars 
+        var yVal = this.yVal - 52
+        var carsTop = []
+        for(var i = 0; i < 3; i++) {
+            var car = document.createElementNS(svgns, "use")
+            car.setAttribute("href", "#car")
+            this.boat.appendChild(car)
+            this.animationEls.push(car)
+            carsTop.push(car)
+            gsap.set(car, { x: 300 + i*300 - 1200, y: yVal})
+        }
+
+        var carsBottom = []
+
+        if (this.game.bridgeArr.length > 1) {
+            for(var i = 0; i < 3; i++) {
+                var car = document.createElementNS(svgns, "use")
+                car.setAttribute("href", "#car")
+                this.boat.appendChild(car)
+                this.animationEls.push(car)
+                carsBottom.push(car)
+                gsap.set(car, { scaleX : -1, x: 300 + i*300 + 1200, y: yVal + (this.delta + 2)})
+            }
+        }
+
+
+        //create rails 
+        for(var i = 0; i < this.game.bridgeArr.length; i++) {
+            var rails = document.createElementNS(svgns, "use")
+            rails.setAttribute("href", "#rails")
+            this.boat.appendChild(rails)
+            this.animationEls.push(rails)
+            gsap.set(rails, { x: 126, y: this.yVal -14 + (this.delta + 2)*i})
+        }
+
+        //big boat drives off
+        this.tl.to(this.bigBoat, {x : "+= 2000", duration : 3, ease : "linear"})
+
+        //move cars 
+        this.tl.to(carsTop, {x : "+= 2400", duration : 5, ease : "linear"})
+        this.tl.to(carsBottom, {x : "-= 2400", duration : 5, ease : "linear"}, "<")
+
+
+
+    }
+
     showEndGameButtons() {
         //show buttons
         if (this.game.complete || this.game.attempts >= 3) {
@@ -569,14 +694,31 @@ export class MaterialBridgeAPI {
         this.nextBtn.onpointerdown = function() {
             self.nextGame()
         }
+
+        this.smallBoat.onpointerdown = function() {
+            gsap.set(self.input, {visibility : "visible"})
+        }
+    }
+
+    startAnimation() {
+
+        gsap.set(this.input, {visibility : "hidden"})
+
+    
+
+        this.tl.to(this.smallBoat, {x : 30, duration : 2, ease : "linear"})
+
+        //move in little boat 
+
     }
 
     reset() {
         this.tl.clear()
         // this.spaces = this.deepCopy(this.originalSpaces)
-        gsap.set(this.input, {visibility : "visible"})
+        // gsap.set(this.input, {visibility : "visible"})
 
-        gsap.set(this.bigBoat, { x: 140 - 1300, y: 420 })
+        gsap.set(this.bigBoat, { x: 10 - 1300})
+        gsap.set(this.smallBoat, { x: -300})
 
 
         this.animationEls.forEach(el => {
@@ -592,6 +734,8 @@ export class MaterialBridgeAPI {
             gsap.set(this.nextBtn, { scale: 0 })
 
         this.setupSpaces();
+
+        this.startAnimation();
 
     }
 
