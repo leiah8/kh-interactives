@@ -136,11 +136,14 @@ export class IntegerPlatfromClass {
     sandbags : SVGUseElement[]
     balloonX : number;
     sandbagX : number;
-    ITEM_START_X : number = 450;
+    ITEM_START_X : number = 455;
     ITEM_START_Y : number = 202;
-    ADDITIONAL_SANDBAG_Y : number = 160;
+    ADDITIONAL_SANDBAG_Y : number = 151;
     BALLOON_DURATION : number = 1;
     SANDBAG_DURATION : number = 0.7;
+
+    CART_X_DIFF : number = 590;
+    CART_Y_DIFF : number = 350;
 
     constructor(setup, gameInputs) {
         this.games = []
@@ -225,8 +228,8 @@ export class IntegerPlatfromClass {
         gsap.set(self.nextBtn,{scale: 0})
       
       //ground
-      gsap.set(self.left, {y : 400 + -self.game.start*50})
-      gsap.set(self.right, {x : 830, y : 400 + -self.game.start*50})
+      gsap.set(self.left, {y : 400 + -self.game.start*50 - 28})
+      gsap.set(self.right, {x : 830, y : 400 + -self.game.start*50 - 22})
 
       //bridge or tunnel
       if (self.game.goal < 0) {
@@ -235,6 +238,15 @@ export class IntegerPlatfromClass {
         tunnel.setAttribute("href","#tunnel")
         gsap.set(tunnel, {x : 830, y : 400 + -self.game.goal*50 - 125})
         this.levelEls.push(tunnel)
+
+        //to do: add brown rect
+
+        var rect = document.createElementNS(svgns, "use")
+        this.arena.appendChild(rect)
+        rect.setAttribute("href", "#dirt")
+        gsap.set(rect, {x : 830, y : 450, scaleY : -self.game.goal -3.5})
+        this.levelEls.push(rect)
+
       }
       else if (self.game.goal == 1) {
         var bridge = document.createElementNS(svgns,"use")
@@ -260,11 +272,11 @@ export class IntegerPlatfromClass {
       }
 
       gsap.set(self.surface, {x : 450, y : 400 - self.game.start*50})
-      gsap.set(self.spring, {x : 580, y : 420 - self.game.start*50, height : 300 - self.game.start*50})
+      gsap.set(self.spring, {x : 550, y : 410 - self.game.start*50, height : 300 - self.game.start*50})
 
       //cart
-      gsap.set(self.cart, {x : -200, y : 300 + self.game.start*50})
-      this.cartXPos = 640 - 74
+      gsap.set(self.cart, {x : -200 + self.CART_X_DIFF, y : 300 + self.game.start*50 + self.CART_Y_DIFF})
+      this.cartXPos = 640 - 74 //to do: adjust here
 
       try {this.arena.removeChild(self.gem)} catch {}
       
@@ -289,8 +301,8 @@ export class IntegerPlatfromClass {
         this.arena.appendChild(right)
         this.right = right
 
-        left.setAttribute("href","#ground")
-        right.setAttribute("href","#ground")
+        left.setAttribute("href","#groundLeft")
+        right.setAttribute("href","#groundRight")
 
         //platform surface
         var surface = document.createElementNS(svgns,"use")
@@ -467,7 +479,7 @@ export class IntegerPlatfromClass {
       self.sandbags = []
 
       //reset cart  (to outside of screen)
-      gsap.set(self.cart, {x : -200, y : 300 + self.game.start*50})
+      gsap.set(self.cart, {x : -200 + self.CART_X_DIFF, y : 300 + self.game.start*50 + self.CART_Y_DIFF})
       gsap.set([self.backWheel, self.frontWheel], {rotation : 0})
 
       //reset terms 
@@ -577,19 +589,19 @@ export class IntegerPlatfromClass {
         //feedback animation
         if(self.sum == self.game.goal) { //cart rolls off 
           self.game.completed = true
-          self.tl.to(self.cart, {x : 830, duration : 0.8, ease : "linear"})
-          self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (830 - self.cartXPos) / self.wheelCircumference * 360, duration : 0.8, ease: "linear", 
+          self.tl.to(self.cart, {x : 830 + self.CART_X_DIFF, duration : 0.8, ease : "linear"})
+          self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (830 - self.cartXPos + self.CART_X_DIFF) / self.wheelCircumference * 360, duration : 0.8, ease: "linear", 
             onComplete : function() {
               self.cartOnPlatform = false
               self.sum += 1
               self.updatePlatformPos()
               
               var time = ((self.gemPos - 830) / 264)*0.8
-              self.tl.to(self.cart, {x : self.gemPos, duration : time, ease : "linear"}, "<")
+              self.tl.to(self.cart, {x : self.gemPos + self.CART_X_DIFF, duration : time, ease : "linear"}, "<")
               self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + (self.gemPos - 830) / self.wheelCircumference * 360, duration : time, ease: "linear"}, "<") 
               
               time = ((1400 - self.gemPos) / 264)*0.8
-              self.tl.to(self.cart, {x : 1400, duration : time, ease : "linear", 
+              self.tl.to(self.cart, {x : 1400  + self.CART_X_DIFF  , duration : time, ease : "linear", 
                 onStart : function() {
                   gsap.set(self.gem, {y : "-="+75})
                 }, 
@@ -605,11 +617,11 @@ export class IntegerPlatfromClass {
         //too low -> hit the ground
         else if (self.sum < 0 || self.sum < self.game.goal) { 
           //TO DO: adjust cart width = 148
-          self.tl.to(self.cart, {x : 830 - 148, ease: Power1.easeIn, duration : 0.75})
-          self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + ((830 - 148 - self.cartXPos) / self.wheelCircumference * 360), duration : 0.75, ease: Power1.easeIn}, "<")
+          self.tl.to(self.cart, {x : 830 - 148  + self.CART_X_DIFF, ease: Power1.easeIn, duration : 0.75})
+          self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + ((830 - 148 - self.cartXPos + self.CART_X_DIFF) / self.wheelCircumference * 360), duration : 0.75, ease: Power1.easeIn}, "<")
           
-          self.tl.to(self.cart, {x : self.cartXPos, ease: Power1.easeOut, duration : 1})
-          self.tl.to([self.backWheel, self.frontWheel], {rotation : "-=" + ((830 - 148 - self.cartXPos) / self.wheelCircumference * 360), duration : 1, ease: Power1.easeOut}, "<")
+          self.tl.to(self.cart, {x : self.cartXPos  + self.CART_X_DIFF, ease: Power1.easeOut, duration : 1})
+          self.tl.to([self.backWheel, self.frontWheel], {rotation : "-=" + ((830 - 148 - self.cartXPos + self.CART_X_DIFF) / self.wheelCircumference * 360), duration : 1, ease: Power1.easeOut}, "<")
         }
 
         //too high -> wiggle platform
@@ -652,7 +664,7 @@ export class IntegerPlatfromClass {
 
     moveGemWithCart(self) {
       const xVal = Math.round(gsap.getProperty(self.cart, "x"));
-      gsap.set(self.gem, {x : xVal + 20})
+      gsap.set(self.gem, {x : xVal + 20 - self.CART_X_DIFF})
     }
 
     openInput() {
@@ -772,10 +784,12 @@ export class IntegerPlatfromClass {
       var h = (this.arena as any as HTMLElement).getBoundingClientRect().height 
       var w = h*(1280/720) //(this.arena as any as HTMLElement).getBoundingClientRect().width 
       var x = w*(840/1280)  //(this.addBtn as any as HTMLElement).getBoundingClientRect().x 
-      var btnW = w * (70 / 1280) //(addBtn as any as HTMLElement).getBoundingClientRect().width
+      var btnW = w * (120 / 1280) //(addBtn as any as HTMLElement).getBoundingClientRect().width
 
       var equationW = Math.min(Math.max((0.18*h + 10), self.allTerms.length*(0.18*h + 10)), 5*(0.18*h + 10))
       gsap.set(this.equation, {width : equationW, x : x - equationW - btnW, y : "1.5vh"})
+
+      console.log(x, equationW, btnW)
     }
 
     onResize(addBtn) {
@@ -1003,7 +1017,7 @@ export class IntegerPlatfromClass {
         const yVal = Math.round(gsap.getProperty(self.platform, "y"));
         gsap.set(self.spring, {scaleY : self.getScaleVal(yVal)})
         if (self.cartOnPlatform)
-          gsap.set(self.cart, {y : 300 + yVal})
+          gsap.set(self.cart, {y : 300 + yVal  + self.CART_Y_DIFF})
     }
 
     setupDraggablePlatform() {
@@ -1042,11 +1056,11 @@ export class IntegerPlatfromClass {
 
         //move cart and wheels
         gsap.set([self.backWheel, self.frontWheel], {rotation : 0})
-        this.tl.to(self.cart, {x : self.cartXPos, duration : 2, ease: "linear", 
+        this.tl.to(self.cart, {x : self.cartXPos  + self.CART_X_DIFF, duration : 2, ease: "linear", 
         onComplete : function() {
           self.cartOnPlatform = true;
         }})
-        this.tl.to([self.backWheel, self.frontWheel], {rotation : (self.cartXPos + 200) / self.wheelCircumference * 360, duration : 2, ease: "linear"}, "<")
+        this.tl.to([self.backWheel, self.frontWheel], {rotation : (self.cartXPos + 200 + self.CART_X_DIFF) / self.wheelCircumference * 360, duration : 2, ease: "linear"}, "<")
         this.tl.to(self.cart, {duration : 0.1})
         
         //update platform position
