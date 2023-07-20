@@ -139,6 +139,8 @@ export class IntegerPlatfromClass {
     sandbagX : number;
     ITEM_START_X : number = 455;
     ITEM_START_Y : number = 202;
+    balloonYDiff : number;
+    sandbagYDiff : number;
     ADDITIONAL_SANDBAG_Y : number = 151;
     BALLOON_DURATION : number = 1;
     SANDBAG_DURATION : number = 0.7;
@@ -199,6 +201,9 @@ export class IntegerPlatfromClass {
         this.scrollbarRangeMax = setup.scrollbarRangeMax
         this.scrollbarRangeMin = setup.scrollbarRangeMin
         this.groundLevel = 0;
+
+        this.balloonYDiff = 0;
+        this.sandbagYDiff = 0;
 
         gsap.registerPlugin(CustomEase);
         this.sandbagBounce = CustomEase.create("sandbagBounce", "M0,0 C0,0 0.014,0.001 0.022,0.003 0.031,0.006 0.037,0.01 0.045,0.015 0.054,0.021 0.06,0.027 0.068,0.035 0.077,0.044 0.083,0.05 0.09,0.061 0.108,0.089 0.12,0.107 0.135,0.137 0.155,0.179 0.165,0.205 0.181,0.249 0.201,0.305 0.211,0.336 0.228,0.394 0.247,0.46 0.256,0.497 0.273,0.565 0.292,0.644 0.301,0.686 0.318,0.766 0.337,0.858 0.359,0.98 0.363,0.998 0.367,0.989 0.39,0.949 0.411,0.907 0.426,0.877 0.438,0.859 0.456,0.831 0.464,0.82 0.47,0.813 0.48,0.804 0.487,0.796 0.492,0.792 0.501,0.786 0.509,0.781 0.515,0.778 0.524,0.775 0.531,0.772 0.538,0.771 0.546,0.772 0.554,0.772 0.561,0.773 0.569,0.776 0.578,0.779 0.584,0.783 0.592,0.788 0.601,0.794 0.606,0.799 0.614,0.807 0.623,0.817 0.629,0.824 0.637,0.836 0.655,0.864 0.667,0.882 0.682,0.914 0.701,0.953 0.72,0.982 0.726,0.998 0.73,0.994 0.743,0.979 0.754,0.968 0.761,0.961 0.766,0.957 0.774,0.952 0.782,0.947 0.788,0.943 0.796,0.941 0.804,0.938 0.811,0.937 0.819,0.937 0.827,0.937 0.833,0.938 0.841,0.941 0.85,0.944 0.855,0.947 0.863,0.952 0.872,0.958 0.877,0.963 0.885,0.971 0.894,0.981 0.902,0.992 0.908,0.998 0.914,0.996 1,1 1,1 ")
@@ -504,6 +509,9 @@ export class IntegerPlatfromClass {
       self.allTerms.forEach(term => { self.terms.removeChild(term) })
       self.allTerms = []
 
+      this.sandbagYDiff = 0;
+      this.balloonYDiff = 0;
+
       
       gsap.set(self.gem, {x : self.gemPos +26, y : 400 + -self.game.goal*50 - 50})
 
@@ -523,33 +531,53 @@ export class IntegerPlatfromClass {
           //add balloons or sandbags
           //TO DO: format balloons and sandbags so more than 8 are allowed 
           if(term.positive) {
-            if (term.val > 0 && this.balloons.length+term.val <= 8) {
+            if (term.val > 0) {
               for(var i = 0; i < Math.abs(term.val); i++) {
                 var temp = document.createElementNS(svgns,"use")
                 self.platform.appendChild(temp)
                 temp.setAttribute("href","#balloon")
-
-                self.balloonX += 50
-                gsap.set(temp, {x : self.balloonX, y : self.ITEM_START_Y + 600, visibility : "hidden"})
-                
                 elements.push(temp)
                 self.balloons.push(temp)
+
+                //to do : here
+                gsap.set(temp, {x : self.balloonX, y : self.ITEM_START_Y + 600 - self.balloonYDiff, visibility : "hidden"})
+
+                self.balloonX += 50
+                if (self.balloonX >= self.ITEM_START_X + 50*7) {
+                  self.balloonYDiff += 20 //to do: change val?
+                  self.balloonX = self.ITEM_START_X
+                }
+
+                // gsap.set(temp, {x : self.balloonX, y : self.ITEM_START_Y + 600 - self.itemYDiff, visibility : "hidden"})
+                
+                
               }
-              self.tl.to(elements, {y : self.ITEM_START_Y, visibility : "visible", duration : self.BALLOON_DURATION})
+              // self.tl.to(elements, {y : self.ITEM_START_Y - self.itemYDiff, visibility : "visible", duration : self.BALLOON_DURATION})
+              self.tl.to(elements, {y : "-=" + 600, visibility : "visible", duration : self.BALLOON_DURATION})
             }
-            else if (term.val < 0 && this.sandbags.length + Math.abs(term.val) <= 8) {
+            else if (term.val < 0) {
               for(var i = 0; i < Math.abs(term.val); i++) {
                 var temp = document.createElementNS(svgns,"use")
                 self.platform.appendChild(temp)
                 temp.setAttribute("href","#sandbag")
-
-                self.sandbagX += 50
-                gsap.set(temp, {x : self.sandbagX, y : self.ITEM_START_Y - 400, visibility : "hidden"})
-
                 elements.push(temp)
                 self.sandbags.push(temp)
+
+                gsap.set(temp, {x : self.sandbagX, y : self.ITEM_START_Y - 400 - self.sandbagYDiff, visibility : "hidden"})
+
+                self.sandbagX += 50
+                if (self.sandbagX >= self.ITEM_START_X + 50*7) {
+                  //self.itemYDiff += 20 //to do: change val?
+                  self.sandbagYDiff += 20
+                  self.sandbagX = self.ITEM_START_X
+                }
+                //gsap.set(temp, {x : self.sandbagX, y : self.ITEM_START_Y - 400, visibility : "hidden"})
+
+                
               }
-              self.tl.to(elements, {y : self.ITEM_START_Y + self.ADDITIONAL_SANDBAG_Y, ease : "linear", visibility : "visible", duration : self.SANDBAG_DURATION})
+              // self.tl.to(elements, {y : self.ITEM_START_Y + self.ADDITIONAL_SANDBAG_Y, ease : "linear", visibility : "visible", duration : self.SANDBAG_DURATION})
+              self.tl.to(elements, {y : "+= " + (400 + self.ADDITIONAL_SANDBAG_Y), ease : "linear", visibility : "visible", duration : self.SANDBAG_DURATION})
+            
             }
             else {
               self.tl.to(term, {background : "red"})
@@ -1066,7 +1094,7 @@ export class IntegerPlatfromClass {
             gsap.to(self.platform, {y : self.pos, ease : "elastic", duration : 1, 
                 onUpdate : self.onUpdateDrag, onUpdateParams : [self] }) 
           }
-        }) 
+        })
     }
 
     getScaleVal(y) { return -y/330 + 1 }
@@ -1103,35 +1131,51 @@ export class IntegerPlatfromClass {
   
         //create start balloons and sandbags
         //TO DO: fomat balloons and sandbags so more than 8 are allowed 
+        this.balloonX = self.ITEM_START_X
         for(var i = 0; i < self.game.startBalloons; i++) {
           var temp = document.createElementNS(svgns,"use")
           this.platform.appendChild(temp)
           temp.setAttribute("href","#balloon")
 
-          gsap.set(temp, {x : self.ITEM_START_X + i * 50, y : self.ITEM_START_Y + 600, visibility : "hidden"})
+          // gsap.set(temp, {x : self.ITEM_START_X + i * 50, y : self.ITEM_START_Y + 600, visibility : "hidden"})
+          gsap.set(temp, {x : this.balloonX, y : self.ITEM_START_Y + 600 - this.balloonYDiff, visibility : "hidden"})
+          this.balloonX += 50;
+
+          if (this.balloonX > self.ITEM_START_X + 7*50) {
+            this.balloonX = self.ITEM_START_X
+            this.balloonYDiff += 20
+          }
           this.balloons.push(temp) 
         }
-        this.balloonX = self.ITEM_START_X + (self.game.startBalloons - 1)*50
-  
+        // this.balloonX = self.ITEM_START_X + (self.game.startBalloons - 1)*50
+        
+        this.sandbagX = self.ITEM_START_X
         for(var i = 0; i < self.game.startSandbags; i++) {
           var temp = document.createElementNS(svgns,"use")
           this.platform.appendChild(temp)
           temp.setAttribute("href","#sandbag")
 
-          gsap.set(temp, {x : self.ITEM_START_X + i * 50, y : self.ITEM_START_Y - 400, visibility : "hidden"})
+          // gsap.set(temp, {x : self.ITEM_START_X + i * 50, y : self.ITEM_START_Y - 400, visibility : "hidden"})
+          gsap.set(temp, {x : this.sandbagX, y : self.ITEM_START_Y - 400 - this.sandbagYDiff, visibility : "hidden"})
+          this.sandbagX += 50;
+
+          if (this.sandbagX > self.ITEM_START_X + 7*50) {
+            this.sandbagX = self.ITEM_START_X
+            this.sandbagYDiff += 20
+          }
           this.sandbags.push(temp)
         }
-        this.sandbagX = self.ITEM_START_X + (self.game.startSandbags - 1)*50
+        //this.sandbagX = self.ITEM_START_X + (self.game.startSandbags - 1)*50
         
         //add balloons and sandbags
         this.tl.to(self.balloons, {visibility : "visible", duration : 0})
         this.tl.to(self.sandbags, {visibility : "visible", duration : 0})
-        this.tl.to(self.balloons, {y : self.ITEM_START_Y, duration : self.BALLOON_DURATION, 
+        this.tl.to(self.balloons, {y : "-=" + 600, duration : self.BALLOON_DURATION, 
           onComplete : function() {
             self.sum += self.game.startBalloons
             self.updatePlatformPos()
             
-            self.tl.to(self.sandbags, {y : self.ITEM_START_Y + self.ADDITIONAL_SANDBAG_Y, ease : "linear", duration : self.SANDBAG_DURATION,
+            self.tl.to(self.sandbags, {y : "+=" + (400+self.ADDITIONAL_SANDBAG_Y), ease : "linear", duration : self.SANDBAG_DURATION,
               onComplete : function() {
                 self.sum -= self.game.startSandbags
                 self.updatePlatformPos()
