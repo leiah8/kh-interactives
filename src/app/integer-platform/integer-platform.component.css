@@ -50,10 +50,10 @@ body {
     overflow-y : hidden;
     overflow-x : hidden;
 
-    border-width : 10px;
+    border-width : 1vh;
     border-color : #c0f4ffff;
     border-style : solid;
-    border-radius: 80px;
+    border-radius: 10vh;
     background: #c0f4ffff;
 
     height : 10vh;

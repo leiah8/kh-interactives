@@ -101,10 +101,10 @@ export class IntegerPlatfromClass {
     wheelCircumference : number;
     cartXPos : number;
     
-    DEFAULT_NODE_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8px; font-size : 20px; font-family : 'Poppins'; color:#000"
-    SELECTED_NODE_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #23a3ff; border-radius: 8px; font-size : 20px; font-family : 'Poppins'; color:#fff"
-    DEFAULT_TERM_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8vh; font-size : 20px; font-family : 'Poppins'; color:#000; padding-bottom : 0.3vh"
-    SELECTED_TERM_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #23a3ff; border-radius: 8vh; font-size : 20px; font-family : 'Poppins'; color:#fff; padding-bottom : 0.3vh"
+    DEFAULT_NODE_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 3vh; font-size : 3vh; font-family : 'Poppins'; color:#000"
+    SELECTED_NODE_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #23a3ff; border-radius: 3vh; font-size : 3vh; font-family : 'Poppins'; color:#fff"
+    DEFAULT_TERM_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 8vh; font-size : 3vh; font-family : 'Poppins'; color:#000; padding-bottom : 0.3vh"
+    SELECTED_TERM_STYLE : string = "scroll-snap-align: center; display: flex; justify-content: center; align-items: center; background: #23a3ff; border-radius: 8vh; font-size : 3vh; font-family : 'Poppins'; color:#fff; padding-bottom : 0.3vh"
 
     selectedTerm : Term;
     allTerms : Term[]
@@ -124,6 +124,7 @@ export class IntegerPlatfromClass {
     canReset : boolean;
     cartOnPlatform : boolean;
     editing : boolean
+    groundLevel : number;
 
     addRemove : boolean;
     useImgs : boolean;
@@ -197,6 +198,7 @@ export class IntegerPlatfromClass {
         this.useImgs = setup.useImgs
         this.scrollbarRangeMax = setup.scrollbarRangeMax
         this.scrollbarRangeMin = setup.scrollbarRangeMin
+        this.groundLevel = 0;
 
         gsap.registerPlugin(CustomEase);
         this.sandbagBounce = CustomEase.create("sandbagBounce", "M0,0 C0,0 0.014,0.001 0.022,0.003 0.031,0.006 0.037,0.01 0.045,0.015 0.054,0.021 0.06,0.027 0.068,0.035 0.077,0.044 0.083,0.05 0.09,0.061 0.108,0.089 0.12,0.107 0.135,0.137 0.155,0.179 0.165,0.205 0.181,0.249 0.201,0.305 0.211,0.336 0.228,0.394 0.247,0.46 0.256,0.497 0.273,0.565 0.292,0.644 0.301,0.686 0.318,0.766 0.337,0.858 0.359,0.98 0.363,0.998 0.367,0.989 0.39,0.949 0.411,0.907 0.426,0.877 0.438,0.859 0.456,0.831 0.464,0.82 0.47,0.813 0.48,0.804 0.487,0.796 0.492,0.792 0.501,0.786 0.509,0.781 0.515,0.778 0.524,0.775 0.531,0.772 0.538,0.771 0.546,0.772 0.554,0.772 0.561,0.773 0.569,0.776 0.578,0.779 0.584,0.783 0.592,0.788 0.601,0.794 0.606,0.799 0.614,0.807 0.623,0.817 0.629,0.824 0.637,0.836 0.655,0.864 0.667,0.882 0.682,0.914 0.701,0.953 0.72,0.982 0.726,0.998 0.73,0.994 0.743,0.979 0.754,0.968 0.761,0.961 0.766,0.957 0.774,0.952 0.782,0.947 0.788,0.943 0.796,0.941 0.804,0.938 0.811,0.937 0.819,0.937 0.827,0.937 0.833,0.938 0.841,0.941 0.85,0.944 0.855,0.947 0.863,0.952 0.872,0.958 0.877,0.963 0.885,0.971 0.894,0.981 0.902,0.992 0.908,0.998 0.914,0.996 1,1 1,1 ")
@@ -233,19 +235,35 @@ export class IntegerPlatfromClass {
 
       //bridge or tunnel
       if (self.game.goal < 0) {
-        var tunnel = document.createElementNS(svgns,"use")
-        this.arena.appendChild(tunnel)
-        tunnel.setAttribute("href","#tunnel")
-        gsap.set(tunnel, {x : 830, y : 400 + -self.game.goal*50 - 125})
-        this.levelEls.push(tunnel)
-
-        //to do: add brown rect
-
         var rect = document.createElementNS(svgns, "use")
         this.arena.appendChild(rect)
         rect.setAttribute("href", "#dirt")
         gsap.set(rect, {x : 830, y : 450, scaleY : -self.game.goal -3.5})
         this.levelEls.push(rect)
+
+        var tunnel = document.createElementNS(svgns,"use")
+        this.arena.appendChild(tunnel)
+        // tunnel.setAttribute("href","#tunnel")
+        // gsap.set(tunnel, {x : 830, y : 400 + -self.game.goal*50 - 125})
+        this.levelEls.push(tunnel)
+
+        //move up the ground 
+        if (self.game.goal == -1) {
+            tunnel.setAttribute("href", "#grasstunnel")
+            gsap.set(tunnel, {x : 830, y : 400 - 100 - 22})
+            self.groundLevel = 2
+          }
+        else if (self.game.goal == -2) {
+          tunnel.setAttribute("href", "#grasstunnel")
+          gsap.set(tunnel, {x : 830, y : 400 - 50 - 22})
+          self.groundLevel = 1
+
+        }
+        else {
+          tunnel.setAttribute("href","#tunnel")
+          gsap.set(tunnel, {x : 830, y : 400 + -self.game.goal*50 - 125})
+
+        }
 
       }
       else if (self.game.goal == 1) {
@@ -495,6 +513,7 @@ export class IntegerPlatfromClass {
       var self = this
       this.game.attempts += 1
       this.dragEl[0].disable()
+      self.finished = true;
       
       try {
         self.allTerms.forEach(term => {
@@ -615,7 +634,8 @@ export class IntegerPlatfromClass {
         }
 
         //too low -> hit the ground
-        else if (self.sum < 0 || self.sum < self.game.goal) { 
+        // else if (self.sum < 0 || self.sum < self.game.goal) { 
+          else if (self.sum < self.groundLevel) { 
           //TO DO: adjust cart width = 148
           self.tl.to(self.cart, {x : 830 - 148  + self.CART_X_DIFF, ease: Power1.easeIn, duration : 0.75})
           self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + ((830 - 148 - self.cartXPos + self.CART_X_DIFF) / self.wheelCircumference * 360), duration : 0.75, ease: Power1.easeIn}, "<")
@@ -766,6 +786,7 @@ export class IntegerPlatfromClass {
             self.selectedNode = self.selectedTerm.node 
             self.selectedNode.setAttribute("style", self.SELECTED_NODE_STYLE )
             self.selectedNode.on = true
+            self.setScrollVal(self.selectedTerm.node)
           }
           else {
             self.selectedNode = null
@@ -784,12 +805,11 @@ export class IntegerPlatfromClass {
       var h = (this.arena as any as HTMLElement).getBoundingClientRect().height 
       var w = h*(1280/720) //(this.arena as any as HTMLElement).getBoundingClientRect().width 
       var x = w*(840/1280)  //(this.addBtn as any as HTMLElement).getBoundingClientRect().x 
-      var btnW = w * (120 / 1280) //(addBtn as any as HTMLElement).getBoundingClientRect().width
+      var btnW = w * (70 / 1280) //(addBtn as any as HTMLElement).getBoundingClientRect().width
 
-      var equationW = Math.min(Math.max((0.18*h + 10), self.allTerms.length*(0.18*h + 10)), 5*(0.18*h + 10))
-      gsap.set(this.equation, {width : equationW, x : x - equationW - btnW, y : "1.5vh"})
+      var equationW = Math.min(Math.max((0.18*h + 10), self.allTerms.length*(0.18*h + 10)), 4*(0.2*h + 10))
+      gsap.set(this.equation, {width : equationW, x : x - equationW - btnW*2, y : "1.5vh"})
 
-      console.log(x, equationW, btnW)
     }
 
     onResize(addBtn) {
@@ -873,6 +893,7 @@ export class IntegerPlatfromClass {
         self.selectedTerm.appendChild(self.selectedTerm.txt[0]); 
         
         var s = document.createElement('img')
+        gsap.set(s, {height : "4vh"})
         if (node.val > 0)  s.src = self.balloonURL
         else  s.src = self.sandbagURL
         self.selectedTerm.img = s
@@ -925,6 +946,7 @@ export class IntegerPlatfromClass {
             if (self.useImgs) {
               n.appendChild(document.createTextNode(Math.abs(i).toString()));
               var s = document.createElement('img')
+              gsap.set(s, {height : "5vh"})
               if (i > 0) s.src = this.balloonURL
               if (i < 0) s.src = this.sandbagURL
               n.appendChild(s)
@@ -982,10 +1004,14 @@ export class IntegerPlatfromClass {
             }
 
             if(!node.on) {
+              
+
               node.setAttribute("style", self.SELECTED_NODE_STYLE )
               node.on = true
     
               self.selectedNode = node
+              
+              self.setScrollVal(node)
             
               self.selectedTerm.node = node
               self.selectedTerm.val = node.val
@@ -1013,6 +1039,14 @@ export class IntegerPlatfromClass {
         }); 
     } 
 
+    setScrollVal(node) {
+      //move to top
+      var range = (this.scrollbarRangeMax > 0 && this.scrollbarRangeMin < 0) ? (this.scrollbarRangeMax - this.scrollbarRangeMin) +1: (this.scrollbarRangeMax - this.scrollbarRangeMin)+2
+      var height = this.numbers.scrollHeight / Math.abs(range)
+      this.numbers.scrollTop = height * (this.scrollbarRangeMax - node.val)
+
+    }
+
     onUpdateDrag(self) {
         const yVal = Math.round(gsap.getProperty(self.platform, "y"));
         gsap.set(self.spring, {scaleY : self.getScaleVal(yVal)})
@@ -1035,7 +1069,7 @@ export class IntegerPlatfromClass {
         }) 
     }
 
-    getScaleVal(y) { return -y/300 + 1 }
+    getScaleVal(y) { return -y/330 + 1 }
 
     getPos() { return -this.sum*50 }
 
@@ -1116,7 +1150,7 @@ export class IntegerPlatfromClass {
         //str = .num OR .term ONLY
         var size;
         if (str == ".num") size = 8
-        else if (str == ".term") size = 18
+        else if (str == ".term") size = 20
         else return
 
         const list = document.querySelectorAll(str); 

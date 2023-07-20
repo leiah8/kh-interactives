@@ -41,6 +41,7 @@ export class IntegerPlatformComponent implements AfterViewInit {
     goal : 1,
     
   } as GameInput
+  
 
   game2 : GameInput = {
     startBalloons : 2,
@@ -129,7 +130,7 @@ export class IntegerPlatformComponent implements AfterViewInit {
   
 
   // defaultGs : GameInput[] = [this.game1, this.game2, this.game3, this.game4, this.game5]
-  defaultGs : GameInput[] = [this.game2, this.game1, this.game3, this.game4, this.game5]
+  defaultGs : GameInput[] = [this.game1, this.game2, this.game3, this.game4, this.game5]
 
   constructor(private route: ActivatedRoute) {
     var p;
