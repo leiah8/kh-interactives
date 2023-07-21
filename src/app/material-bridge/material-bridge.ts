@@ -93,6 +93,8 @@ export class MaterialBridgeAPI {
     originalSpaces : Space[]
     blocks : Block[]
 
+    finishedAttempt : boolean;
+
     tl : any
     tl2 : any
 
@@ -120,6 +122,8 @@ export class MaterialBridgeAPI {
 
         this.tl = gsap.timeline()
         this.tl2 = []
+
+        this.finishedAttempt = false;
         
 
         this.init()
@@ -139,7 +143,7 @@ export class MaterialBridgeAPI {
         this.smallBoat = document.createElementNS(svgns, "use")
         this.smallBoat.setAttribute("href", "#smallBoat")
         this.arena.appendChild(this.smallBoat)
-        gsap.set(this.smallBoat, { x: -300, y: this.boatY + 120 })
+        gsap.set(this.smallBoat, { x: -300, y: this.boatY + 50 })
 
         //create boat
         this.bigBoat = document.createElementNS(svgns, "use")
@@ -386,8 +390,10 @@ export class MaterialBridgeAPI {
         this.orderBtn.onpointerdown = function(e) {
             //var num = self.orders.length
             //self.orders.push({num : num, size : Number(self.inputSize.value), pieces : Number(self.inputPieces.value)})
-            self.order = {num : 0, size : Number(self.inputSize.value), pieces : Number(self.inputPieces.value)}
-            self.playAnimation()
+            if (!self.finishedAttempt) {
+                self.order = {num : 0, size : Number(self.inputSize.value), pieces : Number(self.inputPieces.value)}
+                self.playAnimation()
+            }
 
         }
     }
@@ -396,6 +402,7 @@ export class MaterialBridgeAPI {
         var self = this
 
         this.game.attempts++;
+        this.finishedAttempt = true
 
         gsap.set(this.input, {visibility : "hidden"})
 
@@ -696,7 +703,8 @@ export class MaterialBridgeAPI {
         }
 
         this.smallBoat.onpointerdown = function() {
-            gsap.set(self.input, {visibility : "visible"})
+            if (!self.finishedAttempt) 
+                gsap.set(self.input, {visibility : "visible"})
         }
     }
 
@@ -716,6 +724,8 @@ export class MaterialBridgeAPI {
         this.tl.clear()
         // this.spaces = this.deepCopy(this.originalSpaces)
         // gsap.set(this.input, {visibility : "visible"})
+
+        this.finishedAttempt = false
 
         gsap.set(this.bigBoat, { x: 10 - 1300})
         gsap.set(this.smallBoat, { x: -300})
