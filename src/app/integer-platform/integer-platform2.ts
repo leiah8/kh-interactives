@@ -267,6 +267,7 @@ export class IntegerPlatfromClass {
         else {
           tunnel.setAttribute("href","#tunnel")
           gsap.set(tunnel, {x : 830, y : 400 + -self.game.goal*50 - 125})
+          self.groundLevel = 0
 
         }
 
