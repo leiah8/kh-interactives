@@ -663,7 +663,7 @@ export class IntegerPlatfromClass {
 
         //too low -> hit the ground
         // else if (self.sum < 0 || self.sum < self.game.goal) { 
-          else if (self.sum < self.groundLevel) { 
+          else if (self.sum < self.groundLevel || self.sum < self.game.goal) { 
           //TO DO: adjust cart width = 148
           self.tl.to(self.cart, {x : 830 - 148  + self.CART_X_DIFF, ease: Power1.easeIn, duration : 0.75})
           self.tl.to([self.backWheel, self.frontWheel], {rotation : "+=" + ((830 - 148 - self.cartXPos + self.CART_X_DIFF) / self.wheelCircumference * 360), duration : 0.75, ease: Power1.easeIn}, "<")
