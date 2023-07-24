@@ -449,7 +449,7 @@ export class MaterialBridgeAPI {
 
 
         gsap.set(this.boat, {x : "-="+ (1300)})
-        this.tl.to([this.boat, this.bigBoat], {x : "+="+ 1300, duration : 2})
+        this.tl.to([this.boat, this.bigBoat, this.smallBoat], {x : "+="+ 1300, duration : 3})
         this.tl.to(this.boat, {duration : 1})
 
 
@@ -743,6 +743,9 @@ export class MaterialBridgeAPI {
 
         gsap.set(this.bigBoat, { x: 10 - 1300})
         gsap.set(this.smallBoat, { x: -300})
+
+        //fade to day 
+        gsap.set([this.background, this.frontWater], {opacity : 0})
 
 
         this.animationEls.forEach(el => {
