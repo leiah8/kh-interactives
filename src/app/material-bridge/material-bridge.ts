@@ -745,7 +745,7 @@ export class MaterialBridgeAPI {
         gsap.set(this.smallBoat, { x: -300})
 
         //fade to day 
-        gsap.set([this.background, this.frontWater], {opacity : 0})
+        gsap.set([this.background, this.frontWater], {opacity : 1})
 
 
         this.animationEls.forEach(el => {
