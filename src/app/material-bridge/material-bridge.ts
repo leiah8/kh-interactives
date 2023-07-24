@@ -76,7 +76,7 @@ export class MaterialBridgeAPI {
 
     background : SVGUseElement;
     bridge : SVGUseElement
-    boatY : number = 390;
+    boatY : number = 375; //390
 
     wholeSize : number = 1030; 
     height : number = 42;
@@ -143,7 +143,7 @@ export class MaterialBridgeAPI {
         this.smallBoat = document.createElementNS(svgns, "use")
         this.smallBoat.setAttribute("href", "#smallBoat")
         this.arena.appendChild(this.smallBoat)
-        gsap.set(this.smallBoat, { x: -300, y: this.boatY + 50 })
+        gsap.set(this.smallBoat, { x: -300, y: this.boatY + 78 })
 
         //create boat
         this.bigBoat = document.createElementNS(svgns, "use")
@@ -155,7 +155,7 @@ export class MaterialBridgeAPI {
         var water = document.createElementNS(svgns, "use")
         this.frontWater.appendChild(water)
         water.setAttribute("href", "#waterNight")
-        gsap.set(water, { x: -5, y: 683 })
+        gsap.set(water, { x: -5, y: 697 })
 
         this.setBackground()
         this.setBridge()
@@ -655,6 +655,16 @@ export class MaterialBridgeAPI {
             }
         }
 
+        // create rocks on side if double bridge
+        if (this.game.bridgeArr.length == 2) {
+            var blocks = document.createElementNS(svgns, "use")
+            blocks.setAttribute("href", "#blocks")
+            this.boat.appendChild(blocks)
+            this.animationEls.push(blocks)
+            gsap.set(blocks, { x: 0, y: 50 + 146})
+
+        }
+
 
         //create rails 
         for(var i = 0; i < this.game.bridgeArr.length; i++) {
@@ -662,11 +672,15 @@ export class MaterialBridgeAPI {
             rails.setAttribute("href", "#rails")
             this.boat.appendChild(rails)
             this.animationEls.push(rails)
-            gsap.set(rails, { x: 126, y: this.yVal -14 + (this.delta + 2)*i})
+            gsap.set(rails, { x: 46, y: this.yVal -15 + (this.delta + 2)*i})
         }
+
 
         //big boat drives off
         this.tl.to(this.bigBoat, {x : "+= 2000", duration : 3, ease : "linear"})
+
+        //fade to day 
+        this.tl.to([this.background, this.frontWater], {opacity : 0, duration : 2})
 
         //move cars 
         this.tl.to(carsTop, {x : "+= 2400", duration : 5, ease : "linear"})
