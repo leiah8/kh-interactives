@@ -1,3 +1,4 @@
+import { Power2 } from "gsap";
 import { svgns } from "../api"
 import { gsap, Back } from "gsap/all";
 
@@ -78,11 +79,11 @@ export class MaterialBridgeAPI {
     bridge : SVGUseElement
     boatY : number = 375; //390
 
-    wholeSize : number = 1030; 
-    height : number = 42;
+    wholeSize : number = 1028; 
+    height : number = 45;
     xVal : number = 125
     yVal : number //= 209
-    delta : number = 112
+    delta : number = 115
 
     animationEls : any[] //change
 
@@ -175,13 +176,13 @@ export class MaterialBridgeAPI {
         //to do : light up bridge as small boat comes in
         if (this.game.bridgeArr.length == 1) {
             this.bridge.setAttribute("href", "#bridge1")
-            gsap.set(this.bridge, { x: 0, y: 100 })
-            this.yVal = 249
+            gsap.set(this.bridge, { x: -1, y: 100 })
+            this.yVal = 247
         }
         else if (this.game.bridgeArr.length == 2) {
             this.bridge.setAttribute("href", "#bridge2")
-            gsap.set(this.bridge, { x: 0, y: 50 })
-            this.yVal = 200
+            gsap.set(this.bridge, { x: -1, y: 50 })
+            this.yVal = 197
         }
 
     }
@@ -190,8 +191,15 @@ export class MaterialBridgeAPI {
         var gs = []
 
         gIns.forEach(gIn => {
+            var arr = gIn.bridgeArr;
+            if (gIn.bridgeArr.length > 2) {
+                arr = gIn.bridgeArr.splice(0, 2)
+            }
+            if (arr[0].length == 0) arr[0] = [0]
+            if (arr[1].length == 0) arr[1] = [0]
+
             var g = {
-                bridgeArr : gIn.bridgeArr,
+                bridgeArr : arr,
                 outOfStock : gIn.outOfStock,
                 limit : gIn.limit,
                 attempts : 0,
@@ -443,13 +451,14 @@ export class MaterialBridgeAPI {
         front.setAttribute("href", "#front")
         this.boat.appendChild(front)
         // gsap.set(front, {x : 10 - 1300, y : this.boatY})
-        gsap.set(front, {x : 0, y : this.boatY})
+        gsap.set(front, {x : 10, y : this.boatY})
         this.animationEls.push(front)
         
 
 
         gsap.set(this.boat, {x : "-="+ (1300)})
-        this.tl.to([this.boat, this.bigBoat, this.smallBoat], {x : "+="+ 1300, duration : 3})
+        this.tl.to(this.smallBoat, {x : "+= " + 1300, duration : 3, ease : "linear"})
+        this.tl.to([this.boat, this.bigBoat], {x : "+="+ 1300, duration : 3, ease : "linear"}, "<1")
         this.tl.to(this.boat, {duration : 1})
 
 
@@ -500,16 +509,17 @@ export class MaterialBridgeAPI {
                     //space is smaller than the block
                     //move block and let it fall 
 
-                    this.tl.to(blocks[i].el, {x : space.xVal, y : space.yVal, duration : moveSpeed, scale : endScale})
+                    this.tl.to(blocks[i].el, {x : space.xVal, y : space.yVal, duration : moveSpeed, scale : endScale, onComplete : function() {
+                        //move block to front 
+                        self.boat.removeChild(this.targets()[0])
+                        self.boat.appendChild(this.targets()[0])
+                    }})
                     this.tl.to(blocks[i].el, {rotation : 30, ease : "linear"})
-                    this.tl.to(blocks[i].el, {rotation : 90, x :"+=" +fallenX, y : 700, ease : "linear"})
+                    this.tl.to(blocks[i].el, {rotation : 90, x :"+=" + fallenX, y : 700, ease : "linear"})
 
                     fallenX += this.height*1.6
 
-                    this.tl.to(blocks[i].el, {y : "-=" +100, duration : 1, ease : Back.easeOut.config(1.7), onComplete : function() {
-                        //bob up and down by 50 on tl2
-                        //to do: here 
-                        // self.bobBlock(blocks[i].el)
+                    this.tl.to(blocks[i].el, {y : "-=" +50, duration : 1, ease : "linear", onComplete : function() {                        
                         self.bobBlock(this.targets()[0])
                     }})
                     
@@ -595,8 +605,8 @@ export class MaterialBridgeAPI {
                     }
 
                     // this.tl.to(this.svg, {duration : 2})
-                    self.tl.to(highlights, {stroke : "#c70808",  duration : 1}) //to do: change red color
-                    self.tl.to(highlights, {stroke : "#f71e00ff",  duration : 1})
+                    self.tl.to(highlights, {stroke : "#ae002bff",  strokeWidth : "+=4", duration : 1}) //to do: change red color
+                    self.tl.to(highlights, {stroke : "#f71e00ff",  strokeWidth : "-=4", duration : 1})
                     self.tl.to(self.svg, {attr:{viewBox: "0 0 1280 720"}, duration : 1})
 
                     self.showEndGameButtons()
@@ -617,14 +627,20 @@ export class MaterialBridgeAPI {
     }
 
     bobBlock(b) {
-        this.tl2.push(gsap.timeline())
+        var self = this
+        this.tl2.push({t : gsap.timeline(), bobVal : 35})
 
         var index = this.tl2.length - 1
 
-        this.tl2[index].to(b, {y : "+="+35, ease : "linear", duration : 0.8})
-        this.tl2[index].to(b, {y : "-="+35, ease : "linear", duration : 0.8})
+        this.tl2[index].t.to(b, {y : "+="+this.tl2[index].bobVal, ease: Power2.easeInOut, duration : 1})
+        this.tl2[index].t.to(b, {y : "-="+this.tl2[index].bobVal, ease: Power2.easeInOut, duration : 1.2, onComplete : function() {
+            if (self.tl2[index].bobVal > 10)
+                self.tl2[index].bobVal -= 10
+            else if (self.tl2[index].bobVal > 5)
+            self.tl2[index].bobVal -= 5
+        }})
 
-        this.tl2[index].repeat(-1)
+        this.tl2[index].t.repeat(-1)
 
     }
 
@@ -661,7 +677,7 @@ export class MaterialBridgeAPI {
             blocks.setAttribute("href", "#blocks")
             this.boat.appendChild(blocks)
             this.animationEls.push(blocks)
-            gsap.set(blocks, { x: 0, y: 50 + 146})
+            gsap.set(blocks, { x: -1, y: 50 + 146})
 
         }
 
@@ -672,7 +688,7 @@ export class MaterialBridgeAPI {
             rails.setAttribute("href", "#rails")
             this.boat.appendChild(rails)
             this.animationEls.push(rails)
-            gsap.set(rails, { x: 46, y: this.yVal -15 + (this.delta + 2)*i})
+            gsap.set(rails, { x: 45, y: this.yVal -12 + (this.delta -1)*i})
         }
 
 

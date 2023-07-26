@@ -712,7 +712,7 @@ export class IntegerPlatfromClass {
     }
 
     moveGemWithCart(self) {
-      const xVal = Math.round(gsap.getProperty(self.cart, "x"));
+      const xVal = Math.round(Number(gsap.getProperty(self.cart, "x")));
       gsap.set(self.gem, {x : xVal + 20 - self.CART_X_DIFF})
     }
 
@@ -1077,7 +1077,7 @@ export class IntegerPlatfromClass {
     }
 
     onUpdateDrag(self) {
-        const yVal = Math.round(gsap.getProperty(self.platform, "y"));
+        const yVal = Math.round(Number(gsap.getProperty(self.platform, "y")));
         gsap.set(self.spring, {scaleY : self.getScaleVal(yVal)})
         if (self.cartOnPlatform)
           gsap.set(self.cart, {y : 300 + yVal  + self.CART_Y_DIFF})

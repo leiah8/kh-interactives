@@ -119,8 +119,8 @@ function transformDelta(from, to) {
 function coordinateTransformation(from, to) {
   const _transformDelta = transformDelta(from, to);
 
-  let _x = gsap.getProperty(from, "translateX") + _transformDelta.dx;
-  let _y = gsap.getProperty(from, "translateY") + _transformDelta.dy;
+  let _x = Number(gsap.getProperty(from, "translateX")) + _transformDelta.dx;
+  let _y = Number(gsap.getProperty(from, "translateY")) + _transformDelta.dy;
 
   return { x: _x, y: _y };
 }

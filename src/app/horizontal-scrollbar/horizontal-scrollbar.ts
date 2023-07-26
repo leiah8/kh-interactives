@@ -40,7 +40,7 @@ export class HorizontalScrollClass {
     })
 
     //set width of handle relative to line and range
-    let size = (gsap.getProperty(setup.line, "width") / (Number(setup.lineMax) - Number(setup.lineMin))) * Number(setup.rangeNum) 
+    let size = (Number(gsap.getProperty(setup.line, "width")) / (Number(setup.lineMax) - Number(setup.lineMin))) * Number(setup.rangeNum) 
     gsap.set(setup.handle, {width : size, x : 0})
 
     //set text
@@ -64,8 +64,8 @@ export class HorizontalScrollClass {
     */
 
     //clicking on line
-    let minX = gsap.getProperty(setup.clickArea, "x")
-    let maxX = minX + gsap.getProperty(setup.clickArea, "width")
+    let minX = Number(gsap.getProperty(setup.clickArea, "x"))
+    let maxX = minX + (Number(gsap.getProperty(setup.clickArea, "width")))
 
     let clickAreaX = (setup.clickArea as any as SVGGraphicsElement).getBoundingClientRect().x
     let clickAreaW = (setup.clickArea as any as SVGGraphicsElement).getBoundingClientRect().width
