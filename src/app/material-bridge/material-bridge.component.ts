@@ -42,28 +42,43 @@ export class MaterialBridgeComponent implements AfterViewInit {
     }
 
     const g0 = {
-      bridgeArr : [[1,0,0,1], [1, 0]]
+      bridgeArr : [[1,1,1,0]]
 
     } as GameInput
 
     const g1 = {
-      bridgeArr : [[1, 0, 1, 0]]
+      bridgeArr : [[0,0,1,0]]
 
     } as GameInput
 
     const g2 = {
-      bridgeArr : [[0,0,0,1], [1, 0, 0, 0]]
+      bridgeArr : [[0,0,0,1,1,1]]
 
     } as GameInput
 
     const g3 = {
-      bridgeArr : [[0,1], []]
+      bridgeArr : [[1,1,0], [1,0,1]]
+
+    } as GameInput
+
+    const g4 = {
+      bridgeArr : [[1,1,0,0], [1,0]]
+
+    } as GameInput
+
+    const g5 = {
+      bridgeArr : [[1,1,0], [1,0]]
+
+    } as GameInput
+    
+    const g6 = {
+      bridgeArr : [[1,1,0,1,0,0], [1,0]]
 
     } as GameInput
 
 
 
-    const interactive = new MaterialBridgeAPI(setup, [g3, g0, g2])
+    const interactive = new MaterialBridgeAPI(setup, [g0, g1, g2, g3, g4, g5, g6])
 
 
   }

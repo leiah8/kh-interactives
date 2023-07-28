@@ -93,6 +93,7 @@ export class MaterialBridgeAPI {
     targets : any[] //change 
 
     spaces : Space[]
+    ogSpaces : Space[]
     originalSpaces : Space[]
     blocks : Block[]
 
@@ -125,6 +126,7 @@ export class MaterialBridgeAPI {
 
         this.spaces = []
         this.blocks = []
+        this.ogSpaces = []
 
         this.tl = gsap.timeline()
         this.tl2 = []
@@ -194,16 +196,19 @@ export class MaterialBridgeAPI {
 
     }
 
-    createGames(gIns) {
+    createGames(gIns : GameInput[]) {
         var gs = []
 
         gIns.forEach(gIn => {
             var arr = gIn.bridgeArr;
-            if (gIn.bridgeArr.length > 2) {
+            if (arr.length > 2) {
                 arr = gIn.bridgeArr.splice(0, 2)
             }
+            else if (arr.length == 0) {
+                arr = [[0]]
+            }
             if (arr[0].length == 0) arr[0] = [0]
-            if (arr[1].length == 0) arr[1] = [0]
+            if (arr.length > 1 && arr[1].length == 0) arr[1] = [0]
 
             var g = {
                 bridgeArr : arr,
@@ -233,23 +238,10 @@ export class MaterialBridgeAPI {
         //rotate between the different bridges
         for(var i = 0; i < this.game.bridgeArr.length; i++) {
             //rotate between the different spaces 
-            
             var l = this.game.bridgeArr[i].length
             for(var j = 0; j < this.game.bridgeArr[i].length; j++) {
-
-                
                 if (this.game.bridgeArr[i][j] <= 0) {
-                    //space 
-                    // gsap.set(smallRect, {fill : "#ffffff", fillOpacity : 0.01})
-
-                    // var temp = Object.assign(smallRect, {
-                    //     num : count,
-                    //     size : 1/l,
-                    //     board : i,
-                    //     xVal : xVal + (self.wholeSize/l)*j,
-                    //     yVal : yVal + i*delta,
-
-                    // }) as Space
+                    //space
                     
                     var temp = {
                         num : count,
@@ -257,15 +249,14 @@ export class MaterialBridgeAPI {
                         board : i,
                         xVal : xVal + (self.wholeSize/l)*j,
                         yVal : yVal + i*delta,
-
                     }  
                     this.spaces.push(temp)
                 }
-
                 count++;
-
             }
         }
+
+        this.ogSpaces = this.spaces
 
 
         //combine the spaces
@@ -826,9 +817,9 @@ export class MaterialBridgeAPI {
 
         //blocks fall
 
-        for(var i = 0; i < this.spaces.length; i++) {
+        for(var i = 0; i < this.ogSpaces.length; i++) {
                 
-            var space = this.spaces[i]
+            var space = this.ogSpaces[i]
             var fallBlock = document.createElementNS(svgns, 'rect')
             this.boat.appendChild(fallBlock)
             gsap.set(fallBlock, {x : space.xVal, y : space.yVal, height : this.height, width : this.wholeSize*space.size, fill : "#ed5f0c", rx : 2, stroke : "#f71e00ff", strokeWidth : 4})
@@ -842,11 +833,11 @@ export class MaterialBridgeAPI {
             self.bobBlock(self.fallingBlocks)
         }})
 
-        this.tl.to(this.fallingBlocks, {x : 1300, duration : 8, ease : "linear"})
+        this.tl.to(this.fallingBlocks, {x : "+="+1300, duration : 8, ease : "linear"})
 
     
         //move in little boat 
-        this.tl.to(this.smallBoat, {x : 30, duration : 2, ease : "linear"}, "<3")
+        this.tl.to(this.smallBoat, {x : 30, duration : 2, ease : "linear"}, "<4")
 
 
     }
