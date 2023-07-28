@@ -1,6 +1,7 @@
 import { Power2 } from "gsap";
 import { svgns } from "../api"
-import { gsap, Back } from "gsap/all";
+import { gsap } from "gsap/all";
+
 
 
 export interface GameInput {
@@ -71,6 +72,7 @@ export class MaterialBridgeAPI {
     boat : HTMLElement;
 
     frontWater : HTMLElement;
+    lightning : HTMLElement;
 
     bigBoat : SVGUseElement;
     smallBoat : SVGUseElement;
@@ -96,6 +98,8 @@ export class MaterialBridgeAPI {
 
     finishedAttempt : boolean;
 
+    fallingBlocks : SVGRectElement[]
+
     tl : any
     tl2 : any
 
@@ -112,6 +116,7 @@ export class MaterialBridgeAPI {
         this.orderBtn = setup.orderBtn
         this.boat = setup.boat
         this.frontWater  = setup.frontWater
+        this.lightning  = setup.lightning
 
         this.targets = []
         this.retryBtn = setup.retryBtn
@@ -125,6 +130,8 @@ export class MaterialBridgeAPI {
         this.tl2 = []
 
         this.finishedAttempt = false;
+
+        this.fallingBlocks = []
         
 
         this.init()
@@ -412,6 +419,17 @@ export class MaterialBridgeAPI {
         this.game.attempts++;
         this.finishedAttempt = true
 
+        //remove fallen blocks 
+        this.fallingBlocks.forEach(b => {
+            self.boat.removeChild(b)
+        });
+        this.fallingBlocks = []
+
+        this.tl2.forEach(el => {
+            el.t.clear()
+        });
+        this.tl2 = []
+
         gsap.set(this.input, {visibility : "hidden"})
 
         var size = this.order.size
@@ -631,7 +649,6 @@ export class MaterialBridgeAPI {
         this.tl2.push({t : gsap.timeline(), bobVal : 35})
 
         var index = this.tl2.length - 1
-
         this.tl2[index].t.to(b, {y : "+="+this.tl2[index].bobVal, ease: Power2.easeInOut, duration : 1})
         this.tl2[index].t.to(b, {y : "-="+this.tl2[index].bobVal, ease: Power2.easeInOut, duration : 1.2, onComplete : function() {
             if (self.tl2[index].bobVal > 10)
@@ -739,14 +756,43 @@ export class MaterialBridgeAPI {
     }
 
     startAnimation() {
+        var self = this
 
         gsap.set(this.input, {visibility : "hidden"})
 
+        //make blocks
+
+        // lightning bolt (to do: make stroke thingy)
+        gsap.set(this.lightning, {scale : 0, opacity : 1, transformOrigin : "top right"})
+        this.tl.to(this.lightning, {duration : 1})
+
+        this.tl.to(this.lightning, {scale : 1, duration : 0.1})
+        this.tl.to(this.lightning, {opacity : 0, duration : 0.8})
+
+        //blocks fall
+
+        for(var i = 0; i < this.spaces.length; i++) {
+                
+            var space = this.spaces[i]
+            var fallBlock = document.createElementNS(svgns, 'rect')
+            this.boat.appendChild(fallBlock)
+            gsap.set(fallBlock, {x : space.xVal, y : space.yVal, height : this.height, width : this.wholeSize*space.size, fill : "#ed5f0c", rx : 2, stroke : "#f71e00ff", strokeWidth : 4})
+            
+            this.fallingBlocks.push(fallBlock)
+
+        }
+
+        this.tl.to(this.fallingBlocks, {y : 700, ease : Power2.easeInOut, duration : 1.2})
+        this.tl.to(this.fallingBlocks, {y : "-=" +50, duration : 1, ease : "linear", onComplete : function() {                        
+            self.bobBlock(self.fallingBlocks)
+        }})
+
+        this.tl.to(this.fallingBlocks, {x : 1300, duration : 8, ease : "linear"})
+
     
-
-        this.tl.to(this.smallBoat, {x : 30, duration : 2, ease : "linear"})
-
         //move in little boat 
+        this.tl.to(this.smallBoat, {x : 30, duration : 2, ease : "linear"}, "<3")
+
 
     }
 
