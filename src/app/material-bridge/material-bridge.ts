@@ -1,4 +1,4 @@
-import { Power2 } from "gsap";
+import { Power2, Power1 } from "gsap";
 import { svgns } from "../api"
 import { gsap } from "gsap/all";
 
@@ -151,7 +151,7 @@ export class MaterialBridgeAPI {
         this.smallBoat = document.createElementNS(svgns, "use")
         this.smallBoat.setAttribute("href", "#smallBoat")
         this.arena.appendChild(this.smallBoat)
-        gsap.set(this.smallBoat, { x: -300, y: this.boatY + 78 })
+        gsap.set(this.smallBoat, { x: -400, y: this.boatY + 78 })
 
         //create boat
         this.bigBoat = document.createElementNS(svgns, "use")
@@ -562,7 +562,7 @@ export class MaterialBridgeAPI {
             if (check && spaceIndex == this.spaces.length) {
                 console.log("yay")
                 this.game.complete = true
-                //TO DO: cars driving accross for success animation
+                //cars driving accross for success animation
                 this.tl.to(this.boat, {duration : 0, onComplete : function() {
                     self.boat.removeChild(front)
                     self.animationEls.splice(self.animationEls.length-1, 1)
@@ -623,7 +623,7 @@ export class MaterialBridgeAPI {
                     }
 
                     // this.tl.to(this.svg, {duration : 2})
-                    self.tl.to(highlights, {stroke : "#ae002bff",  strokeWidth : "+=4", duration : 1}) //to do: change red color
+                    self.tl.to(highlights, {stroke : "#ae002bff",  strokeWidth : "+=4", duration : 1}) 
                     self.tl.to(highlights, {stroke : "#f71e00ff",  strokeWidth : "-=4", duration : 1})
                     self.tl.to(self.svg, {attr:{viewBox: "0 0 1280 720"}, duration : 1})
 
@@ -634,7 +634,51 @@ export class MaterialBridgeAPI {
                 
             }
             else {
+                //to do: move extra blocks to top of bridge
+                // have cars bump into them
+
+                var car = document.createElementNS(svgns, "use")
+               
+
+                console.log(finalBlock)
+                var yDiff = this.boatY + 220 - (this.yVal - this.height)
+                var xDiff = ogX - this.xVal
+
+                this.tl.to(blocks[0].el, {duration : moveSpeed, onStart : function() {
+                    for(var i = finalBlock - 1; i >= 0; i--) {
+                        //re-add blocks to the front 
+                        self.boat.removeChild(blocks[i].el)
+                        self.boat.appendChild(blocks[i].el)
+                    }
+                    
+                    //create a single car 
+                    var carYVal = self.yVal - 52
+                    var carsTop = []
+                
+                    car.setAttribute("href", "#car")
+                    self.boat.appendChild(car)
+                    self.animationEls.push(car)
+                    carsTop.push(car)
+                    gsap.set(car, { x: -200, y: carYVal})
+
+                    var rails = document.createElementNS(svgns, "use")
+                    rails.setAttribute("href", "#rails")
+                    self.boat.appendChild(rails)
+                    self.animationEls.push(rails)
+                    gsap.set(rails, { x: 45, y: self.yVal -12})
+                }})
+
+                for(var i = finalBlock - 1; i >= 0; i--) {
+                    this.tl.to(blocks[i].el, {y : "-="+yDiff, x : "-="+xDiff, duration : moveSpeed}, "<")
+                }
+
+
+                this.tl.to(car, {x : this.xVal - 118, duration : 1.5, ease : Power1.easeIn})
+                this.tl.to(car, {x : "-="+50, duration : 1, ease : Power1.easeOut})
+                //118 = car width???
+
                 this.showEndGameButtons()
+                
             }
         }
         else {
@@ -762,12 +806,23 @@ export class MaterialBridgeAPI {
 
         //make blocks
 
-        // lightning bolt (to do: make stroke thingy)
-        gsap.set(this.lightning, {scale : 0, opacity : 1, transformOrigin : "top right"})
-        this.tl.to(this.lightning, {duration : 1})
+        // lightning bolt
+        var allPathInfo = []
+        var allPaths = this.lightning.childNodes
 
-        this.tl.to(this.lightning, {scale : 1, duration : 0.1})
-        this.tl.to(this.lightning, {opacity : 0, duration : 0.8})
+        allPaths.forEach(p => {
+            allPathInfo.push({path : p, length : (p as SVGPathElement).getTotalLength()})
+        });
+        allPathInfo.forEach(el => {
+            gsap.set(el.path, {opacity : 1, strokeDasharray : el.length, strokeDashoffset : el.length})
+        });
+
+        this.tl.to(allPaths, {duration : 1})
+        this.tl.to(allPaths, {duration : 0.3})
+        allPathInfo.forEach(el => {
+            this.tl.to(el.path, {strokeDashoffset : 0, duration : 0.2}, "<")
+        });
+        this.tl.to(allPaths, {opacity : 0, duration : 0.8})
 
         //blocks fall
 
@@ -782,7 +837,7 @@ export class MaterialBridgeAPI {
 
         }
 
-        this.tl.to(this.fallingBlocks, {y : 700, ease : Power2.easeInOut, duration : 1.2})
+        this.tl.to(this.fallingBlocks, {y : 700, ease : Power2.easeInOut, duration : 1.2}, "<")
         this.tl.to(this.fallingBlocks, {y : "-=" +50, duration : 1, ease : "linear", onComplete : function() {                        
             self.bobBlock(self.fallingBlocks)
         }})
@@ -804,7 +859,7 @@ export class MaterialBridgeAPI {
         this.finishedAttempt = false
 
         gsap.set(this.bigBoat, { x: 10 - 1300})
-        gsap.set(this.smallBoat, { x: -300})
+        gsap.set(this.smallBoat, { x: -400})
 
         //fade to day 
         gsap.set([this.background, this.frontWater], {opacity : 1})
