@@ -126,7 +126,7 @@ export class MaterialBridgeAPI {
 
         this.spaces = []
         this.blocks = []
-        this.ogSpaces = []
+        this.ogSpaces;
 
         this.tl = gsap.timeline()
         this.tl2 = []
@@ -256,7 +256,7 @@ export class MaterialBridgeAPI {
             }
         }
 
-        this.ogSpaces = this.spaces
+        this.ogSpaces = JSON.parse(JSON.stringify(this.spaces)); 
 
 
         //combine the spaces
@@ -816,13 +816,13 @@ export class MaterialBridgeAPI {
         this.tl.to(allPaths, {opacity : 0, duration : 0.8})
 
         //blocks fall
-
-        for(var i = 0; i < this.ogSpaces.length; i++) {
+        //to do: ogSPaces not working
+        for(var i = 0; i < this.spaces.length; i++) {
                 
-            var space = this.ogSpaces[i]
+            var space = this.spaces[i]
             var fallBlock = document.createElementNS(svgns, 'rect')
             this.boat.appendChild(fallBlock)
-            gsap.set(fallBlock, {x : space.xVal, y : space.yVal, height : this.height, width : this.wholeSize*space.size, fill : "#ed5f0c", rx : 2, stroke : "#f71e00ff", strokeWidth : 4})
+            gsap.set(fallBlock, {x : space.xVal, y : space.yVal, height : this.height, width : this.wholeSize*space.size, fill : "#e74c00ff", rx : 2, stroke : "#f71e00ff", strokeWidth : 4})
             
             this.fallingBlocks.push(fallBlock)
 
