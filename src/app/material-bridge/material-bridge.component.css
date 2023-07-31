@@ -28,11 +28,14 @@ body {
     /* width : 900px; */
     width : 100vh;
     grid-gap: 1vh;
-    grid-template-columns: 1vh 3fr 3fr 3fr; /* PROBLEM HERE */
+    grid-template-columns: 3fr 3fr 3fr; /* PROBLEM HERE */
     font-family : "Poppins";
     font-size : 3vh;
-    color : #3c78d8
+    color : #3c78d8;
+
+    place-items: center;
 }
+
 
 .btn {
     width : 14vh;

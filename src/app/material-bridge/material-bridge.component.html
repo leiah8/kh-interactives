@@ -341,11 +341,6 @@ xmlns:svg="http://www.w3.org/2000/svg">
     </div>
 
     <div class="input-info"> 
-        <div></div>
-        <div>
-            <label for="Pieces">Pieces: </label> 
-            <input #inputPieces type="number" id="numbers" class = "nums" name="numbers" min="0" max="20">
-        </div>
         
         <div>
             <label for="Size">Size: </label> 
@@ -362,7 +357,27 @@ xmlns:svg="http://www.w3.org/2000/svg">
             </select>
         </div>
 
+        <div>
+          <label for="Pieces">Pieces: </label> 
+          <!-- <input #inputPieces type="number" id="numbers" class = "nums" name="numbers" min="0" max="20"> -->
+          <select #inputPieces name="Pieces" id="sizes" class="sizes"> 
+            <option value=1>1</option> 
+            <option value=2>2</option> 
+            <option value=3>3</option> 
+            <option value=4>4</option> 
+            <option value=5>5</option> 
+            <option value=6>6</option> 
+            <option value=7>7</option> 
+            <option value=8>8</option> 
+            <option value=9>9</option> 
+            <option value=10>10</option> 
+            
+        </select>
+        </div>
+
+        <div>
         <button #orderBtn class="btn">Order</button>
+        </div>
     </div>
 </div>
 </body>
