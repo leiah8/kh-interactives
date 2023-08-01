@@ -606,7 +606,8 @@ export class MaterialBridgeAPI {
                             self.boat.removeChild(blocks[i].el)
                             self.boat.appendChild(blocks[i].el)
                         }
-
+                    },
+                    onComplete : function() {
                         //create a single car 
                         var carYVal = self.yVal - 52
                         var carsTop = []
@@ -626,7 +627,12 @@ export class MaterialBridgeAPI {
                 })
 
                 for (var i = finalBlock - 1; i >= 0; i--) {
-                    this.tl.to(blocks[i].el, { y: "-=" + yDiff, x: "-=" + xDiff, duration: moveSpeed }, "<")
+                    this.tl.to(blocks[i].el, { y: "-=" + (yDiff + 20), x: "-=" + xDiff, duration: moveSpeed }, "<")
+                }
+
+                this.tl.to(blocks[0].el, { duration : moveSpeed / 2})
+                for (var i = finalBlock - 1; i >= 0; i--) {
+                    this.tl.to(blocks[i].el, { y: "+=" + 20, duration: moveSpeed /2 }, "<")
                 }
 
                 //big boat drives off
