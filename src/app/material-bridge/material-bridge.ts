@@ -584,7 +584,7 @@ export class MaterialBridgeAPI {
                         self.tl.to(self.svg, { attr: { viewBox: "0 0 1280 720" }, duration: 1 })
 
                         //big boat drives off
-                        self.tl.to(self.bigBoat, { x: "+= 2000", duration: 3, ease: "linear" })
+                        self.tl.to([self.bigBoat, front], { x: "+= 2000", duration: 3, ease: "linear" })
 
 
                         self.showEndGameButtons()
@@ -608,6 +608,7 @@ export class MaterialBridgeAPI {
                         }
                     },
                     onComplete : function() {
+
                         //create a single car 
                         var carYVal = self.yVal - 52
                         var carsTop = []
@@ -637,7 +638,6 @@ export class MaterialBridgeAPI {
 
                 //big boat drives off
                 self.tl.to([self.bigBoat, front], { x: "+= 2000", duration: 3, ease: "linear" })
-                //self.boat.removeChild(front)
 
 
                 this.tl.to(car, { x: this.xVal - 118, duration: 1.5, ease: Power1.easeIn })
