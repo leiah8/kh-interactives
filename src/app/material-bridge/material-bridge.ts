@@ -581,6 +581,10 @@ export class MaterialBridgeAPI {
 
                         self.tl.to(highlights, { stroke: "#ae002bff", strokeWidth: "+=4", duration: 1 })
                         self.tl.to(highlights, { stroke: "#f71e00ff", strokeWidth: "-=4", duration: 1 })
+                        // self.tl.to(highlights, { stroke: "#ae002bff", duration: 1, onUpdate : function() {
+                        //     gsap.set(highlights, {strokeWidth : "+="+ 0.5})
+                        // } })
+                        // self.tl.to(highlights, { stroke: "#f71e00ff", duration: 1 })
                         self.tl.to(self.svg, { attr: { viewBox: "0 0 1280 720" }, duration: 1 })
 
                         //big boat drives off

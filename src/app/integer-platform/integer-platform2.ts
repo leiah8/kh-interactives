@@ -382,7 +382,7 @@ export class IntegerPlatfromClass {
         //add button
         var addBtn = document.createElementNS(svgns,"use")
         this.controls.appendChild(addBtn)
-        addBtn.setAttribute("href","#addBtn")
+        addBtn.setAttribute("href","#editBtn")
         gsap.set(addBtn, {x : 840, y : 10})
         gsap.set(addBtn, {transformOrigin : "35px 35px"})
         this.addBtn = addBtn
@@ -720,6 +720,9 @@ export class IntegerPlatfromClass {
         var self = this
         this.editing = true;
         this.canReset = false
+        //https://res.cloudinary.com/dxltpgop9/image/upload/v1683837962/minecart/integer-platform-plus_pleui4.svg
+        this.addBtn.setAttribute("href","#addBtn")
+        gsap.set(self.addBtn, {})
         this.setPlusBtn()
         gsap.set([self.cover, self.inputBtns, self.inputNums], {visibility : "visible"})
         self.canEdit = false;
@@ -730,6 +733,7 @@ export class IntegerPlatfromClass {
         this.editing = false;
         this.canPlay = true
         this.canReset = true
+        this.addBtn.setAttribute("href","#editBtn")
         gsap.set([self.cover, self.inputBtns, self.inputNums], {visibility : "hidden"})
         
         //remove empty terms (for some reason needs to run twice)
