@@ -3,6 +3,14 @@
     width : auto
 }
 
+.usability {
+    height : 100vh;
+    width : auto;
+    position : absolute;
+    top :0;
+    left : 0;
+}
+
 body {
     display : grid;
     grid-template-columns: 0px;
@@ -81,6 +89,17 @@ body {
     padding-bottom: 10vh;
     top: 2vh;
     left: 165vh;  
+    position: absolute;
+  }
+
+
+  .helpBtn {
+    background-image: url("https://res.cloudinary.com/dxltpgop9/image/upload/v1691007530/help-btn_uqsjvd.svg");
+    background-size: cover;
+    width: 10vh;
+    padding-bottom: 10vh;
+    top: 2vh;
+    left: 2vh;  
     position: absolute;
   }
 
