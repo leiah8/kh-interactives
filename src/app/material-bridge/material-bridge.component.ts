@@ -60,7 +60,9 @@ export class MaterialBridgeComponent implements AfterViewInit {
     }
 
     const g0 = {
-      bridgeArr : [[1,1,1,0]]
+      bridgeArr : [[1,1,1,0]],
+      limitedFractions : [1,4,5,6],
+      limits : [3,4,4,8],
 
     } as GameInput
 

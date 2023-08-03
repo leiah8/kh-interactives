@@ -5,14 +5,14 @@ import { svgns } from "../api"
 
 export interface GameInput {
     bridgeArr: number[][];
-    outOfStock: number[];
-    limit: number
+    limitedFractions: number[];
+    limits: number[]
 }
 
 interface Game extends GameInput {
     bridgeArr: number[][];
-    outOfStock: number[];
-    limit: number;
+    limitedFractions: number[];
+    limits: number[];
 
     attempts: number;
     complete: boolean
@@ -92,7 +92,8 @@ export class MaterialBridgeAPI {
     tl2: any[]
     pointer: SVGUseElement;
     helpBtn : HTMLElement;
-    help : boolean
+    help : boolean;
+    canOrder : boolean;
 
     constructor(setup, games) {
         this.arena = setup.arena
@@ -128,6 +129,8 @@ export class MaterialBridgeAPI {
         this.usability = setup.usability
         this.helpBtn = setup.helpBtn
         this.help = setup.help
+
+        this.canOrder = true
 
 
         this.init()
@@ -168,7 +171,6 @@ export class MaterialBridgeAPI {
         this.setupTargets()
         this.setupButtons()
 
-        // this.setupUsability() //to do: here
         if(this.help)
             this.setupUsability()
         else
@@ -213,8 +215,8 @@ export class MaterialBridgeAPI {
 
             var g = {
                 bridgeArr: arr,
-                outOfStock: gIn.outOfStock,
-                limit: gIn.limit,
+                limitedFractions: gIn.limitedFractions,
+                limits: gIn.limits,
                 attempts: 0,
                 complete: false
             } as Game
@@ -379,16 +381,43 @@ export class MaterialBridgeAPI {
                 self.currentImg.setAttribute("href", "#seventh")
             else if (val == 0.125)
                 self.currentImg.setAttribute("href", "#eighth")
+
+
+            self.checkStock()
+        }
+
+        this.inputPieces.onchange = function() {
+            self.checkStock()
         }
 
 
         this.orderBtn.onpointerdown = function (e) {
-            if (!self.finishedAttempt) {
+            if (!self.finishedAttempt && self.canOrder) {
                 self.order = { num: 0, size: Number(self.inputSize.value), pieces: Number(self.inputPieces.value) }
                 self.playAnimation()
             }
 
         }
+    }
+
+    checkStock() {
+        if(!this.help) return 
+        var fraction = this.inputSize.selectedIndex + 1
+        var pieces = this.inputPieces.value
+
+        var i = this.game.limitedFractions.indexOf(fraction)
+
+        if(Number(pieces) > this.game.limits[i]) {
+            //cannot order 
+            console.log("nope")
+            gsap.set(this.orderBtn, {backgroundColor : "#aaaaaa", borderColor : "#aaaaaa"})
+            this.canOrder = false
+        }
+        else {
+            gsap.set(this.orderBtn, {backgroundColor : "#22c060", borderColor : "#22c060"})
+            this.canOrder = true
+        }
+
     }
 
 
@@ -527,7 +556,7 @@ export class MaterialBridgeAPI {
 
                     notFilledExtras = true
 
-                    break; //to do: change feedback anim here
+                    break; 
                 }
             }
 
