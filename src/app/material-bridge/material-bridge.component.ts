@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { MaterialBridgeAPI, GameInput } from './material-bridge';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -23,8 +24,17 @@ export class MaterialBridgeComponent implements AfterViewInit {
 
   @ViewChild("usability") public usability?: ElementRef<HTMLElement>;
   @ViewChild("helpBtn") public helpBtn?: ElementRef<HTMLElement>;
+
+  help : boolean
   
-  constructor() { }
+  // constructor() { }
+
+  constructor(private route: ActivatedRoute) {
+    var p;
+    this.route.params.subscribe( params => p = params);
+
+    this.help = (p.help == "help") ? true : false
+  }
 
   ngAfterViewInit(): void {
 
@@ -43,7 +53,9 @@ export class MaterialBridgeComponent implements AfterViewInit {
       lightning : this.lightning.nativeElement,
 
       usability : this.usability.nativeElement,
-      helpBtn : this.helpBtn.nativeElement
+      helpBtn : this.helpBtn.nativeElement,
+
+      help : this.help
 
     }
 

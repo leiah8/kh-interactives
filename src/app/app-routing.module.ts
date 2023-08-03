@@ -25,6 +25,7 @@ const routes: Routes = [
   { path: 'zoomplanets', component: ZoomPlanetsComponent },
   { path: 'textureswap', component: TextureSwapComponent },
   { path: 'materialbridge', component: MaterialBridgeComponent },
+  { path: 'materialbridge/:help', component: MaterialBridgeComponent },
   
 ]
 

@@ -92,6 +92,7 @@ export class MaterialBridgeAPI {
     tl2: any[]
     pointer: SVGUseElement;
     helpBtn : HTMLElement;
+    help : boolean
 
     constructor(setup, games) {
         this.arena = setup.arena
@@ -126,6 +127,7 @@ export class MaterialBridgeAPI {
 
         this.usability = setup.usability
         this.helpBtn = setup.helpBtn
+        this.help = setup.help
 
 
         this.init()
@@ -166,7 +168,11 @@ export class MaterialBridgeAPI {
         this.setupTargets()
         this.setupButtons()
 
-        this.setupUsability()
+        // this.setupUsability() //to do: here
+        if(this.help)
+            this.setupUsability()
+        else
+            gsap.set([this.usability, this.helpBtn], {visibility : "hidden"})
 
         this.startAnimation();
     }
