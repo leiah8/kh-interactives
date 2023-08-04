@@ -26,6 +26,42 @@ export class MaterialBridgeComponent implements AfterViewInit {
   @ViewChild("helpBtn") public helpBtn?: ElementRef<HTMLElement>;
 
   help : boolean
+  games : GameInput[]
+
+  g1 : GameInput = {
+    upperBridge : null,
+    lowerBridge : [0,1],
+    fractionRange : [2,8],
+    limits : [[2,1],[8,3]],
+  }
+
+  g2 : GameInput = {
+    upperBridge : null,
+    lowerBridge : [0,1,1],
+    fractionRange : [4,9],
+    limits : [[9,2]],
+  }
+
+  g3 : GameInput = {
+    upperBridge : [0,1],
+    lowerBridge : [0,1,1],
+    fractionRange : [1,8],
+    limits : [],
+  }
+
+  g4 : GameInput = {
+    upperBridge : [0,1,1],
+    lowerBridge : [0,0,1],
+    fractionRange : [1,8],
+    limits : [],
+  }
+
+  g5 : GameInput = {
+    upperBridge : [1,0],
+    lowerBridge : [0,1,0],
+    fractionRange : [1,8],
+    limits : [],
+  }
   
   // constructor() { }
 
@@ -34,6 +70,13 @@ export class MaterialBridgeComponent implements AfterViewInit {
     this.route.params.subscribe( params => p = params);
 
     this.help = (p.help == "help") ? true : false
+
+    if(p.game == "g1") this.games = [this.g1]
+    else if (p.game == "g2") this.games = [this.g2]
+    else if (p.game == "g3") this.games = [this.g3]
+    else if (p.game == "g4") this.games = [this.g4]
+    else if (p.game == "g5") this.games = [this.g5]
+    else this.games = [this.g1, this.g2, this.g3, this.g4, this.g5]
   }
 
   ngAfterViewInit(): void {
@@ -96,44 +139,10 @@ export class MaterialBridgeComponent implements AfterViewInit {
 
     // } as GameInput
 
-    const g1 = {
-      lowerBridge : [0,1],
-      fractionRange : [2,8],
-      limits : [[2,1],[8,3]],
-    }
-
-    const g2 = {
-      lowerBridge : [0,1,1],
-      fractionRange : [4,9],
-      limits : [[9,2]],
-    }
-
-    //to do: add ninths
-
-    const g3 = {
-      upperBridge : [0,1],
-      lowerBridge : [0,1,1],
-      fractionRange : [1,8],
-      limits : [],
-    }
-
-    const g4 = {
-      upperBridge : [0,1,1],
-      lowerBridge : [0,0,1],
-      fractionRange : [1,8],
-      limits : [],
-    }
-
-    const g5 = {
-      upperBridge : [1,0],
-      lowerBridge : [0,1,0],
-      fractionRange : [1,8],
-      limits : [],
-    }
 
 
 
-    const interactive = new MaterialBridgeAPI(setup, [g1, g2, g3, g4, g5])
+    const interactive = new MaterialBridgeAPI(setup, this.games)
 
 
   }

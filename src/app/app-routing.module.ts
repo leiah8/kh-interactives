@@ -24,8 +24,10 @@ const routes: Routes = [
   { path: 'multtable', component: MultiplicationTableComponent },
   { path: 'zoomplanets', component: ZoomPlanetsComponent },
   { path: 'textureswap', component: TextureSwapComponent },
+
   { path: 'materialbridge', component: MaterialBridgeComponent },
-  { path: 'materialbridge/:help', component: MaterialBridgeComponent },
+  { path: 'materialbridge/:game/:help', component: MaterialBridgeComponent },
+  { path: 'materialbridge/:game', component: MaterialBridgeComponent },
   
 ]
 
