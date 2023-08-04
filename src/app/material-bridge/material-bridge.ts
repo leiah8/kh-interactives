@@ -457,9 +457,11 @@ export class MaterialBridgeAPI {
 
 
         //remove all current options (to do)
-        for(var i = 0; i < this.inputSize.options.length; i++) {
-            this.inputSize.remove(i)
-        }
+        // for(var i = 0; i < this.inputSize.options.length; i++) {
+        //     this.inputSize.remove(i)
+        // }
+        // console.log(this.inputSize.options)
+        this.inputSize.innerHTML = "";
         
         for(var i = this.game.fractionRange[0]; i <= this.game.fractionRange[1]; i++) {
             var txt = (i == 1) ? "1" : "1/"+ (i).toString()
