@@ -4,15 +4,23 @@ import { svgns } from "../api"
 
 
 export interface GameInput {
-    bridgeArr: number[][];
-    limitedFractions: number[];
-    limits: number[]
+    // bridgeArr: number[][];
+    lowerBridge : number[];
+    upperBridge : number[];
+    fractionRange : number[]; //[ min, max ]
+    limits : number[][]
+    // limitedFractions : number[];
+    // fractions : number[]
+    // limits: number[]
 }
 
-interface Game extends GameInput {
+interface Game {
     bridgeArr: number[][];
-    limitedFractions: number[];
-    limits: number[];
+    // limitedFractions: number[];
+    // fractions : number[]
+    // limits: number[];
+    fractionRange : number[]; //[ min, max ]
+    limits :  { [key : number] : number}; //number[][]
 
     attempts: number;
     complete: boolean
@@ -202,24 +210,45 @@ export class MaterialBridgeAPI {
         var gs = []
 
         gIns.forEach(gIn => {
-            var arr = gIn.bridgeArr;
 
-            if (arr.length > 2) {
-                arr = gIn.bridgeArr.splice(0, 2)
+            //setup bridge array
+            var arr = []
+            if(gIn.upperBridge != undefined) {
+                if(gIn.upperBridge.length == 0) arr.push([0])
+                else arr.push(gIn.upperBridge)
+                
             }
-            else if (arr.length == 0) {
-                arr = [[0]]
+            if(gIn.lowerBridge != undefined) {
+                if(gIn.lowerBridge.length == 0) arr.push([0])
+                else arr.push(gIn.lowerBridge)
             }
-            if (arr[0].length == 0) arr[0] = [0]
-            if (arr.length > 1 && arr[1].length == 0) arr[1] = [0]
 
+            //setup limits dictionary
+            //turn it into a dictionary first??
+
+            var limitsDict = {}
+            for(var i = 0; i < gIn.limits.length; i++) {
+                limitsDict[gIn.limits[i][0]] = gIn.limits[i][1]
+            }
+
+            for(var i = gIn.fractionRange[0]; i <= gIn.fractionRange[1]; i++) {
+                if (limitsDict[i] == undefined){
+                    limitsDict[i] = i*2
+                }
+            }
+            
             var g = {
                 bridgeArr: arr,
-                limitedFractions: gIn.limitedFractions,
-                limits: gIn.limits,
+                // limitedFractions: gIn.limitedFractions,
+                // limits: gIn.limits,
+                fractionRange : gIn.fractionRange,
+                limits : limitsDict,
+
+
                 attempts: 0,
                 complete: false
-            } as Game
+            }
+
 
             gs.push(g)
         });
@@ -363,33 +392,32 @@ export class MaterialBridgeAPI {
         this.currentImg.setAttribute("href", "#one")
         gsap.set(this.currentImg, { x: 0, y: "1vh" })
 
+        var popup = document.createElementNS(svgns, "use")
+        this.inputImg.appendChild(popup)
+        popup.setAttribute("href", "#outOfStockPopUp")
+        gsap.set(popup, {x : "94.6vh", y : "0.4vh", visibility:"hidden"})
+
+        // var popuptext = document.createElementNS(svgns, "use")
+        // this.inputImg.appendChild(popuptext)
+        // popuptext.setAttribute("href", "#popuptext")
+        // gsap.set(popuptext, {x : "80vh", y : "-10vh", visibility:"visible"})
+
+        popup.onpointerdown = function() {
+            window.alert("This piece is out of stock")
+        }
+
+        this.setupSizes()
+
+
         this.inputSize.onchange = function (e) {
             var val = Number(self.inputSize.value)
-            if (val == 1)
-                self.currentImg.setAttribute("href", "#one")
-            else if (val == 0.5)
-                self.currentImg.setAttribute("href", "#half")
-            else if (val == 0.333)
-                self.currentImg.setAttribute("href", "#third")
-            else if (val == 0.25)
-                self.currentImg.setAttribute("href", "#fourth")
-            else if (val == 0.2)
-                self.currentImg.setAttribute("href", "#fifth")
-            else if (val == 0.1666)
-                self.currentImg.setAttribute("href", "#sixth")
-            else if (val == 0.14286)
-                self.currentImg.setAttribute("href", "#seventh")
-            else if (val == 0.125)
-                self.currentImg.setAttribute("href", "#eighth")
-
-
-            self.checkStock()
+            self.changeSizeImg(val)
+            self.checkStock(popup)
         }
 
         this.inputPieces.onchange = function() {
-            self.checkStock()
+            self.checkStock(popup)
         }
-
 
         this.orderBtn.onpointerdown = function (e) {
             if (!self.finishedAttempt && self.canOrder) {
@@ -400,22 +428,77 @@ export class MaterialBridgeAPI {
         }
     }
 
-    checkStock() {
-        if(!this.help) return 
-        var fraction = this.inputSize.selectedIndex + 1
+    changeSizeImg(val) {
+        if (val == 1)
+            this.currentImg.setAttribute("href", "#one")
+        else if (val == 0.5)
+            this.currentImg.setAttribute("href", "#half")
+        else if (val == 0.33333)
+            this.currentImg.setAttribute("href", "#third")
+        else if (val == 0.25)
+            this.currentImg.setAttribute("href", "#fourth")
+        else if (val == 0.2)
+            this.currentImg.setAttribute("href", "#fifth")
+        else if (val == 0.16667)
+            this.currentImg.setAttribute("href", "#sixth")
+        else if (val == 0.14286)
+            this.currentImg.setAttribute("href", "#seventh")
+        else if (val == 0.125)
+            this.currentImg.setAttribute("href", "#eighth")
+        else if (val == 0.11111)
+            this.currentImg.setAttribute("href", "#ninth")
+
+    }
+
+    setupSizes() {
+
+        //use fraction range 
+        //sizes
+
+
+        //remove all current options (to do)
+        
+        for(var i = this.game.fractionRange[0]; i <= this.game.fractionRange[1]; i++) {
+            var txt = (i == 1) ? "1" : "1/"+ (i).toString()
+            var val = parseFloat((1/i).toFixed(5));
+            var op = new Option(txt, val.toString())
+
+            this.inputSize.add(op, undefined)
+        }
+
+        this.changeSizeImg(parseFloat((1/this.game.fractionRange[0]).toFixed(5)))
+
+    }
+
+    checkStock(popup) {
+        //var fraction = this.inputSize.selectedIndex + 1
+        var strFraction = this.inputSize.options[this.inputSize.selectedIndex].text
+        var fraction;
+        if (strFraction == "1") fraction = 1
+        else {
+            try {
+                fraction = Number(strFraction.slice(2))
+            }
+            catch {
+                fraction = 0
+            }
+        }
         var pieces = this.inputPieces.value
 
-        var i = this.game.limitedFractions.indexOf(fraction)
+        var lim = this.game.limits[fraction]
+        
 
-        if(Number(pieces) > this.game.limits[i]) {
+        if(Number(pieces) > lim) {
             //cannot order 
             console.log("nope")
             gsap.set(this.orderBtn, {backgroundColor : "#aaaaaa", borderColor : "#aaaaaa"})
             this.canOrder = false
+            gsap.set(popup, {visibility:"visible"})
         }
         else {
             gsap.set(this.orderBtn, {backgroundColor : "#22c060", borderColor : "#22c060"})
             this.canOrder = true
+            gsap.set(popup, {visibility:"hidden"})
         }
 
     }
@@ -909,6 +992,7 @@ export class MaterialBridgeAPI {
         this.setBridge()
 
         this.setupTargets()
+        this.setupSizes()
 
         this.reset()
 

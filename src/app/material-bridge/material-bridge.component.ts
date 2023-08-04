@@ -59,46 +59,81 @@ export class MaterialBridgeComponent implements AfterViewInit {
 
     }
 
-    const g0 = {
-      bridgeArr : [[1,1,1,0]],
-      limitedFractions : [1,4,5,6],
-      limits : [3,4,4,8],
+    // const g0 = {
+    //   bridgeArr : [[1,1,1,0]],
+    //   limitedFractions : [1,4,5,6],
+    //   limits : [3,4,4,8],
 
-    } as GameInput
+    // } as GameInput
+
+    // const g1 = {
+    //   bridgeArr : [[0,0,1,0]]
+
+    // } as GameInput
+
+    // const g2 = {
+    //   bridgeArr : [[0,0,0,1,1,1]]
+
+    // } as GameInput
+
+    // const g3 = {
+    //   bridgeArr : [[1,1,0], [1,0,1]]
+
+    // } as GameInput
+
+    // const g4 = {
+    //   bridgeArr : [[1,1,0,0], [1,0]]
+
+    // } as GameInput
+
+    // const g5 = {
+    //   bridgeArr : [[1,1,0], [1,0]]
+
+    // } as GameInput
+    
+    // const g6 = {
+    //   bridgeArr : [[1,1,0,1,0,0], [1,0]]
+
+    // } as GameInput
 
     const g1 = {
-      bridgeArr : [[0,0,1,0]]
-
-    } as GameInput
+      lowerBridge : [0,1],
+      fractionRange : [2,8],
+      limits : [[2,1],[8,3]],
+    }
 
     const g2 = {
-      bridgeArr : [[0,0,0,1,1,1]]
+      lowerBridge : [0,1,1],
+      fractionRange : [4,9],
+      limits : [[9,2]],
+    }
 
-    } as GameInput
+    //to do: add ninths
 
     const g3 = {
-      bridgeArr : [[1,1,0], [1,0,1]]
-
-    } as GameInput
+      upperBridge : [0,1],
+      lowerBridge : [0,1,1],
+      fractionRange : [1,8],
+      limits : [],
+    }
 
     const g4 = {
-      bridgeArr : [[1,1,0,0], [1,0]]
-
-    } as GameInput
+      upperBridge : [0,1,1],
+      lowerBridge : [0,0,1],
+      fractionRange : [1,8],
+      limits : [],
+    }
 
     const g5 = {
-      bridgeArr : [[1,1,0], [1,0]]
-
-    } as GameInput
-    
-    const g6 = {
-      bridgeArr : [[1,1,0,1,0,0], [1,0]]
-
-    } as GameInput
+      upperBridge : [1,0],
+      lowerBridge : [0,1,0],
+      fractionRange : [1,8],
+      limits : [],
+    }
 
 
 
-    const interactive = new MaterialBridgeAPI(setup, [g0, g1, g2, g3, g4, g5, g6])
+    const interactive = new MaterialBridgeAPI(setup, [g1, g2, g3, g4, g5])
 
 
   }
