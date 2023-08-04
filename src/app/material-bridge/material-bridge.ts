@@ -102,6 +102,7 @@ export class MaterialBridgeAPI {
     helpBtn : HTMLElement;
     help : boolean;
     canOrder : boolean;
+    popup : SVGUseElement;
 
     constructor(setup, games) {
         this.arena = setup.arena
@@ -392,17 +393,17 @@ export class MaterialBridgeAPI {
         this.currentImg.setAttribute("href", "#one")
         gsap.set(this.currentImg, { x: 0, y: "1vh" })
 
-        var popup = document.createElementNS(svgns, "use")
-        this.inputImg.appendChild(popup)
-        popup.setAttribute("href", "#outOfStockPopUp")
-        gsap.set(popup, {x : "94.6vh", y : "0.4vh", visibility:"hidden"})
+        this.popup = document.createElementNS(svgns, "use")
+        this.inputImg.appendChild(this.popup)
+        this.popup.setAttribute("href", "#outOfStockPopUp")
+        gsap.set(this.popup, {x : "94.6vh", y : "0.4vh", visibility:"hidden"})
 
         // var popuptext = document.createElementNS(svgns, "use")
         // this.inputImg.appendChild(popuptext)
         // popuptext.setAttribute("href", "#popuptext")
         // gsap.set(popuptext, {x : "80vh", y : "-10vh", visibility:"visible"})
 
-        popup.onpointerdown = function() {
+        this.popup.onpointerdown = function() {
             window.alert("This piece is out of stock")
         }
 
@@ -412,11 +413,11 @@ export class MaterialBridgeAPI {
         this.inputSize.onchange = function (e) {
             var val = Number(self.inputSize.value)
             self.changeSizeImg(val)
-            self.checkStock(popup)
+            self.checkStock()
         }
 
         this.inputPieces.onchange = function() {
-            self.checkStock(popup)
+            self.checkStock()
         }
 
         this.orderBtn.onpointerdown = function (e) {
@@ -475,7 +476,7 @@ export class MaterialBridgeAPI {
 
     }
 
-    checkStock(popup) {
+    checkStock() {
         //var fraction = this.inputSize.selectedIndex + 1
         var strFraction = this.inputSize.options[this.inputSize.selectedIndex].text
         var fraction;
@@ -498,12 +499,12 @@ export class MaterialBridgeAPI {
             console.log("nope")
             gsap.set(this.orderBtn, {backgroundColor : "#aaaaaa", borderColor : "#aaaaaa"})
             this.canOrder = false
-            gsap.set(popup, {visibility:"visible"})
+            gsap.set(this.popup, {visibility:"visible"})
         }
         else {
             gsap.set(this.orderBtn, {backgroundColor : "#22c060", borderColor : "#22c060"})
             this.canOrder = true
-            gsap.set(popup, {visibility:"hidden"})
+            gsap.set(this.popup, {visibility:"hidden"})
         }
 
     }
@@ -901,8 +902,10 @@ export class MaterialBridgeAPI {
         }
 
         this.smallBoat.onpointerdown = function () {
-            if (!self.finishedAttempt)
+            if (!self.finishedAttempt) {
                 gsap.set(self.input, { visibility: "visible" })
+                self.checkStock()
+            }
         }
     }
 
@@ -948,7 +951,7 @@ export class MaterialBridgeAPI {
             }
         })
 
-        this.tl.to(this.fallingBlocks, { x: "+=" + 1300, duration: 8, ease: "linear" })
+        this.tl.to(this.fallingBlocks, { x: "+=" + 1300, duration: 5.5, ease: "linear" })
 
         //move in little boat 
         this.tl.to(this.smallBoat, { x: 30, duration: 2, ease: "linear"}, "<4")

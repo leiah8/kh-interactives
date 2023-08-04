@@ -32,7 +32,7 @@ export class MaterialBridgeComponent implements AfterViewInit {
     upperBridge : null,
     lowerBridge : [0,1],
     fractionRange : [2,8],
-    limits : [[2,1],[8,3]],
+    limits : [[2,0],[8,3]],
   }
 
   g2 : GameInput = {
