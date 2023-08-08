@@ -60,6 +60,7 @@ export class MaterialBridgeAPI {
     currentImg: SVGUseElement
     inputSize: HTMLSelectElement;
     inputPieces: HTMLInputElement;
+    inputText : HTMLElement;
     retryBtn: HTMLElement;
     nextBtn: HTMLElement;
     boat: HTMLElement;
@@ -114,6 +115,7 @@ export class MaterialBridgeAPI {
         this.inputImg = setup.inputImg
         this.inputSize = setup.inputSize
         this.inputPieces = setup.inputPieces
+        this.inputText = setup.inputText
         this.orderBtn = setup.orderBtn
         this.boat = setup.boat
         this.frontWater = setup.frontWater
@@ -391,7 +393,7 @@ export class MaterialBridgeAPI {
         this.currentImg = document.createElementNS(svgns, "use")
         this.inputImg.appendChild(this.currentImg)
         this.currentImg.setAttribute("href", "#one")
-        gsap.set(this.currentImg, { x: 0, y: "1vh" })
+        gsap.set(this.currentImg, { x: 0, y: "5vh" })
 
         this.popup = document.createElementNS(svgns, "use")
         this.inputImg.appendChild(this.popup)
@@ -403,9 +405,9 @@ export class MaterialBridgeAPI {
         // popuptext.setAttribute("href", "#popuptext")
         // gsap.set(popuptext, {x : "80vh", y : "-10vh", visibility:"visible"})
 
-        this.popup.onpointerdown = function() {
-            window.alert("This piece is out of stock")
-        }
+        // this.orderBtn.onpointerdown = function() {
+        //     window.alert("This piece is out of stock")
+        // }
 
         this.setupSizes()
 
@@ -414,40 +416,74 @@ export class MaterialBridgeAPI {
             var val = Number(self.inputSize.value)
             self.changeSizeImg(val)
             self.checkStock()
+            
         }
 
         this.inputPieces.onchange = function() {
             self.checkStock()
         }
 
+        var popuptext = document.createElementNS(svgns, "use")
+        this.frontWater.appendChild(popuptext)
+        popuptext.setAttribute("href", "#popuptext")
+        gsap.set(popuptext, {x : "515", y : "370", visibility:"hidden"})
+
+        popuptext.onpointerdown = function() {
+            gsap.set(popuptext, {visibility : "hidden"})
+        }
+
         this.orderBtn.onpointerdown = function (e) {
             if (!self.finishedAttempt && self.canOrder) {
                 self.order = { num: 0, size: Number(self.inputSize.value), pieces: Number(self.inputPieces.value) }
+                gsap.set(popuptext, {visibility : "hidden"})
                 self.playAnimation()
+            }
+            else if (!self.canOrder) {
+                // window.alert("This piece is out of stock")
+                gsap.set(popuptext, {visibility : "visible"})
+
             }
 
         }
     }
 
     changeSizeImg(val) {
-        if (val == 1)
+        if (val == 1) {
             this.currentImg.setAttribute("href", "#one")
-        else if (val == 0.5)
+            this.inputText.textContent = "One Whole"
+        }
+        else if (val == 0.5) {
             this.currentImg.setAttribute("href", "#half")
-        else if (val == 0.33333)
+            this.inputText.textContent = "One Half"
+        }
+        else if (val == 0.33333) {
             this.currentImg.setAttribute("href", "#third")
-        else if (val == 0.25)
+            this.inputText.textContent = "One Third"
+        }
+        else if (val == 0.25) {
             this.currentImg.setAttribute("href", "#fourth")
-        else if (val == 0.2)
+            this.inputText.textContent = "One Fourth"
+        }
+        else if (val == 0.2) {
             this.currentImg.setAttribute("href", "#fifth")
-        else if (val == 0.16667)
+            this.inputText.textContent = "One Fifth"
+        }
+        else if (val == 0.16667) {
             this.currentImg.setAttribute("href", "#sixth")
-        else if (val == 0.14286)
+            this.inputText.textContent = "One Sixth"
+        }
+        else if (val == 0.14286) {
             this.currentImg.setAttribute("href", "#seventh")
-        else if (val == 0.125)
+            this.inputText.textContent = "One Seventh"
+        }
+        else if (val == 0.125) {
             this.currentImg.setAttribute("href", "#eighth")
-        else if (val == 0.11111)
+            this.inputText.textContent = "One Eighth"
+        }
+        else if (val == 0.11111) {
             this.currentImg.setAttribute("href", "#ninth")
+            this.inputText.textContent = "One Ninth"
+        }
 
     }
 
@@ -500,6 +536,9 @@ export class MaterialBridgeAPI {
             gsap.set(this.orderBtn, {backgroundColor : "#aaaaaa", borderColor : "#aaaaaa"})
             this.canOrder = false
             gsap.set(this.popup, {visibility:"visible"})
+
+            if (!(this.inputText.textContent.slice(-1) == ")"))
+                this.inputText.textContent += " (Out of Stock)"
         }
         else {
             gsap.set(this.orderBtn, {backgroundColor : "#22c060", borderColor : "#22c060"})

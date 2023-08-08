@@ -17,6 +17,19 @@ body {
     grid-template-rows : 0px
 }
 
+.input-img {
+    display : grid;
+    grid-template-rows : 0 14vh;
+}
+#inputText {
+    font-family : "Poppins";
+    font-size : 3vh;
+    color : #000;
+
+    padding-left : 3vh;
+    margin-top : 2vh;
+}
+
 .input {
     background-color: #ffffff;
     border-radius : 8px;
@@ -28,7 +41,6 @@ body {
     height : 24vh;
     
     align-items : center;
-
 }
 
 .input-info {

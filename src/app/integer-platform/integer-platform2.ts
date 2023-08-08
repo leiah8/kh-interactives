@@ -240,11 +240,11 @@ export class IntegerPlatfromClass {
 
       //bridge or tunnel
       if (self.game.goal < 0) {
-        var rect = document.createElementNS(svgns, "use")
-        this.arena.appendChild(rect)
-        rect.setAttribute("href", "#dirt")
-        gsap.set(rect, {x : 830, y : 450, scaleY : -self.game.goal -3.5})
-        this.levelEls.push(rect)
+        // var rect = document.createElementNS(svgns, "use")
+        // this.arena.appendChild(rect)
+        // rect.setAttribute("href", "#dirt")
+        // gsap.set(rect, {x : 830, y : 450, scaleY : -self.game.goal -3.5})
+        // this.levelEls.push(rect)
 
         var tunnel = document.createElementNS(svgns,"use")
         this.arena.appendChild(tunnel)

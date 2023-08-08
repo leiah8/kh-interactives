@@ -15,6 +15,7 @@ export class MaterialBridgeComponent implements AfterViewInit {
   @ViewChild("inputImg") public inputImg?: ElementRef<HTMLElement>;
   @ViewChild("inputSize") public inputSize?: ElementRef<HTMLElement>;
   @ViewChild("inputPieces") public inputPieces?: ElementRef<HTMLElement>;
+  @ViewChild("inputText") public inputText?: ElementRef<HTMLElement>;
   @ViewChild("orderBtn") public orderBtn?: ElementRef<HTMLElement>;
   @ViewChild("retryBtn") public retryBtn?: ElementRef<HTMLElement>;
   @ViewChild("nextBtn") public nextBtn?: ElementRef<HTMLElement>;
@@ -62,6 +63,43 @@ export class MaterialBridgeComponent implements AfterViewInit {
     fractionRange : [1,8],
     limits : [],
   }
+
+  //a2
+
+  g6 : GameInput = {
+    upperBridge : null,
+    lowerBridge : [0,0,1,1],
+    fractionRange : [1,5],
+    limits : [[4,0]],
+  }
+
+  g7 : GameInput = {
+    upperBridge : null,
+    lowerBridge : [0,1],
+    fractionRange : [1,5],
+    limits : [[2,0]],
+  }
+
+  g8 : GameInput = {
+    upperBridge : [0,1],
+    lowerBridge : [0,1,1,1],
+    fractionRange : [1,6],
+    limits : [],
+  }
+
+  g9 : GameInput = {
+    upperBridge : [0,1],
+    lowerBridge : [1,0,0,1],
+    fractionRange : [1,6],
+    limits : [],
+  }
+
+  g10 : GameInput = {
+    upperBridge : null,
+    lowerBridge : [0,0,1,1],
+    fractionRange : [1,6],
+    limits : [[4,0], [2,0]],
+  }
   
   // constructor() { }
 
@@ -76,6 +114,12 @@ export class MaterialBridgeComponent implements AfterViewInit {
     else if (p.game == "g3") this.games = [this.g3]
     else if (p.game == "g4") this.games = [this.g4]
     else if (p.game == "g5") this.games = [this.g5]
+    else if (p.game == "g6") this.games = [this.g6]
+    else if (p.game == "g7") this.games = [this.g7]
+    else if (p.game == "g8") this.games = [this.g8]
+    else if (p.game == "g9") this.games = [this.g9]
+    else if (p.game == "g10") this.games = [this.g10]
+    else if (p.game == "a2") this.games = [this.g6, this.g7, this.g8, this.g9, this.g10]
     else this.games = [this.g1, this.g2, this.g3, this.g4, this.g5]
   }
 
@@ -88,6 +132,7 @@ export class MaterialBridgeComponent implements AfterViewInit {
       inputImg : this.inputImg.nativeElement,
       inputSize : this.inputSize.nativeElement,
       inputPieces : this.inputPieces.nativeElement,
+      inputText : this.inputText.nativeElement,
       orderBtn : this.orderBtn.nativeElement,
       retryBtn : this.retryBtn.nativeElement,
       nextBtn : this.nextBtn.nativeElement,
