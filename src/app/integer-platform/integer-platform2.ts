@@ -1139,12 +1139,28 @@ export class IntegerPlatfromClass {
 
         this.tl.to(self.spring, {transformOrigin: "bottom"})
 
+        //create circle
+        // var circ = document.createElementNS(svgns, "circle")
+        // this.arena.appendChild(circ)
+        // gsap.set(circ, {attr : {cx : this.gemPos + 55, cy : 400 + -self.game.goal*50 - 25, r : 0}, strokeWidth : 5, stroke : "#dbb8e6", strokeDasharray: "5,10", fillOpacity : 0})
+        var circ = document.createElementNS(svgns, "use")
+        this.arena.appendChild(circ)
+        circ.setAttribute("href", "#sparkle")
+        gsap.set(circ, {transformOrigin : "center", scale : 0})
+        gsap.set(circ, {x : this.gemPos + 30, y : 400 + -self.game.goal*50 -50})
+
         //move cart and wheels
         gsap.set([self.backWheel, self.frontWheel], {rotation : 0})
+        //TO DO: add gem animation
+        this.tl.to(circ,  {scale : 6, rotate : 420,  opacity : 0, duration : 3, ease : "linear", onComplete : function() {
+          self.arena.removeChild(circ)
+        }})
+        // this.tl.to(circ,  {alpha : 0, duration : 1})
+        
         this.tl.to(self.cart, {x : self.cartXPos  + self.CART_X_DIFF, duration : 2, ease: "linear", 
         onComplete : function() {
           self.cartOnPlatform = true;
-        }})
+        }}, "<1")
         this.tl.to([self.backWheel, self.frontWheel], {rotation : (self.cartXPos + 200 + self.CART_X_DIFF) / self.wheelCircumference * 360, duration : 2, ease: "linear"}, "<")
         this.tl.to(self.cart, {duration : 0.1})
         
