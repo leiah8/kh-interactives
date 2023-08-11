@@ -833,18 +833,33 @@ export class IntegerPlatfromClass {
   
       }
 
+    // adjustEquationWidth() {
+    //   var self = this
+    //   var h = (this.arena as any as HTMLElement).getBoundingClientRect().height
+    //   var w = h*(1280/720) //(this.arena as any as HTMLElement).getBoundingClientRect().width 
+    //   var x = w*(840/1280)  //(this.addBtn as any as HTMLElement).getBoundingClientRect().x 
+    //   var btnW = w * (70 / 1280) //(addBtn as any as HTMLElement).getBoundingClientRect().width
+
+    //   var equationW = Math.min(Math.max((0.18*h + 10), self.allTerms.length*(0.18*h + 10)), 3*(0.18*h + 10))
+    //   var eX = (100 - (equationW / 1280)*100).toString() + "vh"
+    //   // gsap.set(this.equation, {width : equationW, x : x - equationW - btnW, y : "1.5vh"})
+    //   gsap.set(this.equation, {transformOrigin : "top right"})
+    //   gsap.set(this.equation, {width : equationW, x : eX, y : "1.5vh"})
+
+    // }
+
     adjustEquationWidth() {
       var self = this
-      var h = (this.arena as any as HTMLElement).getBoundingClientRect().height
+      var h = (this.arena as any as HTMLElement).getBoundingClientRect().height 
       var w = h*(1280/720) //(this.arena as any as HTMLElement).getBoundingClientRect().width 
-      var x = w*(840/1280)  //(this.addBtn as any as HTMLElement).getBoundingClientRect().x 
+      var x = (this.addBtn as any as HTMLElement).getBoundingClientRect().x //w*(840/1280)
       var btnW = w * (70 / 1280) //(addBtn as any as HTMLElement).getBoundingClientRect().width
 
-      var equationW = Math.min(Math.max((0.18*h + 10), self.allTerms.length*(0.18*h + 10)), 3*(0.18*h + 10))
-      var eX = (100 - (equationW / 1280)*100).toString() + "vh"
-      // gsap.set(this.equation, {width : equationW, x : x - equationW - btnW, y : "1.5vh"})
-      gsap.set(this.equation, {transformOrigin : "top right"})
-      gsap.set(this.equation, {width : equationW, x : eX, y : "1.5vh"})
+      gsap.set(this.equation, {transformOrigin : "0% 100%"})
+
+      var termW = 0.15
+      var equationW = Math.min(Math.max((termW*h), self.allTerms.length*(termW*h)), 4*(termW*h))
+      gsap.set(this.equation, {width : equationW, x : x - equationW - btnW/2, y : "1.5vh"})
 
     }
 

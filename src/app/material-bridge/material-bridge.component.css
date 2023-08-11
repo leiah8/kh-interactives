@@ -116,27 +116,39 @@ body {
   }
 
 
+/*NON VH VERSION*/
 
+/* .main {
+  
 
-/* .playBtn {
-    background-image: url("https://res.cloudinary.com/dxltpgop9/image/upload/v1683837963/minecart/play-btn_l7fmra.svg");
-    background-size: cover;
-    width: 10vh;
-    padding-bottom: 10vh;
-    top: 2vh;
-    left: 2vh;  
-    position: absolute;
-} */
-
-/* svg {
-    height : 100vh;
-    width : auto;
+    width : 100%;
+    height : auto;
+    position : absolute;
+    top :0;
+    left : 0;
 }
 
-body {
+.usability {
+    width : 100%;
+    height : auto;
+    position : absolute;
+    top : 0;
+    left : 0;
+}
+
+.input-img {
     display : grid;
-    grid-template-columns: 0px;
-    grid-template-rows : 0px
+    grid-template-rows : 0 1fr;
+}
+
+#inputText {
+    font-family : "Poppins";
+    font-size : 2vw; 
+   
+    color : #000;
+
+    padding-left : 4%;
+    margin-top : 2%;
 }
 
 .input {
@@ -144,28 +156,37 @@ body {
     border-radius : 8px;
     border-width : 10px;
 
-    width : 100vh;
-    height : 20vh;
+    width : 60%;
+    height : auto; 
     
-    align-items : center;
 
+    position : absolute;
+    top : 37vw; 
+    left : 20%;
+
+    padding-bottom : 1%
+    
 }
 
 .input-info {
     display: grid;
-    width : 100vh;
+   
+    width : 100%;
     grid-gap: 10px;
-    grid-template-columns: 1vh 3fr 3fr 3fr;
+    grid-template-columns: 33% 33% 33% ; 
     font-family : "Poppins";
-    font-size : 3.2vh;
-    color : #3c78d8
+    font-size : 2em;
+    color : #3c78d8;
+
+    place-items: center;
 }
 
+
 .btn {
-    width : 100px;
-    height : 40px;
+    width : 120%;
+    height : 120%;
     font-family : "Poppins";
-    font-size : 3vh;
+    font-size : 100%;
     background-color : #22c060;
     border-color : #22c060;
     border-radius : 3px
@@ -173,7 +194,7 @@ body {
 
 .nums {
     font-family : "Poppins";
-    font-size : 3vh;
+    font-size : 100%;
     color : #3c78d8;
     border : 3px solid #3c78d8;
     border-radius : 3px;
@@ -181,9 +202,42 @@ body {
 
 .sizes {
     font-family : "Poppins";
-    font-size : 3vh;
+    font-size : 100%;
     color : #3c78d8;
     border : 3px solid #3c78d8;
     border-radius : 3px;
 
-} */
+}
+
+
+
+.retryBtn {
+    background-image: url("https://res.cloudinary.com/dxltpgop9/image/upload/v1684172086/minecart/RetryBtn_jhupgo_dxpfwi.svg");
+    background-size: cover;
+    width: 10vh;
+    padding-bottom: 10vh;
+    top: 2vh;
+    left: 2vh;  
+    position: absolute;
+  }
+
+.nextBtn {
+    background-image: url("https://res.cloudinary.com/dxltpgop9/image/upload/v1684345848/minecart/next-btn_w5a1wr.svg");
+    background-size: cover;
+    width: 10vh;
+    padding-bottom: 10vh;
+    top: 2vh;
+    left: 165vh;  
+    position: absolute;
+  }
+
+
+  .helpBtn {
+    background-image: url("https://res.cloudinary.com/dxltpgop9/image/upload/v1691007530/help-btn_uqsjvd.svg");
+    background-size: cover;
+    width: 10vh;
+    padding-bottom: 10vh;
+    top: 70%;
+    left: 90%;  
+    position: absolute;
+  } */
