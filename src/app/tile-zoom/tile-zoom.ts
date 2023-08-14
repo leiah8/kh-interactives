@@ -79,20 +79,20 @@ export class TileZoomAPI {
             // this.tl.to(this.tiles[i], {y : "+="+900, duration : 1.5, ease : "bounce"}, ">-1")
             // this.tl.to(this.tiles[i], {y : "+="+900, duration : 1.5, ease : e}, ">-1")
 
-            this.tl.to(this.tiles[i], {y : "+="+900, duration : 1, ease : Power1.easeIn}, ">-1")
-                .to(this.tiles[i], {y : "-="+50, duration : 0.2, ease : Power1.easeOut})
-                .to(this.tiles[i], {y : "+="+50, duration : 0.2, ease : Power1.easeIn})
-                .to(this.tiles[i], {y : "-="+20, duration : 0.15, ease : Power1.easeOut})
-                .to(this.tiles[i], {y : "+="+20, duration : 0.15, ease : Power1.easeIn})
+            // this.tl.to(this.tiles[i], {y : "+="+900, duration : 1, ease : Power1.easeIn}, ">-1")
+            //     .to(this.tiles[i], {y : "-="+50, duration : 0.2, ease : Power1.easeOut})
+            //     .to(this.tiles[i], {y : "+="+50, duration : 0.2, ease : Power1.easeIn})
+            //     .to(this.tiles[i], {y : "-="+20, duration : 0.15, ease : Power1.easeOut})
+            //     .to(this.tiles[i], {y : "+="+20, duration : 0.15, ease : Power1.easeIn})
 
-                // this.tl.to(this.tiles[i], {y : "+="+900, duration : 1, ease : Power1.easeIn, onComplete : function() {
-                //     var t = this.targets()[0]
-                //     var timeline = gsap.timeline()
-                //     timeline.to(t, {y : "-="+50, duration : 0.2, ease : Power1.easeOut})
-                //     .to(t, {y : "+="+50, duration : 0.2, ease : Power1.easeIn})
-                //     .to(t, {y : "-="+20, duration : 0.15, ease : Power1.easeOut})
-                //     .to(t, {y : "+="+20, duration : 0.15, ease : Power1.easeIn})
-                // }}, ">-0.75")
+                this.tl.to(this.tiles[i], {y : "+="+900, duration : 1, ease : Power1.easeIn, onComplete : function() {
+                    var t = this.targets()[0]
+                    var timeline = gsap.timeline()
+                    timeline.to(t, {y : "-="+50, duration : 0.2, ease : Power1.easeOut})
+                    .to(t, {y : "+="+50, duration : 0.2, ease : Power1.easeIn})
+                    .to(t, {y : "-="+20, duration : 0.15, ease : Power1.easeOut})
+                    .to(t, {y : "+="+20, duration : 0.15, ease : Power1.easeIn})
+                }}, ">-0.75")
 
         }
     }

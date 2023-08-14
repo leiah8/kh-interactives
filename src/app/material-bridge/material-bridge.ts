@@ -170,8 +170,8 @@ export class MaterialBridgeAPI {
         this.tools = document.createElementNS(svgns, "use")
         this.tools.setAttribute("href", "#tools")
         this.arena.appendChild(this.tools)
-        gsap.set(this.tools, { x: 40, y: this.boatY + 78 })
-        gsap.set(this.tools, { transformOrigin : "50% 100%", scale : 0 })
+        gsap.set(this.tools, { transformOrigin : "57.5px 150px", scale : 0})
+        gsap.set(this.tools, { x: 40, y: this.boatY + 78})
 
         //create boat
         this.bigBoat = document.createElementNS(svgns, "use")
@@ -402,7 +402,7 @@ export class MaterialBridgeAPI {
         this.currentImg = document.createElementNS(svgns, "use")
         this.inputImg.appendChild(this.currentImg)
         this.currentImg.setAttribute("href", "#one")
-        gsap.set(this.currentImg, { x: 0, y: "60%" })
+        gsap.set(this.currentImg, { x: 0, y: "5vh" })
 
         this.popup = document.createElementNS(svgns, "use")
         this.inputImg.appendChild(this.popup)
@@ -1002,6 +1002,7 @@ export class MaterialBridgeAPI {
             }
         })
 
+        this.tl.to(this.tools, { transformOrigin : "50% 100%", scale : 0, duration : 0})
         this.tl.to(this.fallingBlocks, { x: "+=" + 1300, duration: 5.5, ease: "linear" })
 
         //move in little boat 
@@ -1042,6 +1043,20 @@ export class MaterialBridgeAPI {
 
     nextGame() {
         var self = this
+
+        //remove fallen blocks 
+        this.fallingBlocks.forEach(b => {
+            self.boat.removeChild(b)
+        });
+        this.fallingBlocks = []
+
+        //reset fallen block timelines
+        this.tl2.forEach(el => {
+            el.t.clear()
+        });
+        this.tl2 = []
+
+
         this.gameIndex = (this.gameIndex + 1) % this.games.length
         this.game = this.games[this.gameIndex]
 
