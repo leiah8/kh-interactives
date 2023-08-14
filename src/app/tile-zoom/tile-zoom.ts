@@ -86,7 +86,7 @@ export class TileZoomAPI {
                 .to(t, {y : "+="+50, duration : 0.2, ease : Power1.easeIn})
                 .to(t, {y : "-="+20, duration : 0.15, ease : Power1.easeOut})
                 .to(t, {y : "+="+20, duration : 0.15, ease : Power1.easeIn})
-            }}, ">-0.5")
+            }}, ">-0.75")
             
 
         }
