@@ -1146,8 +1146,9 @@ export class IntegerPlatfromClass {
         var circ = document.createElementNS(svgns, "use")
         this.arena.appendChild(circ)
         circ.setAttribute("href", "#sparkle")
-        gsap.set(circ, {transformOrigin : "center", scale : 0})
-        gsap.set(circ, {x : this.gemPos + 30, y : 400 + -self.game.goal*50 -50})
+        gsap.set(circ, {scale : 0})
+        self.tl.to(circ, {transformOrigin : "center", duration : 0})
+        gsap.set(circ, {x : this.gemPos + 55, y : 400 + -self.game.goal*50 -20})
 
         //move cart and wheels
         gsap.set([self.backWheel, self.frontWheel], {rotation : 0})

@@ -10,6 +10,7 @@ import { ZoomPlanetsComponent } from './zoom-planets/zoom-planets.component';
 import { MultiplyManyFlowersComponent } from './multiply-many-flowers/multiply-many-flowers.component';
 import { TextureSwapComponent } from './texture-swap/texture-swap.component';
 import { MaterialBridgeComponent } from './material-bridge/material-bridge.component';
+import { TileZoomComponent } from "./tile-zoom/tile-zoom.component";
 
 
 const routes: Routes = [
@@ -28,6 +29,10 @@ const routes: Routes = [
   { path: 'materialbridge', component: MaterialBridgeComponent },
   { path: 'materialbridge/:game/:help', component: MaterialBridgeComponent },
   { path: 'materialbridge/:game', component: MaterialBridgeComponent },
+  
+
+  { path: 'tilezoom/:num', component: TileZoomComponent },
+  { path: 'tilezoom', component: TileZoomComponent },
   
 ]
 

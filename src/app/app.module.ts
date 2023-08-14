@@ -15,6 +15,7 @@ import { MultiplyManyFlowersComponent } from './multiply-many-flowers/multiply-m
 import { TextureSwapComponent } from './texture-swap/texture-swap.component';
 import { MsgsComponent } from './msgs/msgs.component';
 import { MaterialBridgeComponent } from './material-bridge/material-bridge.component';
+import { TileZoomComponent } from './tile-zoom/tile-zoom.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { MaterialBridgeComponent } from './material-bridge/material-bridge.compo
     TextureSwapComponent,
     MsgsComponent,
     MaterialBridgeComponent,
+    TileZoomComponent,
   ],
   imports: [
     BrowserModule,
