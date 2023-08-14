@@ -106,6 +106,8 @@ export class MaterialBridgeAPI {
     popup : SVGUseElement;
     popuptext : SVGUseElement;
 
+    tools : SVGUseElement;
+
     constructor(setup, games) {
         this.arena = setup.arena
         this.svg = setup.svg
@@ -163,7 +165,13 @@ export class MaterialBridgeAPI {
         this.smallBoat = document.createElementNS(svgns, "use")
         this.smallBoat.setAttribute("href", "#smallBoat")
         this.arena.appendChild(this.smallBoat)
-        gsap.set(this.smallBoat, { x: -400, y: this.boatY + 78 })
+        gsap.set(this.smallBoat, { x: -400, y: this.boatY + 152 })
+
+        this.tools = document.createElementNS(svgns, "use")
+        this.tools.setAttribute("href", "#tools")
+        this.arena.appendChild(this.tools)
+        gsap.set(this.tools, { x: 40, y: this.boatY + 78 })
+        gsap.set(this.tools, { transformOrigin : "50% 100%", scale : 0 })
 
         //create boat
         this.bigBoat = document.createElementNS(svgns, "use")
@@ -607,6 +615,8 @@ export class MaterialBridgeAPI {
 
 
         gsap.set(this.boat, { x: "-=" + (1300) })
+        this.tl.to(this.tools, { scale : 0, duration : 0.2 })
+        this.tl.to(this.tools, {duration : 0.2 })
         this.tl.to(this.smallBoat, { x: "+= " + 1300, duration: 3, ease: "linear" })
         this.tl.to([this.boat, this.bigBoat], { x: "+=" + 1300, duration: 3, ease: "linear" }, "<1")
         this.tl.to(this.boat, { duration: 1 })
@@ -940,6 +950,14 @@ export class MaterialBridgeAPI {
                 self.checkStock()
             }
         }
+
+        //same as above
+        this.tools.onpointerdown = function () {
+            if (!self.finishedAttempt) {
+                gsap.set(self.input, { visibility: "visible" })
+                self.checkStock()
+            }
+        }
     }
 
     startAnimation() {
@@ -987,7 +1005,9 @@ export class MaterialBridgeAPI {
         this.tl.to(this.fallingBlocks, { x: "+=" + 1300, duration: 5.5, ease: "linear" })
 
         //move in little boat 
-        this.tl.to(this.smallBoat, { x: 30, duration: 2, ease: "linear"}, "<4")
+        this.tl.to(this.smallBoat, { x: 53, duration: 2, ease: "linear"}, "<4")
+        this.tl.to(this.smallBoat, {duration: 0.4})
+        this.tl.to(this.tools, {scale : 1, ease : "elastic", duration : 1.2})
 
     }
 
