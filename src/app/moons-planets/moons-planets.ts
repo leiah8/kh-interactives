@@ -610,6 +610,16 @@ export class MoonsPlanetsAPI {
         });
         this.animationMoons = []
 
+        //remove target moons and planets 
+        this.gameEls.forEach(el => {
+            this.arena.removeChild(el)
+        });
+        this.gameEls = []
+        this.targetMoonCoords = []
+        this.targetMoons = []
+
+        this.setupPlanets()
+
         //reset buttons
         gsap.set(self.playBtn, {scale : 1})
         gsap.set(self.retryBtn, {scale : 0, rotation : 0, duration : 0})
