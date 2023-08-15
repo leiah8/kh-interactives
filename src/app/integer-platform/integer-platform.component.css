@@ -1,4 +1,115 @@
-body {
+.minecartContainer {
+    position: relative;
+}
+
+.minecartInputOverlay {
+    transform-origin: top left;
+    position: absolute;
+    display: flex;
+    pointer-events: none;
+}
+
+.main {
+    width : 100%
+}
+
+/* vertical scroll */
+
+
+.sidebar {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-rows: 20px 1fr 20px;
+    overflow-y : hidden; 
+
+    border-color : #c0f4ffff;
+    border-width : 10px;
+    border-style : solid;
+    border-radius: 80px;
+    background: #c0f4ffff;
+/* 
+    height : 720px; */
+    position : absolute;
+    top : 150px;
+    left : 180px;
+    height : 360px;
+    width : 110px;
+}
+
+/*vertical scroll numbers*/
+.num {
+    grid-row: 1 / -1;
+    list-style: none;
+    padding: 0;
+
+    display: grid;
+    grid-gap: 10px;
+    
+    grid-template-rows: 10px repeat(var(--total), var(--boxSize)) 10px;
+    
+    overflow-y : scroll; 
+
+    scroll-snap-type: y proximity;
+    padding-bottom: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.equation {
+    list-style : none;
+    overflow-y : hidden;
+    overflow-x : hidden;
+
+    border-width : 10px;
+    border-color : #c0f4ffff;
+    border-style : solid;
+    border-radius: 60px;
+    background: #c0f4ffff;
+
+    height : 80px;
+    width : 250px;
+    
+    padding : 0;
+    margin : 0;
+    margin-top: 5px
+}
+
+.term {
+    grid-column: 1 / -1;
+    list-style: none;
+    padding: 0;
+
+    display: grid;
+    grid-gap: 0px 10px;
+
+    grid-template-rows: 80px;
+    grid-template-columns: 10px repeat(var(--total), var(--boxSize)) 10px;
+    
+    overflow-x : scroll; 
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    
+    margin : 0; 
+
+    padding-bottom:0
+}
+
+
+::-webkit-scrollbar {
+    width : 0;
+    background : transparent;
+}
+
+.hs:before,
+.hs:after {
+    content: '';
+} 
+
+.pointer-events-enable {
+    pointer-events: all;
+}
+
+/* body {
     display : grid;
     grid-template-columns: 0 0 0 0 ;
 }
@@ -6,10 +117,10 @@ body {
 .main {
     height : 100vh;
     width : auto
-}
+} */
 
 /* vertical scroll */
-.app {
+/* .app {
     display: grid;
     grid-gap: 10px;
     grid-template-rows: 20px 1fr 20px;
@@ -24,10 +135,10 @@ body {
     height : 50vh;
     width : 15vh 
 
-}
+} */
 
 /*vertical scroll numbers*/
-.num {
+/* .num {
     grid-row: 1 / -1;
     list-style: none;
     padding: 0;
@@ -88,4 +199,4 @@ body {
 .hs:before,
 .hs:after {
     content: '';
-}  
+}   */

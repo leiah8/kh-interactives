@@ -26,6 +26,10 @@ export class IntegerPlatformComponent implements AfterViewInit {
   @ViewChild("backwheel") public backWheel?: ElementRef<SVGSVGElement>;
   @ViewChild("frontwheel") public frontWheel?: ElementRef<SVGSVGElement>;
 
+  @ViewChild('minecartSvg') public minecartSvg?: ElementRef<SVGElement>;
+  @ViewChild('minecartOverlay') public minecartOverlay?: ElementRef<HTMLDivElement>;
+  @ViewChild('minecartContainer') public minecartContainer?: ElementRef<HTMLDivElement>;
+
   addRemove : boolean;
   useImgs : boolean;
 
@@ -221,7 +225,12 @@ export class IntegerPlatformComponent implements AfterViewInit {
       addRemove : this.addRemove,
       useImgs : this.useImgs,
       scrollbarRangeMax : this.scrollMax, //5,
-      scrollbarRangeMin : this.scrollMin //-5,
+      scrollbarRangeMin : this.scrollMin, //-5,
+
+      minecartOverlay: this.minecartOverlay?.nativeElement,
+      minecartSvg: this.minecartSvg?.nativeElement,
+      minecartContainer: this.minecartContainer?.nativeElement
+
 
     } as InputSetup
     
