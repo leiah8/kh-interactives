@@ -470,7 +470,7 @@ export class IntegerPlatfromClass {
 
     highlightEdit() {
       var self = this
-      if(!self.editing && self.canEdit) {
+      if(!self.editing && self.canEdit && self.allTerms.length == 0) {
         //highlight edit button
         self.tl.to(self.addBtn, {scale : 1.5, duration : 0.25})
         self.tl.to(self.addBtn, {scale : 1, ease : "bounce", duration : 0.5})
