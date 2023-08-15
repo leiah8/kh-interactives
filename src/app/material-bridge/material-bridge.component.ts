@@ -100,6 +100,76 @@ export class MaterialBridgeComponent implements AfterViewInit {
     fractionRange : [1,6],
     limits : [[4,0], [2,0]],
   }
+
+  g11 : GameInput = {
+    upperBridge : null,
+    lowerBridge : [1,0],
+    fractionRange : [1,9],
+    limits : [],
+  }
+
+  g12 : GameInput = {
+    upperBridge : null,
+    lowerBridge : [1,1, 1, 0],
+    fractionRange : [1,9],
+    limits : [],
+  }
+
+  g13 : GameInput = {
+    upperBridge : null,
+    lowerBridge : [0,1,1,1,1,1],
+    fractionRange : [1,9],
+    limits : [],
+  }
+
+  g14 : GameInput = {
+    upperBridge : null,
+    lowerBridge : [0,0,1],
+    fractionRange : [1,9],
+    limits : [],
+  }
+
+  g15 : GameInput = {
+    upperBridge : null,
+    lowerBridge : [1,1,1,1,0,1,1,1],
+    fractionRange : [1,9],
+    limits : [],
+  }
+
+  g16 : GameInput = {
+    upperBridge : [0,1],
+    lowerBridge : [0,0,1,1],
+    fractionRange : [1,9],
+    limits : [[2,0]],
+  }
+
+  g17 : GameInput = {
+    upperBridge : [1,0,1],
+    lowerBridge : [1,1,0,0,1,1],
+    fractionRange : [1,9],
+    limits : [[3,0]],
+  }
+
+  g18 : GameInput = {
+    upperBridge : [1,0,1,0],
+    lowerBridge : [1,1,0,0,1,1,0,0],
+    fractionRange : [1,9],
+    limits : [[4,0]],
+  }
+
+  g19 : GameInput = {
+    upperBridge : [0,1,1],
+    lowerBridge : [1,1,0,0,1,1],
+    fractionRange : [1,9],
+    limits : [[3,0]],
+  }
+
+  g20 : GameInput = {
+    upperBridge : [1,1,0],
+    lowerBridge : [1,0,0,0,1,1,1,1,1],
+    fractionRange : [1,9],
+    limits : [[3,0]],
+  }
   
   // constructor() { }
 
@@ -119,7 +189,20 @@ export class MaterialBridgeComponent implements AfterViewInit {
     else if (p.game == "g8") this.games = [this.g8]
     else if (p.game == "g9") this.games = [this.g9]
     else if (p.game == "g10") this.games = [this.g10]
+    else if (p.game == "g11") this.games = [this.g11]
+    else if (p.game == "g12") this.games = [this.g12]
+    else if (p.game == "g13") this.games = [this.g13]
+    else if (p.game == "g14") this.games = [this.g14]
+    else if (p.game == "g15") this.games = [this.g15]
+    else if (p.game == "g16") this.games = [this.g16]
+    else if (p.game == "g17") this.games = [this.g17]
+    else if (p.game == "g18") this.games = [this.g18]
+    else if (p.game == "g19") this.games = [this.g19]
+    else if (p.game == "g20") this.games = [this.g20]
+
     else if (p.game == "a2") this.games = [this.g6, this.g7, this.g8, this.g9, this.g10]
+    else if (p.game == "a3") this.games = [this.g11, this.g12, this.g13, this.g14, this.g15]
+    else if (p.game == "a4") this.games = [this.g16, this.g17, this.g18, this.g19, this.g20]
     else this.games = [this.g1, this.g2, this.g3, this.g4, this.g5]
   }
 
