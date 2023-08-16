@@ -163,6 +163,8 @@ export class IntegerPlatfromClass {
     CART_X_DIFF : number = 590;
     CART_Y_DIFF : number = 350;
 
+    sparkle : SVGUseElement
+
     constructor(setup, gameInputs) {
         this.games = []
 
@@ -370,7 +372,7 @@ export class IntegerPlatfromClass {
         this.playBtn = playBtn
 
         playBtn.onpointerdown = function(e) {
-            if(self.canPlay) {
+          if(self.canPlay) {
               self.canEdit = false
               self.canReset = false
               self.canPlay = false
@@ -533,6 +535,11 @@ export class IntegerPlatfromClass {
       
       gsap.set(self.gem, {x : self.gemPos +26, y : 400 + -self.game.goal*50 - 50})
 
+      try {
+        this.arena.removeChild(this.sparkle)
+      } catch {
+
+      }
     }
     
     playAnimation() {
@@ -1173,19 +1180,17 @@ export class IntegerPlatfromClass {
         // var circ = document.createElementNS(svgns, "circle")
         // this.arena.appendChild(circ)
         // gsap.set(circ, {attr : {cx : this.gemPos + 55, cy : 400 + -self.game.goal*50 - 25, r : 0}, strokeWidth : 5, stroke : "#dbb8e6", strokeDasharray: "5,10", fillOpacity : 0})
-        var circ = document.createElementNS(svgns, "use")
-        this.arena.appendChild(circ)
-        circ.setAttribute("href", "#sparkle")
-        gsap.set(circ, {scale : 0})
-        self.tl.to(circ, {transformOrigin : "center", duration : 0})
-        gsap.set(circ, {x : this.gemPos + 55, y : 400 + -self.game.goal*50 -20})
+        this.sparkle = document.createElementNS(svgns, "use")
+        this.arena.appendChild(this.sparkle)
+        this.sparkle.setAttribute("href", "#sparkle")
+        gsap.set(this.sparkle, {scale : 0})
+        self.tl.to(this.sparkle, {transformOrigin : "center", duration : 0})
+        gsap.set(this.sparkle, {x : this.gemPos + 55, y : 400 + -self.game.goal*50 -20})
 
         //move cart and wheels
         gsap.set([self.backWheel, self.frontWheel], {rotation : 0})
         //TO DO: add gem animation
-        this.tl.to(circ,  {scale : 6, rotate : 420,  opacity : 0, duration : 3, ease : "linear", onComplete : function() {
-          self.arena.removeChild(circ)
-        }})
+        this.tl.to(this.sparkle,  {scale : 6, rotate : 420,  opacity : 0, duration : 3, ease : "linear"})
         // this.tl.to(circ,  {alpha : 0, duration : 1})
         
         this.tl.to(self.cart, {x : self.cartXPos  + self.CART_X_DIFF, duration : 2, ease: "linear", 
