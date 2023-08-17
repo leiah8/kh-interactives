@@ -1189,7 +1189,6 @@ export class IntegerPlatfromClass {
 
         //move cart and wheels
         gsap.set([self.backWheel, self.frontWheel], {rotation : 0})
-        //TO DO: add gem animation
         this.tl.to(this.sparkle,  {scale : 6, rotate : 420,  opacity : 0, duration : 3, ease : "linear"})
         // this.tl.to(circ,  {alpha : 0, duration : 1})
         
