@@ -1,4 +1,134 @@
+
+.bridge-overlay {
+    transform-origin: top left;
+    position: absolute;
+    display: flex;
+}
+
 .main {
+    width : 100%;
+    height : auto;
+    position : absolute;
+    top :0;
+    left : 0;
+}
+
+.usability {
+    width : 100%;
+    height : auto;
+    position : absolute;
+    top : 0;
+    left : 0;
+}
+
+.input-img {
+    height: 80px;
+    
+    display : grid;
+    grid-template-rows : 15% 85%;
+   
+}
+
+#inputText {
+    font-family : "Poppins";
+   
+    color : #000;
+
+    padding-left : 4%;
+    margin-top : 2%;
+
+    font-size : 22px;
+}
+
+.input {
+    background-color: #ffffff;
+    border-radius : 8px;
+    border-width : 10px;
+
+    position: absolute;
+
+    z-index: 1;
+    left: calc((1280px - 500px) / 2);
+    top: calc((720px - 150px) - 20px);
+    width : 500px;
+    height : 150px; 
+
+    display : grid;
+    grid-template-rows : 50% 50%;
+}
+
+.input-info {
+    /* display: flex;
+    align-items: center;
+    gap: 10px; */
+    font-family : "Poppins";
+    font-size : 22px;
+    color : #3c78d8;
+
+    display : grid; 
+    grid-template-columns: 3fr 3fr 3fr; 
+
+    place-items: center;
+}
+
+.btn {
+    width : 120%;
+    height : 120%;
+    font-family : "Poppins";
+    font-size : 100%;
+    background-color : #22c060;
+    border-color : #22c060;
+    border-radius : 3px
+}
+
+.nums {
+    font-family : "Poppins";
+    font-size : 100%;
+    color : #3c78d8;
+    border : 3px solid #3c78d8;
+    border-radius : 3px;
+}
+
+.sizes {
+    font-family : "Poppins";
+    font-size : 100%;
+    color : #3c78d8;
+    border : 3px solid #3c78d8;
+    border-radius : 3px;
+}
+
+.retryBtn {
+    background-image: url("https://res.cloudinary.com/dxltpgop9/image/upload/v1684172086/minecart/RetryBtn_jhupgo_dxpfwi.svg");
+    background-size: cover;
+    width: 100px;
+    padding-bottom: 100px;
+    top: 10px;
+    left: 10px;  
+    position: absolute;
+  }
+
+.nextBtn {
+    background-image: url("https://res.cloudinary.com/dxltpgop9/image/upload/v1684345848/minecart/next-btn_w5a1wr.svg");
+    background-size: cover;
+    width: 100px;
+    padding-bottom: 100px;
+    top: 10px;
+    left: 1165px;  
+    position: absolute;
+  }
+
+  .helpBtn {
+    background-image: url("https://res.cloudinary.com/dxltpgop9/image/upload/v1691007530/help-btn_uqsjvd.svg");
+    background-size: cover;
+    width: 100px;
+    padding-bottom: 100px;
+    top: 610px;
+    left: 1165px;  
+    position: absolute;
+  }
+
+
+/* .main {
     height : 100vh;
     width : auto
 }
@@ -35,9 +165,7 @@ body {
     border-radius : 8px;
     border-width : 10px;
 
-    /* width : 900px; */
     width : 100vh;
-    /* height : 180px; */
     height : 24vh;
     
     align-items : center;
@@ -45,10 +173,9 @@ body {
 
 .input-info {
     display: grid;
-    /* width : 900px; */
     width : 100vh;
     grid-gap: 1vh;
-    grid-template-columns: 3fr 3fr 3fr; /* PROBLEM HERE */
+    grid-template-columns: 3fr 3fr 3fr; 
     font-family : "Poppins";
     font-size : 3vh;
     color : #3c78d8;
@@ -113,7 +240,7 @@ body {
     top: 88vh;
     left: 165vh;  
     position: absolute;
-  }
+  } */
 
 
 /*NON VH VERSION*/

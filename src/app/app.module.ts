@@ -16,6 +16,7 @@ import { TextureSwapComponent } from './texture-swap/texture-swap.component';
 import { MsgsComponent } from './msgs/msgs.component';
 import { MaterialBridgeComponent } from './material-bridge/material-bridge.component';
 import { TileZoomComponent } from './tile-zoom/tile-zoom.component';
+import { ClipMaskComponent } from './clip-mask/clip-mask.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { TileZoomComponent } from './tile-zoom/tile-zoom.component';
     MsgsComponent,
     MaterialBridgeComponent,
     TileZoomComponent,
+    ClipMaskComponent,
   ],
   imports: [
     BrowserModule,

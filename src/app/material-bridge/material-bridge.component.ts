@@ -26,6 +26,8 @@ export class MaterialBridgeComponent implements AfterViewInit {
   @ViewChild("usability") public usability?: ElementRef<HTMLElement>;
   @ViewChild("helpBtn") public helpBtn?: ElementRef<HTMLElement>;
 
+  @ViewChild('bridgeOverlay') public bridgeOverlay: ElementRef<HTMLElement>;
+
   help : boolean
   games : GameInput[]
 
@@ -226,7 +228,10 @@ export class MaterialBridgeComponent implements AfterViewInit {
       usability : this.usability.nativeElement,
       helpBtn : this.helpBtn.nativeElement,
 
-      help : this.help
+      help : this.help,
+
+      overlay: this.bridgeOverlay?.nativeElement
+
 
     }
 

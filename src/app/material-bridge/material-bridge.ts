@@ -108,6 +108,9 @@ export class MaterialBridgeAPI {
 
     tools : SVGUseElement;
 
+    overlay: HTMLElement;
+
+
     constructor(setup, games) {
         this.arena = setup.arena
         this.svg = setup.svg
@@ -146,6 +149,7 @@ export class MaterialBridgeAPI {
 
         this.canOrder = true
 
+        this.overlay = setup.overlay
 
         this.init()
 
@@ -397,18 +401,19 @@ export class MaterialBridgeAPI {
     setupInput() {
         var self = this
         // gsap.set(this.input, { x: "30%", y: "100%" }) 
-        gsap.set(this.input, { x: "39vh", y: "70vh" }) //to do: FIX
+        //gsap.set(this.input, { x: "39vh", y: "70vh" }) //to do: FIX
 
         this.currentImg = document.createElementNS(svgns, "use")
         this.inputImg.appendChild(this.currentImg)
         this.currentImg.setAttribute("href", "#one")
-        gsap.set(this.currentImg, { x: 0, y: "5vh" })
+        // gsap.set(this.currentImg, { x: 0, y: "5vh" })
+        gsap.set(this.currentImg, { x: 0, y: "30px" })
 
         this.popup = document.createElementNS(svgns, "use")
         this.inputImg.appendChild(this.popup)
         this.popup.setAttribute("href", "#outOfStockPopUp")
         // gsap.set(this.popup, {x : "1875%", y : "25%", visibility:"hidden"})
-        gsap.set(this.popup, {x : "93vh", y : "1vh", visibility:"hidden"}) //to do: FIX
+        gsap.set(this.popup, {x : "460px", y : "0", visibility:"hidden"}) //to do: FIX
 
      
 
@@ -926,7 +931,8 @@ export class MaterialBridgeAPI {
         }
         else {
             //show rotating retry button in the middle
-            gsap.set(this.retryBtn, { scale: 0, x: "80vh", y: "50vh", rotation: 0 })
+            // gsap.set(this.retryBtn, { scale: 0, x: "80vh", y: "50vh", rotation: 0 })
+            gsap.set(this.retryBtn, { scale: 0, x: "565px", y: "300px", rotation: 0 })
             this.tl.to(this.retryBtn, { scale: 3, duration: 1 })
             this.tl.to(this.retryBtn, { repeat: -1, duration: 4, rotation: 360, ease: "bounce" })
         }
@@ -958,6 +964,12 @@ export class MaterialBridgeAPI {
                 self.checkStock()
             }
         }
+
+        addEventListener('resize', e => {
+            this.onResize();
+        });
+
+        this.onResize();
     }
 
     startAnimation() {
@@ -1136,4 +1148,12 @@ export class MaterialBridgeAPI {
 
 
     }
+
+    onResize() {
+        const currentPuzzleWidth = this.svg.getBoundingClientRect().width;
+        const curScale = currentPuzzleWidth / 1280;
+        this.overlay.style.scale = curScale.toString();
+        this.overlay.style.width = `${(currentPuzzleWidth * (1 / curScale))}px`;
+    }
+
 }

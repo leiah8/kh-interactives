@@ -11,6 +11,7 @@ import { MultiplyManyFlowersComponent } from './multiply-many-flowers/multiply-m
 import { TextureSwapComponent } from './texture-swap/texture-swap.component';
 import { MaterialBridgeComponent } from './material-bridge/material-bridge.component';
 import { TileZoomComponent } from "./tile-zoom/tile-zoom.component";
+import { ClipMaskComponent } from "./clip-mask/clip-mask.component";
 
 
 const routes: Routes = [
@@ -33,6 +34,8 @@ const routes: Routes = [
 
   { path: 'tilezoom/:num', component: TileZoomComponent },
   { path: 'tilezoom', component: TileZoomComponent },
+
+  { path: 'clipmask', component: ClipMaskComponent },
   
 ]
 
