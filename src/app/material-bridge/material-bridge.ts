@@ -59,7 +59,7 @@ export class MaterialBridgeAPI {
     inputImg: HTMLElement;
     currentImg: SVGUseElement
     inputSize: HTMLSelectElement;
-    inputPieces: HTMLInputElement;
+    inputPieces: HTMLSelectElement;
     inputText : HTMLElement;
     retryBtn: HTMLElement;
     nextBtn: HTMLElement;
@@ -422,18 +422,20 @@ export class MaterialBridgeAPI {
         // }
 
         this.setupSizes()
+        this.setupPieces()
 
 
         this.inputSize.onchange = function (e) {
             var val = Number(self.inputSize.value)
             self.changeSizeImg(val)
             self.checkStock()
+            self.setupPieces()
             
         }
 
-        this.inputPieces.onchange = function() {
-            self.checkStock()
-        }
+        // this.inputPieces.onchange = function() {
+        //     self.checkStock()
+        // }
 
         this.popuptext = document.createElementNS(svgns, "use")
         this.frontWater.appendChild(this.popuptext)
@@ -505,8 +507,10 @@ export class MaterialBridgeAPI {
         //sizes
 
 
+        //console.log(this.game.limits)
         
         this.inputSize.innerHTML = "";
+
         
         for(var i = this.game.fractionRange[0]; i <= this.game.fractionRange[1]; i++) {
             var txt = (i == 1) ? "1" : "1/"+ (i).toString()
@@ -518,6 +522,29 @@ export class MaterialBridgeAPI {
 
         this.changeSizeImg(parseFloat((1/this.game.fractionRange[0]).toFixed(5)))
 
+    }
+
+    setupPieces() {
+
+        this.inputPieces.innerHTML = "";
+
+        var size = Math.round(Math.pow(Number(this.inputSize.value), -1));
+
+        for(var i = 1; i <= this.game.limits[size]; i++) {
+            var val = i.toString();
+            var op = new Option(val, val);
+            this.inputPieces.add(op, undefined)
+        }
+
+        if ( this.game.limits[size] == 0) {
+            //cannot order 
+            gsap.set(this.orderBtn, {backgroundColor : "#aaaaaa", borderColor : "#aaaaaa"})
+            this.canOrder = false
+            gsap.set(this.popup, {visibility:"visible"})
+
+            if (!(this.inputText.textContent.slice(-1) == ")"))
+                this.inputText.textContent += " (Out of Stock)"
+        }
     }
 
     checkStock() {
@@ -954,6 +981,7 @@ export class MaterialBridgeAPI {
             if (!self.finishedAttempt) {
                 gsap.set(self.input, { visibility: "visible" })
                 self.checkStock()
+                self.setupPieces()
             }
         }
 
@@ -962,6 +990,7 @@ export class MaterialBridgeAPI {
             if (!self.finishedAttempt) {
                 gsap.set(self.input, { visibility: "visible" })
                 self.checkStock()
+                self.setupPieces()
             }
         }
 
