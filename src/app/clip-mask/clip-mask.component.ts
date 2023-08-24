@@ -41,6 +41,8 @@ export class ClipMaskComponent implements AfterViewInit {
 
     tl.to(r, {duration : 2})
 
+    //EDIT CSS CLIP-PATH
+
     //not smooth
     tl.to(r, {clipPath: "circle(300px at center)", duration : 2})
     tl.to(r, {clipPath: "circle(100px at center)", duration : 2})
@@ -64,6 +66,8 @@ export class ClipMaskComponent implements AfterViewInit {
     */
 
 
+    //OR, ADD A CLIP PATH IN DEFS, APPLY THE CLIP PATH TO SOME ELEMENT
+    //THEN, TO EDIT THE CLIP PATH, EDIT THE ELEMENTS INSIDE OF THE CLIP PATH IN DEFS (as you normally would with gsap)
 
     // var r3 = document.getElementById("rect3")
     // var tl = gsap.timeline()
