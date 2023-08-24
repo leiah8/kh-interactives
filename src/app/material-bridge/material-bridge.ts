@@ -422,7 +422,7 @@ export class MaterialBridgeAPI {
         // }
 
         this.setupSizes()
-        this.setupPieces()
+        
 
 
         this.inputSize.onchange = function (e) {

@@ -1,5 +1,6 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { gsap } from "gsap/all";
+import { CodingAnimation } from "./clip-mask"
 
 @Component({
   selector: 'app-clip-mask',
@@ -7,10 +8,29 @@ import { gsap } from "gsap/all";
   styleUrls: ['./clip-mask.component.css']
 })
 export class ClipMaskComponent implements AfterViewInit {
+  @ViewChild("printer") public printer?: ElementRef<SVGSVGElement>;
+  @ViewChild("top") public top?: ElementRef<SVGSVGElement>;
+  @ViewChild("head") public head?: ElementRef<SVGSVGElement>;
+  @ViewChild("string") public string?: ElementRef<SVGSVGElement>;
+  @ViewChild("printerTip") public printerTip?: ElementRef<SVGSVGElement>;
+
+  @ViewChild("arena") public arena?: ElementRef<SVGSVGElement>;
+
 
   constructor() { }
 
   ngAfterViewInit(): void {
+    const setup = {
+      printer : this.printer.nativeElement,
+      top : this.top.nativeElement,
+      head : this.head.nativeElement,
+      string : this.string.nativeElement,
+      arena : this.arena.nativeElement,
+      printerTip : this.printerTip.nativeElement
+
+    }
+
+    const interactive = new CodingAnimation(setup);
 
     // https://css-tricks.com/clipping-masking-css/ 
     // https://greensock.com/forums/topic/13615-clip-path-or-mask-animation/
@@ -45,10 +65,10 @@ export class ClipMaskComponent implements AfterViewInit {
 
 
 
-    var r3 = document.getElementById("rect3")
-    var tl = gsap.timeline()
-    tl.to(r3, {duration : 2});
-    tl.to(r3, {scaleX : 2, duration : 2});
+    // var r3 = document.getElementById("rect3")
+    // var tl = gsap.timeline()
+    // tl.to(r3, {duration : 2});
+    // tl.to(r3, {scaleX : 2, duration : 2});
 
 
     //animating the inner elements does change the clippath on the group

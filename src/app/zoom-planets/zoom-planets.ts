@@ -50,8 +50,8 @@ export class ZoomAPI {
             var h = window.innerHeight 
             var w = window.innerWidth
 
-            var x = 0 //self.width * (e.x / w)
-            var y = 0 //self.height * (e.y / h) 
+            var x = e.x - self.width/2 //self.width * (e.x / w)
+            var y = e.y - self.height/2 //self.height * (e.y / h) 
 
             var vb = x + " "+ y + " " + self.width + " " + self.height
 
