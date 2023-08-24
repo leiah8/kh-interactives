@@ -197,9 +197,13 @@ export class CodingAnimation {
         //print b4
         this.tl.to(this.buildings[3], {clipPath : "inset(0% 0% 0% 0%)", duration : 1, ease : "linear"})
         this.tl.to(this.head, {y : "-=" + 28.75, duration : 1, ease : "linear", onUpdate : this.onUpdatePrinterMoveHead, onUpdateParams : [this]}, "<");
-    
-        this.tl.to(this.arena, {onStart : function() {
+        
+        //move printer up
+        this.tl.to(this.arena, {duration : 1, onStart : function() {
             self.movePrinterToMiddle()
         }})
+
+        this.tl.to(this.string, {scaleX : self.stringStartScale, ease : "linear", duration : 3, onUpdate : this.onUpdatePrinterMoveString, onUpdateParams : [this]});
+
     }
 }
